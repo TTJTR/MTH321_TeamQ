@@ -1,0 +1,847 @@
+% ============================================================
+% ODE IVP Project — LaTeX Report Template
+% Compile: pdflatex report.tex  (twice for the TOC)
+% Structure follows the project brief: Background -> Model ->
+% Methods -> Stability -> Numerical experiments -> Conclusions.
+%
+% This is the MERGED template: it combines the project-specific
+% guidance for Project 1 (ODE IVPs) with the course-level report
+% skeleton (algorithm environment, theorem environments, MMS
+% convergence table, AI Transparency Log and ICS appendices).
+% ============================================================
+
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\geometry{a4paper, margin=2.5cm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{bm}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{algpseudocode}
+\usepackage{mdframed}
+
+% --- colors ---
+\definecolor{lecture}{RGB}{70,130,180}
+\definecolor{seminar}{RGB}{205,92,92}
+\definecolor{formbg}{RGB}{250,250,245}
+\definecolor{formframe}{RGB}{180,170,140}
+
+% --- code listing style (Python) ---
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\scriptsize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!40!black},
+    stringstyle=\color{red!70!black},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    frame=single,
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=4,
+    captionpos=b,
+}
+
+% --- theorem-like environments (course-level set) ---
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% --- algorithm style ---
+\algrenewcommand{\algorithmicrequire}{\textbf{Input:}}
+\algrenewcommand{\algorithmicensure}{\textbf{Output:}}
+\algrenewcommand{\algorithmiccomment}[1]{\hfill\textcolor{gray}{\# #1}}
+
+% --- form box (for appendices) ---
+\newmdenv[
+    backgroundcolor=formbg,
+    linecolor=formframe,
+    linewidth=0.8pt,
+    roundcorner=3pt,
+    innermargin=5pt,
+    outermargin=5pt,
+    innertopmargin=8pt,
+    innerbottommargin=8pt
+]{formbox}
+
+\title{\textbf{Numerical Solution of \texttt{<YOUR PROBLEM>}}\\[2mm]
+\large Project 1 (ODE IVP) Report}
+\author{
+    Team \#\texttt{<N>} \\
+    \small \texttt{<name1>, <id1> (Project Manager)} \quad
+    \texttt{<name2>, <id2> (Mathematical Theory)} \\
+    \small \texttt{<name3>, <id3> (Algorithm Implementation)} \quad
+    \texttt{<name4>, <id4> (Visualization \& Report)} \\
+    \small \texttt{<name5>, <id5> (Testing \& Validation)} \\
+    \small Department of Applied Mathematics
+}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+[150--250 words answering: (1) what problem and why interesting; (2) what methods
+you implemented; (3) key findings (convergence rates, stability observations);
+(4) the main limitation or open question.]
+\end{abstract}
+
+\noindent\textbf{Keywords:} [e.g., Runge--Kutta methods, stiffness, von Neumann
+stability, absolute stability, adaptive stepping]
+
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{Introduction and Motivation}
+% ============================================================
+
+\subsection{Problem Background}
+[Describe the physical, biological, or financial context of your chosen ODE
+system. Why is this problem worth solving? Cite 2--3 references.]
+
+\subsection{Mathematical Model}
+[State the ODE system, initial conditions, and all parameter values. If the
+system is stiff, say so and give the stiffness ratio.]
+
+\begin{equation}
+    \frac{dy}{dt} = f(t, y), \qquad y(t_0) = y_0.
+    \label{eq:ivp}
+\end{equation}
+
+For the Robertson problem (example):
+\begin{equation}
+\begin{aligned}
+    \dot{y}_1 &= -0.04\, y_1 + 10^4\, y_2 y_3, \\
+    \dot{y}_2 &= \;\;0.04\, y_1 - 10^4\, y_2 y_3 - 3\times 10^7\, y_2^2, \\
+    \dot{y}_3 &= \;\;3\times 10^7\, y_2^2,
+\end{aligned}
+\qquad y(0) = (1, 0, 0).
+\label{eq:robertson}
+\end{equation}
+
+\subsection{Overview of the Report}
+[A roadmap: ``In Section 2 we derive the discrete scheme and analyse stability.
+In Section 3 we describe the implementation. Section 4 presents numerical
+experiments. Section 5 concludes.'']
+
+\newpage
+% ============================================================
+\section{Discretisation and Analysis}
+% ============================================================
+
+\subsection{Discrete Schemes}
+[Derive your three methods step by step: Explicit Euler, RK4 (show the Butcher
+tableau), and your implicit method with Newton. Number every equation.]
+\label{sec:discrete_schemes}
+
+We consider the autonomous initial value problem (IVP) defined on the compact temporal interval $t \in [t_0, T]$:
+\begin{equation}
+\label{eq:general_ivp}
+\dot{\mathbf{y}}(t) = \mathbf{f}(t, \mathbf{y}(t)), \quad \mathbf{y}(t_0) = \mathbf{y}_0 \in \mathbb{R}^d,
+\end{equation}
+where $\mathbf{f}: [t_0, T] \times \mathbb{R}^d \to \mathbb{R}^d$ is assumed to be sufficiently smooth and locally Lipschitz continuous with respect to $\mathbf{y}$. Let the continuous interval $[t_0, T]$ be partitioned by a uniform grid $t_n = t_0 + n h$ for $n = 0, 1, \dots, N-1$, where $h = (T - t_0)/N > 0$ denotes the nominal discretization time step. Integrating \eqref{eq:general_ivp} over a single time step $[t_n, t_{n+1}]$ yields the exact Volterra integral relation:
+\begin{equation}
+\label{eq:integral_form}
+\mathbf{y}(t_{n+1}) - \mathbf{y}(t_n) = \int_{t_n}^{t_{n+1}} \mathbf{f}(t, \mathbf{y}(t)) \, \mathrm{d}t.
+\end{equation}
+Different numerical approximations of the quadrature in \eqref{eq:integral_form} give rise to distinct numerical schemes with contrasting orders of accuracy, computational costs, and stability domains.
+
+\subsubsection{Explicit Euler Method}
+The simplest one-step method is obtained by approximating the integral in \eqref{eq:integral_form} via the left-hand rectangle quadrature rule, evaluating the integrand solely at the known base state $(t_n, \mathbf{y}(t_n))$:
+\begin{equation}
+\label{eq:explicit_euler}
+\mathbf{y}_{n+1} = \mathbf{y}_n + h \mathbf{f}(t_n, \mathbf{y}_n).
+\end{equation}
+Equation \eqref{eq:explicit_euler} is strictly explicit; advancing the state from $t_n$ to $t_{n+1}$ incurs exactly one evaluation of the vector field $\mathbf{f}$ without requiring any linear or nonlinear system solves. While computationally inexpensive ($\mathcal{O}(d)$ floating-point operations per step), the scheme is conditionally stable and imposes severe step-size restrictions when applied to stiff ODE systems.
+
+\subsubsection{Classical Fourth-Order Runge--Kutta Method (RK4)}
+To achieve higher-order geometric fidelity without computing higher-order analytical derivatives of $\mathbf{f}$, the classical fourth-order Runge--Kutta scheme (RK4) evaluates the continuous vector field at four intermediate test stages across $[t_n, t_{n+1}]$:
+\begin{align}
+\mathbf{k}_1 &= \mathbf{f}(t_n, \mathbf{y}_n), \label{eq:rk4_k1} \\
+\mathbf{k}_2 &= \mathbf{f}\left(t_n + \frac{h}{2}, \mathbf{y}_n + \frac{h}{2}\mathbf{k}_1\right), \label{eq:rk4_k2} \\
+\mathbf{k}_3 &= \mathbf{f}\left(t_n + \frac{h}{2}, \mathbf{y}_n + \frac{h}{2}\mathbf{k}_2\right), \label{eq:rk4_k3} \\
+\mathbf{k}_4 &= \mathbf{f}(t_n + h, \mathbf{y}_n + h\mathbf{k}_3), \label{eq:rk4_k4}
+\end{align}
+and synthesizes them via Simpson's composite quadrature weights:
+\begin{equation}
+\label{eq:rk4_update}
+\mathbf{y}_{n+1} = \mathbf{y}_n + \frac{h}{6} \left(\mathbf{k}_1 + 2\mathbf{k}_2 + 2\mathbf{k}_3 + \mathbf{k}_4\right).
+\end{equation}
+The algebraic structure of any $s$-stage Runge--Kutta method can be compactly encapsulated by its Butcher tableau:
+\begin{equation}
+\label{eq:butcher_general}
+\begin{array}{c|c}
+\mathbf{c} & \mathbf{A} \\
+\hline
+& \mathbf{b}^T
+\end{array}
+\end{equation}
+For classical RK4, the coefficients $\mathbf{A} \in \mathbb{R}^{4 \times 4}$, $\mathbf{b} \in \mathbb{R}^4$, and $\mathbf{c} \in \mathbb{R}^4$ are uniquely defined as:
+\begin{equation}
+\label{eq:rk4_butcher}
+\begin{array}{c|cccc}
+0   & 0   & 0   & 0 & 0 \\
+1/2 & 1/2 & 0   & 0 & 0 \\
+1/2 & 0   & 1/2 & 0 & 0 \\
+1   & 0   & 0   & 1 & 0 \\
+\hline
+    & 1/6 & 1/3 & 1/3 & 1/6
+\end{array}
+\end{equation}
+Because the Runge--Kutta matrix $\mathbf{A}$ in \eqref{eq:rk4_butcher} is strictly lower triangular with a vanishing main diagonal ($a_{ij} = 0$ for all $j \ge i$), each stage derivative $\mathbf{k}_i$ depends solely on the previously evaluated stage vectors $\mathbf{k}_1, \dots, \mathbf{k}_{i-1}$, preserving an explicit computation sequence.
+
+\subsubsection{Implicit Euler Method with Damped Newton Iteration}
+When the physical system exhibits stiffness, explicit schemes encounter numerical blow-up unless $h$ is restricted to excessively small time steps. To obtain unconditional absolute stability, we evaluate the integral in \eqref{eq:integral_form} via the right-hand rectangle rule at the future time level $(t_{n+1}, \mathbf{y}(t_{n+1}))$, yielding the Implicit (Backward) Euler scheme:
+\begin{equation}
+\label{eq:implicit_euler}
+\mathbf{y}_{n+1} = \mathbf{y}_n + h \mathbf{f}(t_{n+1}, \mathbf{y}_{n+1}).
+\end{equation}
+Because the unknown state $\mathbf{y}_{n+1}$ appears nonlinearly within the argument of $\mathbf{f}$, \eqref{eq:implicit_euler} constitutes a coupled system of $d$ nonlinear algebraic equations at each time step. 
+
+Let $\mathbf{w} \in \mathbb{R}^d$ represent the unknown state vector at $t_{n+1}$. We define the nonlinear residual mapping $\mathbf{F}: \mathbb{R}^d \to \mathbb{R}^d$ by collecting all terms on one side:
+\begin{equation}
+\label{eq:newton_residual}
+\mathbf{F}(\mathbf{w}) := \mathbf{w} - \mathbf{y}_n - h \mathbf{f}(t_{n+1}, \mathbf{w}) = \mathbf{0}.
+\end{equation}
+To solve $\mathbf{F}(\mathbf{w}) = \mathbf{0}$ iteratively, we linearize $\mathbf{F}$ around a current trial estimate $\mathbf{w}^{(k)}$ via first-order multivariate Taylor expansion:
+\begin{equation}
+\label{eq:taylor_residual}
+\mathbf{F}\left(\mathbf{w}^{(k)} + \boldsymbol{\delta}^{(k)}\right) \approx \mathbf{F}\left(\mathbf{w}^{(k)}\right) + \mathbf{J}_{\mathbf{F}}\left(\mathbf{w}^{(k)}\right) \boldsymbol{\delta}^{(k)} = \mathbf{0},
+\end{equation}
+where $\mathbf{J}_{\mathbf{F}}(\mathbf{w}) \in \mathbb{R}^{d \times d}$ is the Fr\'echet derivative (Jacobian matrix) of the residual operator $\mathbf{F}$ with respect to $\mathbf{w}$. Applying the multivariate chain rule to \eqref{eq:newton_residual} yields:
+\begin{equation}
+\label{eq:residual_jacobian}
+\mathbf{J}_{\mathbf{F}}(\mathbf{w}) = \frac{\partial \mathbf{F}}{\partial \mathbf{w}} = \frac{\partial}{\partial \mathbf{w}} \left(\mathbf{w} - \mathbf{y}_n - h \mathbf{f}(t_{n+1}, \mathbf{w})\right) = \mathbf{I}_d - h \mathbf{J}_{\mathbf{f}}(t_{n+1}, \mathbf{w}),
+\end{equation}
+where $\mathbf{I}_d$ is the $d \times d$ identity matrix and $\mathbf{J}_{\mathbf{f}}(\cdot) = \frac{\partial \mathbf{f}}{\partial \mathbf{y}} \in \mathbb{R}^{d \times d}$ is the analytical Jacobian matrix of the continuous ODE vector field.
+
+The standard full Newton direction $\boldsymbol{\delta}^{(k)}$ is determined by solving the linear algebraic system:
+\begin{equation}
+\label{eq:newton_linear_system}
+\mathbf{J}_{\mathbf{F}}\left(\mathbf{w}^{(k)}\right) \boldsymbol{\delta}^{(k)} = -\mathbf{F}\left(\mathbf{w}^{(k)}\right).
+\end{equation}
+In practical stiff and highly nonlinear implementations, the initial state $\mathbf{w}^{(0)} = \mathbf{y}_n$ may fall outside the local quadratic attraction basin, causing standard full Newton iterations ($\mathbf{w}^{(k+1)} = \mathbf{w}^{(k)} + \boldsymbol{\delta}^{(k)}$) to suffer from severe overshoot and divergence. To enforce monotonic residual decay, we incorporate an Armijo-type backtracking line-search damping parameter $\alpha \in (0, 1]$:
+\begin{equation}
+\label{eq:newton_damped_update}
+\mathbf{w}^{(k+1)} = \mathbf{w}^{(k)} + \alpha \boldsymbol{\delta}^{(k)}.
+\end{equation}
+The complete time-stepping procedure combining the outer temporal loop with the inner damped Newton solver is formalized in Algorithm~\ref{alg:implicit_euler_newton}.
+
+
+\begin{algorithm}[htbp]
+\caption{Implicit Euler Integration with Damped Newton Solver}
+\label{alg:implicit_euler_newton}
+\footnotesize % 1. 使用 footnotesize 进一步紧凑字体与行距，确保高度收缩
+\begin{algorithmic}[1] % 2. 去掉末尾错误的 [H]
+\STATE \textbf{Input:} Continuous RHS $\mathbf{f}(t, \mathbf{y})$, analytic Jacobian $\mathbf{J}_{\mathbf{f}}(t, \mathbf{y})$, initial state $\mathbf{y}_0$, step size $h$, final time $T$, residual tolerance $\text{tol}$, max iterations $K_{\max}$, damping shrink $\beta \in (0, 1)$.
+\STATE \textbf{Output:} Discrete trajectory $\{ (t_n, \mathbf{y}_n) \}_{n=0}^N$.
+\STATE $N \gets \lfloor (T - t_0) / h \rfloor$
+\STATE $t \gets t_0, \quad \mathbf{y} \gets \mathbf{y}_0$
+\FOR{$n = 0$ \TO $N-1$}
+    \STATE $t_{\text{next}} \gets t_0 + (n + 1)h$
+    \STATE $\mathbf{w} \gets \mathbf{y}_n$ \COMMENT{Initial guess: previous state}
+    \STATE $\text{converged} \gets 0$
+    \FOR{$k = 0$ \TO $K_{\max}-1$}
+        \STATE $\mathbf{F} \gets \mathbf{w} - \mathbf{y}_n - h \mathbf{f}(t_{\text{next}}, \mathbf{w})$
+        \IF{$\|\mathbf{F}\|_{\infty} < \text{tol}$}
+            \STATE $\mathbf{y}_{n+1} \gets \mathbf{w}$
+            \STATE $\text{converged} \gets 1$
+            \STATE \textbf{break}
+        \ENDIF
+        
+        \STATE $\mathbf{J}_{\mathbf{F}} \gets \mathbf{I}_d - h \mathbf{J}_{\mathbf{f}}(t_{\text{next}}, \mathbf{w})$
+        \STATE Solve linear system $\mathbf{J}_{\mathbf{F}} \boldsymbol{\delta} = -\mathbf{F}$ for correction $\boldsymbol{\delta}$
+        \STATE $\alpha \gets 1.0$ \COMMENT{Initialize full Newton step}
+        \WHILE{$\|\mathbf{w} - \mathbf{y}_n - h \mathbf{f}(t_{\text{next}}, \mathbf{w} + \alpha \boldsymbol{\delta})\|_{\infty} \ge \|\mathbf{F}\|_{\infty}$ \textbf{and} $\alpha > 10^{-4}$}
+            \STATE $\alpha \gets \alpha \cdot \beta$ \COMMENT{Backtrack damping factor}
+        \ENDWHILE
+        \STATE $\mathbf{w} \gets \mathbf{w} + \alpha \boldsymbol{\delta}$
+    \ENDFOR
+    \IF{$\text{converged} = 0$}
+        \STATE \textbf{error} ``Newton iteration failed to converge''
+    \ENDIF
+\ENDFOR
+\STATE \textbf{return} $\{ (t_n, \mathbf{y}_n) \}_{n=0}^N$
+\end{algorithmic}
+\end{algorithm}
+
+
+
+\subsection{Consistency and Truncation Error}
+
+\label{sec:consistency_and_truncation_error}
+
+\subsubsection{Theoretical Assumptions and Local Defect}
+To rigorously quantify the asymptotic discretization error of the numerical integrators formulated in Section~\ref{sec:discrete_schemes}, we establish the analytical foundation under classical regularity assumptions. Let the continuous vector field $\mathbf{f}: [t_0, T] \times \mathbb{R}^d \to \mathbb{R}^d$ satisfy the following conditions:
+\begin{enumerate}
+    \item \textbf{Lipschitz Continuity:} There exists a finite Lipschitz constant $L > 0$ such that on a bounded domain $\Omega \subset [t_0, T] \times \mathbb{R}^d$:
+    \begin{equation}
+    \label{eq:lipschitz_condition}
+    \|\mathbf{f}(t, \mathbf{u}) - \mathbf{f}(t, \mathbf{v})\| \le L \|\mathbf{u} - \mathbf{v}\|, \quad \forall (t, \mathbf{u}), (t, \mathbf{v}) \in \Omega.
+    \end{equation}
+    By the Picard--Lindel\"of theorem, condition \eqref{eq:lipschitz_condition} guarantees the local existence, uniqueness, and well-posedness of the continuous trajectory $\mathbf{y}(t)$.
+    \item \textbf{Sufficient Smoothness:} The theoretical solution $\mathbf{y}(t)$ is assumed to be of class $C^{p+1}[t_0, T]$, where $p \ge 1$ denotes the formal order of the numerical method, ensuring that higher-order Fr\'echet derivatives are uniformly bounded by a constant $M_{p+1} = \sup_{t \in [t_0, T]} \|\mathbf{y}^{(p+1)}(t)\| < \infty$.
+\end{enumerate}
+
+Any generic single-step integration scheme advancing from $t_n$ to $t_{n+1} = t_n + h$ can be cast into the autonomous increment form:
+\begin{equation}
+\label{eq:general_increment_function}
+\mathbf{y}_{n+1} = \mathbf{y}_n + h \mathbf{\Phi}(t_n, \mathbf{y}_n, h),
+\end{equation}
+where $\mathbf{\Phi}$ represents the numerical increment function. Under the \emph{localizing assumption} (i.e., assuming the numerical solution coincides exactly with the theoretical trajectory at the current base point, $\mathbf{y}_n = \mathbf{y}(t_n)$), the one-step local defect (or local error) $\boldsymbol{\rho}_{n+1}$ is defined as:
+\begin{equation}
+\label{eq:local_defect_def}
+\boldsymbol{\rho}_{n+1} := \mathbf{y}(t_{n+1}) - \left[ \mathbf{y}(t_n) + h \mathbf{\Phi}(t_n, \mathbf{y}(t_n), h) \right].
+\end{equation}
+The \emph{local truncation error} (LTE) vector per unit step, denoted by $\boldsymbol{\tau}_{n+1}$, is defined as the normalized local defect:
+\begin{equation}
+\label{eq:lte_def}
+\boldsymbol{\tau}_{n+1} := \frac{\boldsymbol{\rho}_{n+1}}{h} = \frac{\mathbf{y}(t_{n+1}) - \mathbf{y}(t_n)}{h} - \mathbf{\Phi}(t_n, \mathbf{y}(t_n), h).
+\end{equation}
+A numerical scheme is defined to be \emph{consistent} of order $p$ if its local truncation error satisfies $\|\boldsymbol{\tau}_{n+1}\| = \mathcal{O}(h^p)$ as $h \to 0$, which is equivalent to requiring $\|\boldsymbol{\rho}_{n+1}\| = \mathcal{O}(h^{p+1})$.
+
+\subsubsection{Derivation of Local Truncation Errors for Implemented Solvers}
+\paragraph{1. Explicit Euler Scheme ($p=1$):}
+Performing a multivariate Taylor series expansion of the exact continuous solution $\mathbf{y}(t_{n+1})$ about $t_n$ yields:
+\begin{equation}
+\label{eq:taylor_expansion_ee}
+\mathbf{y}(t_{n+1}) = \mathbf{y}(t_n) + h \dot{\mathbf{y}}(t_n) + \frac{h^2}{2} \ddot{\mathbf{y}}(t_n) + \mathcal{O}(h^3).
+\end{equation}
+Recalling that $\dot{\mathbf{y}}(t_n) = \mathbf{f}(t_n, \mathbf{y}(t_n))$ and the numerical increment is $\mathbf{\Phi}_{\text{EE}} = \mathbf{f}(t_n, \mathbf{y}(t_n))$, substituting \eqref{eq:taylor_expansion_ee} into \eqref{eq:local_defect_def} leads to the exact cancellation of the zeroth- and first-order terms:
+\begin{equation}
+\label{eq:euler_defect_expansion}
+\boldsymbol{\rho}_{n+1}^{\text{EE}} = \frac{h^2}{2} \ddot{\mathbf{y}}(t_n) + \mathcal{O}(h^3) \implies \boldsymbol{\tau}_{n+1}^{\text{EE}} = \frac{h}{2} \ddot{\mathbf{y}}(t_n) + \mathcal{O}(h^2).
+\end{equation}
+Hence, Explicit Euler exhibits an $\mathcal{O}(h^2)$ one-step defect and is first-order consistent ($p=1$) with leading error constant $C_2 = 1/2$.
+
+\paragraph{2. Implicit Euler Scheme ($p=1$):}
+For Implicit Euler, the increment function is $\mathbf{\Phi}_{\text{IE}} = \mathbf{f}(t_{n+1}, \mathbf{y}(t_{n+1})) = \dot{\mathbf{y}}(t_{n+1})$. Expanding $\dot{\mathbf{y}}(t_{n+1})$ backwards about $t_n$:
+\begin{equation}
+\label{eq:taylor_expansion_ie_slope}
+\dot{\mathbf{y}}(t_{n+1}) = \dot{\mathbf{y}}(t_n) + h \ddot{\mathbf{y}}(t_n) + \mathcal{O}(h^2).
+\end{equation}
+Multiplying \eqref{eq:taylor_expansion_ie_slope} by $h$ and subtracting it from \eqref{eq:taylor_expansion_ee} gives the local defect:
+\begin{equation}
+\label{eq:ie_defect_expansion}
+\boldsymbol{\rho}_{n+1}^{\text{IE}} = \mathbf{y}(t_{n+1}) - \left[ \mathbf{y}(t_n) + h \dot{\mathbf{y}}(t_{n+1}) \right] = -\frac{h^2}{2} \ddot{\mathbf{y}}(t_n) + \mathcal{O}(h^3),
+\end{equation}
+yielding $\boldsymbol{\tau}_{n+1}^{\text{IE}} = -\frac{h}{2} \ddot{\mathbf{y}}(t_n) + \mathcal{O}(h^2)$. The method is also first-order consistent ($p=1$) but possesses an error constant of opposite sign ($C_2 = -1/2$).
+
+\paragraph{3. Classical Runge--Kutta Scheme (RK4, $p=4$):}
+By Taylor expanding the four intermediate slope evaluations $\mathbf{k}_1, \dots, \mathbf{k}_4$ defined in \eqref{eq:rk4_k1}--\eqref{eq:rk4_k4} in terms of the elementary differentials of $\mathbf{f}$ and comparing the resultant linear combination against the continuous Taylor series of $\mathbf{y}(t_{n+1})$ up to fifth order, all algebraic order conditions up to order 4 are identically satisfied. Consequently:
+\begin{equation}
+\label{eq:rk4_defect}
+\boldsymbol{\rho}_{n+1}^{\text{RK4}} = \boldsymbol{\psi}(t_n) h^5 + \mathcal{O}(h^6) \implies \boldsymbol{\tau}_{n+1}^{\text{RK4}} = \boldsymbol{\psi}(t_n) h^4 + \mathcal{O}(h^5),
+\end{equation}
+where $\boldsymbol{\psi}(t_n)$ denotes the principal error function composed of elementary differentials of order 5. Hence, RK4 is consistent of order $p=4$.
+
+\subsubsection{Adaptive Step-Size Control via Step-Doubling Richardson Extrapolation}
+Practical simulation of multiscale or stiff dynamical systems necessitates dynamic step-size selection to maintain uniform accuracy while minimizing computational overhead. To estimate the local truncation error without relying on analytical higher derivatives, we employ the \emph{step-doubling} (Richardson extrapolation) strategy.
+
+Let the base numerical integrator have order $p$. From a shared accepted state $(t_n, \mathbf{y}_n)$, we compute two independent numerical predictions at $t_{n+1} = t_n + h$:
+\begin{enumerate}
+    \item \textbf{Coarse Solution ($\mathbf{y}_c$):} A single trial step spanning the full increment $h$:
+    \begin{equation}
+    \label{eq:coarse_step}
+    \mathbf{y}_c = \mathbf{y}(t_n + h) - \boldsymbol{\psi}(t_n) h^{p+1} + \mathcal{O}(h^{p+2}).
+    \end{equation}
+    \item \textbf{Fine Solution ($\mathbf{y}_f$):} Two consecutive sub-steps spanning $h/2$. Assuming the principal error coefficient $\boldsymbol{\psi}(t)$ remains locally constant across $[t_n, t_n + h]$, the defects from both half-steps superimpose linearly:
+    \begin{align}
+    \mathbf{y}_{1/2} &= \mathbf{y}\left(t_n + \frac{h}{2}\right) - \boldsymbol{\psi}(t_n) \left(\frac{h}{2}\right)^{p+1} + \mathcal{O}(h^{p+2}), \label{eq:fine_half_step} \\
+    \mathbf{y}_f &= \mathbf{y}(t_n + h) - 2 \boldsymbol{\psi}(t_n) \left(\frac{h}{2}\right)^{p+1} + \mathcal{O}(h^{p+2}) = \mathbf{y}(t_n + h) - \frac{\boldsymbol{\psi}(t_n) h^{p+1}}{2^p} + \mathcal{O}(h^{p+2}). \label{eq:fine_step}
+    \end{align}
+\end{enumerate}
+Subtracting \eqref{eq:fine_step} from \eqref{eq:coarse_step} eliminates the unknown exact continuous state $\mathbf{y}(t_n + h)$:
+\begin{equation}
+\label{eq:richardson_subtraction}
+\mathbf{y}_c - \mathbf{y}_f = -\boldsymbol{\psi}(t_n) h^{p+1} \left(1 - \frac{1}{2^p}\right) + \mathcal{O}(h^{p+2}) = -\frac{2^p - 1}{2^p} \boldsymbol{\psi}(t_n) h^{p+1} + \mathcal{O}(h^{p+2}).
+\end{equation}
+Solving \eqref{eq:richardson_subtraction} directly isolates the leading error term:
+\begin{equation}
+\label{eq:principal_error_isolated}
+\frac{\boldsymbol{\psi}(t_n) h^{p+1}}{2^p} = \frac{\mathbf{y}_f - \mathbf{y}_c}{2^p - 1} + \mathcal{O}(h^{p+2}).
+\end{equation}
+Consequently, the computable local error estimate of the more accurate fine solution $\mathbf{y}_f$ is given by:
+\begin{equation}
+\label{eq:local_error_estimator}
+\hat{\mathbf{e}}_n := \mathbf{y}(t_n + h) - \mathbf{y}_f \approx \frac{\mathbf{y}_f - \mathbf{y}_c}{2^p - 1}.
+\end{equation}
+For our implemented solvers, the denominator evaluates explicitly to:
+\begin{itemize}
+    \item \textbf{Implicit / Explicit Euler ($p=1$):} $2^1 - 1 = 1 \implies \hat{\mathbf{e}}_n \approx \mathbf{y}_f - \mathbf{y}_c$.
+    \item \textbf{Classical RK4 ($p=4$):} $2^4 - 1 = 15 \implies \hat{\mathbf{e}}_n \approx \frac{\mathbf{y}_f - \mathbf{y}_c}{15}$.
+\end{itemize}
+
+\subsubsection{Error Normalization and Step-Update Controller}
+To render the acceptance decision scale-invariant across state variables of disparate magnitudes, we define a component-wise tolerance vector $\mathbf{s} \in \mathbb{R}^d$ combining user-prescribed absolute ($\text{atol}$) and relative ($\text{rtol}$) tolerances:
+\begin{equation}
+\label{eq:scale_vector}
+s_i = \text{atol}_i + \text{rtol} \cdot \max\left(|y_{n, i}|, \, |y_{f, i}|\right), \quad i = 1, \dots, d.
+\end{equation}
+The overall scalar normalized error ratio $E$ is evaluated using the weighted $L_\infty$ norm:
+\begin{equation}
+\label{eq:normalized_error_ratio}
+E := \max_{1 \le i \le d} \left| \frac{\hat{e}_{n, i}}{s_i} \right|.
+\end{equation}
+The operational decision logic is partitioned into two mutually exclusive regimes:
+\begin{itemize}
+    \item \textbf{Step Acceptance ($E \le 1$):} The estimated error falls strictly within the permissible tolerance corridor. The time level and state are advanced using \emph{local extrapolation}:
+    \begin{equation}
+    \label{eq:local_extrapolation}
+    t_{n+1} \gets t_n + h, \quad \mathbf{y}_{n+1} \gets \mathbf{y}_f.
+    \end{equation}
+    \item \textbf{Step Rejection ($E > 1$):} The local error exceeds the target envelope. In accordance with strict conservation, \emph{a rejected step has not occurred}; neither $t_n$ nor $\mathbf{y}_n$ is modified, and the step is immediately recomputed from $(t_n, \mathbf{y}_n)$ using an attenuated step size.
+\end{itemize}
+
+Under the asymptotic error relation $E(h) \propto h^{p+1}$, setting the target normalized error for the prospective step to unity ($E(h_{\text{opt}}) \approx 1$) yields the unconstrained scale factor $r = E^{-1/(p+1)}$. To prevent step-size hunting and severe limit-cycle oscillations induced by higher-order nonlinear transients, we incorporate a conservative safety margin $S \in [0.8, 0.9]$ alongside hard growth and shrinkage limiter bounds $[r_{\min}, r_{\max}]$:
+\begin{equation}
+\label{eq:step_update_formula}
+h_{\text{new}} = h \cdot \min\left(r_{\max}, \, \max\left(r_{\min}, \, S \cdot E^{-\frac{1}{p+1}}\right)\right),
+\end{equation}
+where typical robust parameters are set to $S = 0.9$, $r_{\min} = 0.2$, and $r_{\max} = 2.0$.
+
+\subsection{Stability Analysis}
+
+\begin{equation}
+    R_{\text{Euler}}(z) = 1 + z, \qquad
+    R_{\text{RK4}}(z) = 1 + z + \frac{z^2}{2} + \frac{z^3}{6} + \frac{z^4}{24},
+    \qquad
+    R_{\text{impl.Euler}}(z) = \frac{1}{1 - z}.
+\end{equation}
+
+\label{sec:stability_analysis}
+
+While consistency governs the asymptotic error behavior as $h \to 0$, the numerical feasibility of an integrator at finite step sizes is governed by absolute stability. Stiff dynamical regimes impose severe step-size restrictions on explicit integrators, rendering stability, rather than accuracy, the primary bottleneck.
+
+\subsubsection{Scalar Test Problem and Amplification Factors}
+We consider the classical Dahlquist scalar linear test equation:
+\begin{equation}
+\label{eq:dahlquist_test}
+\dot{y}(t) = \lambda y(t), \quad y(0) = y_0, \quad \lambda \in \mathbb{C}, \quad \mathrm{Re}(\lambda) < 0,
+\end{equation}
+whose exact continuous trajectory decays monotonically: $|y(t)| = |y_0| e^{\mathrm{Re}(\lambda)t} \to 0$ as $t \to \infty$. Introducing the dimensionless complex parameter $z := h\lambda \in \mathbb{C}$, applying a generic single-step numerical integrator to \eqref{eq:dahlquist_test} yields the discrete geometric recurrence:
+\begin{equation}
+\label{eq:discrete_recurrence}
+y_{n+1} = R(z) y_n = \left[R(z)\right]^{n+1} y_0,
+\end{equation}
+where $R(z): \mathbb{C} \to \mathbb{C}$ denotes the rational or polynomial stability amplification function. The discrete perturbation sequence $\{y_n\}_{n=0}^\infty$ remains uniformly bounded if and only if the complex amplification factor satisfies the von Neumann criterion:
+\begin{equation}
+\label{eq:stability_criterion}
+|R(z)| \le 1.
+\end{equation}
+The region of absolute stability in the complex plane is formally defined as:
+\begin{equation}
+\label{eq:stability_region_def}
+\mathcal{S} := \left\{ z \in \mathbb{C} : |R(z)| \le 1 \right\}.
+\end{equation}
+
+We derive the analytic form of $R(z)$ for the three implemented solvers:
+\begin{enumerate}
+    \item \textbf{Explicit Euler:} Substituting $f(y) = \lambda y$ into \eqref{eq:explicit_euler} gives:
+    \begin{equation}
+    \label{eq:R_EE}
+    y_{n+1} = y_n + h\lambda y_n = (1 + z) y_n \implies R_{\mathrm{EE}}(z) = 1 + z.
+    \end{equation}
+    Condition \eqref{eq:stability_criterion} requires $|1 + z| \le 1$. In the complex plane $z = x + \mathrm{i}y$, this delineates a closed circular disk of unit radius centered at $(-1, 0)$:
+    \begin{equation}
+    \label{eq:EE_boundary}
+    (x + 1)^2 + y^2 \le 1.
+    \end{equation}
+    For purely negative real eigenvalues ($\lambda = -a$ with $a > 0$, $y = 0$), the stability interval is strictly restricted to $x \in [-2, 0]$, dictating the classical step-size ceiling:
+    \begin{equation}
+    \label{eq:h_crit_EE}
+    h \le \frac{2}{|\lambda|}.
+    \end{equation}
+    Crucially, along the imaginary axis ($x = 0, y \ne 0$), $|R_{\mathrm{EE}}(\mathrm{i}y)|^2 = 1 + y^2 > 1$ for all $y \ne 0$. Hence, Explicit Euler contains no segment of the imaginary axis and is unconditionally unstable for purely oscillatory systems.
+
+    \item \textbf{Classical Fourth-Order Runge--Kutta (RK4):} Applying RK4 stage equations \eqref{eq:rk4_k1}--\eqref{eq:rk4_k4} recursively to $\dot{y} = \lambda y$ yields the stage slopes:
+    \begin{align}
+    h k_1 &= z y_n, \label{eq:rk4_stg1} \\
+    h k_2 &= z \left( y_n + \frac{1}{2} h k_1 \right) = \left( z + \frac{z^2}{2} \right) y_n, \label{eq:rk4_stg2} \\
+    h k_3 &= z \left( y_n + \frac{1}{2} h k_2 \right) = \left( z + \frac{z^2}{2} + \frac{z^3}{4} \right) y_n, \label{eq:rk4_stg3} \\
+    h k_4 &= z \left( y_n + h k_3 \right) = \left( z + z^2 + \frac{z^3}{2} + \frac{z^4}{4} \right) y_n. \label{eq:rk4_stg4}
+    \end{align}
+    Synthesizing into the final update \eqref{eq:rk4_update} leads directly to the truncated Taylor polynomial of the continuous exponential map $e^z$:
+    \begin{equation}
+    \label{eq:R_RK4}
+    R_{\mathrm{RK4}}(z) = 1 + z + \frac{z^2}{2!} + \frac{z^3}{3!} + \frac{z^4}{4!}.
+    \end{equation}
+    The stability boundary $|R_{\mathrm{RK4}}(z)| = 1$ encloses an extended domain shown in Figure~\ref{fig:stability_overlay}. Along the negative real axis ($z = -a, a > 0$), setting $R_{\mathrm{RK4}}(-a) = 1$ yields:
+    \begin{equation}
+    \label{eq:rk4_real_root}
+    -a + \frac{a^2}{2} - \frac{a^3}{6} + \frac{a^4}{24} = 0 \implies a\left(a^3 - 4a^2 + 12a - 24\right) = 0.
+    \end{equation}
+    Factoring out the trivial root $a = 0$, the cubic factor has a unique real root at $a^* \approx 2.78529$, establishing the negative real stability interval $\mathcal{S}_{\mathrm{RK4}} \cap \mathbb{R} = [-2.78529, 0]$. Along the imaginary axis $z = \mathrm{i}y$, $|R_{\mathrm{RK4}}(\mathrm{i}y)|^2 \le 1$ holds for $|y| \le 2\sqrt{2} \approx 2.8284$, conferring robust stability for moderately oscillatory modes.
+
+    \item \textbf{Implicit Euler:} Evaluating at the implicit state $y_{n+1}$ yields:
+    \begin{equation}
+    \label{eq:R_IE}
+    y_{n+1} = y_n + z y_{n+1} \implies (1 - z)y_{n+1} = y_n \implies R_{\mathrm{IE}}(z) = \frac{1}{1 - z}.
+    \end{equation}
+    The stability criterion $|R_{\mathrm{IE}}(z)| \le 1$ is equivalent to $|1 - z| \ge 1$, which defines the exterior of the open unit disk centered at $(+1, 0)$ in the complex plane:
+    \begin{equation}
+    \label{eq:IE_domain}
+    (x - 1)^2 + y^2 \ge 1.
+    \end{equation}
+\end{enumerate}
+
+\subsubsection{A-Stability and L-Stability Properties}
+A numerical integration scheme is defined to be \emph{A-stable} if its region of absolute stability contains the entire open left complex half-plane:
+\begin{equation}
+\label{eq:a_stability_def}
+\mathbb{C}^- := \{ z \in \mathbb{C} : \mathrm{Re}(z) \le 0 \} \subseteq \mathcal{S}.
+\end{equation}
+For Implicit Euler, let $z = x + \mathrm{i}y$ with $x \le 0$. The squared modulus evaluates to:
+\begin{equation}
+\label{eq:a_stability_proof}
+|1 - z|^2 = (1 - x)^2 + y^2 = 1 - 2x + x^2 + y^2.
+\end{equation}
+Since $x \le 0$, $-2x \ge 0$, and $x^2 + y^2 \ge 0$, it follows that $|1 - z|^2 \ge 1$ identically for all $z \in \mathbb{C}^-$. Therefore, Implicit Euler is unconditionally A-stable.
+
+Furthermore, an A-stable method is classified as \emph{L-stable} if its stability function satisfies the asymptotic damping limit at stiff infinity:
+\begin{equation}
+\label{eq:l_stability_def}
+\lim_{|z| \to \infty} |R(z)| = 0.
+\end{equation}
+Evaluating \eqref{eq:R_IE} gives $\lim_{|z| \to \infty} \left|\frac{1}{1 - z}\right| = 0$, confirming that Implicit Euler is L-stable. Physically, this property guarantees that infinitely stiff transient decay modes ($\mathrm{Re}(\lambda) \ll 0$) are annihilated in a single time step without inducing parasitic high-frequency numerical oscillations. Conversely, explicit polynomials $|R_{\mathrm{EE}}(z)| \to \infty$ and $|R_{\mathrm{RK4}}(z)| \to \infty$ as $|z| \to \infty$; by Dahlquist's barrier theorems, explicit Runge--Kutta schemes cannot be A-stable.
+
+\subsubsection{Problem-Specific Linearisation and Eigenvalue Spectrum (Topic 5)}
+To evaluate practical numerical stability beyond generic scalar benchmarks, we specialize the analysis to Topic~5: the polar-factor gradient flow on $\mathbb{R}^{n \times n}$:
+\begin{equation}
+\label{eq:polar_flow_spec}
+\dot{\mathbf{X}} = \mathbf{f}(\mathbf{X}) = \mathbf{X}\left(\mathbf{I}_n - \mathbf{X}^T \mathbf{X}\right), \quad \mathbf{X}(0) = \mathbf{X}_0.
+\end{equation}
+Let $\mathbf{X}(t) = \mathbf{U} \boldsymbol{\Sigma}(t) \mathbf{V}^T$ denote the singular value decomposition (SVD), where $\boldsymbol{\Sigma}(t) = \mathrm{diag}(s_1(t), \dots, s_n(t))$ with $s_i(t) > 0$. Because the singular vectors $\mathbf{U}, \mathbf{V} \in \mathcal{O}(n)$ remain invariant under the flow, \eqref{eq:polar_flow_spec} decouples into $n$ independent scalar singular value differential equations:
+\begin{equation}
+\label{eq:singular_value_ode}
+\dot{s}_i(t) = s_i(t) \left(1 - s_i^2(t)\right), \quad i = 1, \dots, n.
+\end{equation}
+Linearizing \eqref{eq:singular_value_ode} around any instantaneous singular state $s_i$ yields the local scalar Jacobian:
+\begin{equation}
+\label{eq:singular_jacobian}
+\lambda_i(s_i) = \frac{\partial \dot{s}_i}{\partial s_i} = 1 - 3 s_i^2.
+\end{equation}
+Near the asymptotic orthogonal equilibrium $\mathbf{X}^* = \mathbf{U}\mathbf{V}^T$ ($s_i^* = 1$), the linearized eigenvalue is $\lambda_i(1) = -2$, confirming asymptotic exponential contraction. However, during the initial transient phase where the matrix contains amplified singular values $s_{\max} > 1$, the continuous mode decays with severe stiffness:
+\begin{equation}
+\label{eq:lambda_min_transient}
+\lambda_{\mathrm{stiff}} = 1 - 3 s_{\max}^2 \ll 0.
+\end{equation}
+For our benchmark matrix possessing an initial maximum singular value $s_{\max}(0) = 3.0$, the instantaneous stiffness eigenvalue reaches $\lambda_{\mathrm{fast}} = 1 - 3(3.0)^2 = -26.0$. Meanwhile, modes with $s_{\min} \approx 1$ possess eigenvalues near $-2.0$, yielding a localized transient stiffness ratio:
+\begin{equation}
+\label{eq:stiffness_ratio_topic5}
+\mathrm{SR}(t_0) = \frac{\max_i |\mathrm{Re}(\lambda_i)|}{\min_i |\mathrm{Re}(\lambda_i)|} = \frac{|-26.0|}{|-2.0|} = 13.0.
+\end{equation}
+
+For the full vectorized matrix field $\mathbf{y} = \mathrm{vec}(\mathbf{X}) \in \mathbb{R}^{n^2}$, the Fr\'echet derivative in matrix direction $\mathbf{H} \in \mathbb{R}^{n \times n}$ is given by:
+\begin{equation}
+\label{eq:frechet_derivative}
+\mathcal{D}\mathbf{f}(\mathbf{X})[\mathbf{H}] = \mathbf{H}\left(\mathbf{I}_n - \mathbf{X}^T \mathbf{X}\right) - \mathbf{X}\left(\mathbf{H}^T \mathbf{X} + \mathbf{X}^T \mathbf{H}\right).
+\end{equation}
+Vectorizing \eqref{eq:frechet_derivative} using the Kronecker identity $\mathrm{vec}(\mathbf{A}\mathbf{B}\mathbf{C}) = (\mathbf{C}^T \otimes \mathbf{A})\mathrm{vec}(\mathbf{B})$ and the commutation matrix $\mathbf{K}_{n,n}\mathrm{vec}(\mathbf{H}) = \mathrm{vec}(\mathbf{H}^T)$ yields the exact $n^2 \times n^2$ analytical Jacobian:
+\begin{equation}
+\label{eq:analytic_jacobian_kron}
+\mathbf{J}_{\mathbf{f}}(\mathbf{X}) = \mathbf{I}_n \otimes \left(\mathbf{I}_n - \mathbf{X}\mathbf{X}^T\right) - \left(\mathbf{X}^T \otimes \mathbf{X}\right)\mathbf{K}_{n,n} - \left(\mathbf{X}^T \mathbf{X}\right)^T \otimes \mathbf{I}_n.
+\end{equation}
+Evaluating the spectrum $\sigma(\mathbf{J}_{\mathbf{f}}(\mathbf{X}_0))$ reveals that all physical eigenvalues lie strictly on the negative real line $\lambda_j \in [-26.0, -2.0]$, confirming a dissipative spectrum free of imaginary components.
+
+\subsubsection{Theoretical Step-Size Limits vs. Empirical Disclaimers}
+Mapping the extreme spectral point $\lambda_{\min} = -26.0$ onto the real stability intervals of the explicit solvers yields rigorous theoretical upper bounds for non-divergent integration:
+\begin{align}
+\text{Explicit Euler:} \quad & h_{\mathrm{crit}}^{\mathrm{EE}} = \frac{2}{|\lambda_{\min}|} = \frac{2}{26.0} \approx 0.0769, \label{eq:hcrit_EE_calc} \\
+\text{Classical RK4:} \quad & h_{\mathrm{crit}}^{\mathrm{RK4}} = \frac{2.78529}{|\lambda_{\min}|} = \frac{2.78529}{26.0} \approx 0.1071. \label{eq:hcrit_RK4_calc}
+\end{align}
+Figure~\ref{fig:stability_overlay} illustrates the absolute stability domains of the three methods overlaid with the scaled eigenvalues $z_j = h\lambda_j$ at various representative step sizes.
+
+\paragraph{Mandatory Analytical Disclaimer:}
+\emph{We formally emphasize that the $h\lambda$ spectral overlay represents a local frozen-Jacobian diagnostic rather than a global nonlinear stability proof. Because the Jacobian $\mathbf{J}_{\mathbf{f}}(\mathbf{X}(t))$ varies continuously along the matrix trajectory, linearized eigenvalue containment $|R(h\lambda_j)| \le 1$ is a necessary local condition but insufficient to guarantee nonlinear convergence. Severe non-normal matrix transient interactions or finite-amplitude numerical perturbations can trigger catastrophic nonlinear instability even when frozen eigenvalues lie nominally within $\mathcal{S}$. Consequently, theoretical stability boundaries \eqref{eq:hcrit_EE_calc}--\eqref{eq:hcrit_RK4_calc} must be empirically verified via systematic step-size sweeps and finite perturbation experiments in Section~\ref{sec:numerical_experiments}.}
+
+\subsection{Convergence}
+
+\label{sec:convergence}
+
+Having established the consistency orders in Section~\ref{sec:consistency_and_truncation_error} and linear stability boundaries in Section~\ref{sec:stability_analysis}, we now unify these components to prove the global convergence of the numerical trajectory towards the theoretical solution.
+
+\subsubsection{Discrete Error Recurrence and the Discrete Gr\"onwall Lemma}
+Let $\mathbf{y}(t) \in C^{p+1}[t_0, T]$ be the exact continuous trajectory of the initial value problem \eqref{eq:general_ivp}, and let $\{\mathbf{y}_n\}_{n=0}^N$ be the discrete numerical approximation generated by the one-step scheme:
+\begin{equation}
+\label{eq:increment_form_convergence}
+\mathbf{y}_{n+1} = \mathbf{y}_n + h \mathbf{\Phi}(t_n, \mathbf{y}_n, h), \quad \mathbf{y}_0 = \mathbf{y}(t_0),
+\end{equation}
+where $h = (T - t_0)/N$. The true solution identically satisfies the perturbed relation:
+\begin{equation}
+\label{eq:exact_perturbed_relation}
+\mathbf{y}(t_{n+1}) = \mathbf{y}(t_n) + h \mathbf{\Phi}(t_n, \mathbf{y}(t_n), h) + h \boldsymbol{\tau}_{n+1},
+\end{equation}
+where $\boldsymbol{\tau}_{n+1}$ is the local truncation error vector defined in \eqref{eq:lte_def}. We assume the numerical increment function $\mathbf{\Phi}(t, \mathbf{u}, h)$ inherits the Lipschitz continuity of the continuous vector field $\mathbf{f}$ with an effective Lipschitz constant $\Lambda > 0$:
+\begin{equation}
+\label{eq:increment_lipschitz}
+\|\mathbf{\Phi}(t, \mathbf{u}, h) - \mathbf{\Phi}(t, \mathbf{v}, h)\| \le \Lambda \|\mathbf{u} - \mathbf{v}\|, \quad \forall (t, \mathbf{u}), (t, \mathbf{v}) \in [t_0, T] \times \mathbb{R}^d, \; \forall h \in (0, h_0].
+\end{equation}
+We define the global discretization error at grid node $t_n$ as:
+\begin{equation}
+\label{eq:global_error_def}
+\mathbf{e}_n := \mathbf{y}(t_n) - \mathbf{y}_n, \quad n = 0, 1, \dots, N.
+\end{equation}
+Subtracting \eqref{eq:increment_form_convergence} from \eqref{eq:exact_perturbed_relation} yields the dynamic recurrence for the error vector:
+\begin{equation}
+\label{eq:error_recurrence_vector}
+\mathbf{e}_{n+1} = \mathbf{e}_n + h \left[ \mathbf{\Phi}(t_n, \mathbf{y}(t_n), h) - \mathbf{\Phi}(t_n, \mathbf{y}_n, h) \right] + h \boldsymbol{\tau}_{n+1}.
+\end{equation}
+Taking Euclidean norms on both sides of \eqref{eq:error_recurrence_vector} and applying the triangle inequality alongside \eqref{eq:increment_lipschitz}:
+\begin{align}
+\|\mathbf{e}_{n+1}\| &\le \|\mathbf{e}_n\| + h \|\mathbf{\Phi}(t_n, \mathbf{y}(t_n), h) - \mathbf{\Phi}(t_n, \mathbf{y}_n, h)\| + h \|\boldsymbol{\tau}_{n+1}\| \nonumber \\
+&\le \|\mathbf{e}_n\| + h \Lambda \|\mathbf{y}(t_n) - \mathbf{y}_n\| + h \|\boldsymbol{\tau}_{n+1}\| \nonumber \\
+&= (1 + h \Lambda) \|\mathbf{e}_n\| + h \|\boldsymbol{\tau}_{n+1}\|. \label{eq:scalar_error_inequality}
+\end{align}
+Let $\tau_{\max}(h) := \max_{1 \le k \le N} \|\boldsymbol{\tau}_k\|$. Unrolling the scalar recurrence \eqref{eq:scalar_error_inequality} inductively from the initial state yields:
+\begin{equation}
+\label{eq:unrolled_error_sum}
+\|\mathbf{e}_n\| \le (1 + h\Lambda)^n \|\mathbf{e}_0\| + h \tau_{\max}(h) \sum_{j=0}^{n-1} (1 + h\Lambda)^j.
+\end{equation}
+Assuming exact initial data ($\|\mathbf{e}_0\| = 0$) and summing the finite geometric progression with ratio $1 + h\Lambda > 1$:
+\begin{equation}
+\label{eq:geometric_sum_evaluation}
+\sum_{j=0}^{n-1} (1 + h\Lambda)^j = \frac{(1 + h\Lambda)^n - 1}{(1 + h\Lambda) - 1} = \frac{(1 + h\Lambda)^n - 1}{h\Lambda}.
+\end{equation}
+Substituting \eqref{eq:geometric_sum_evaluation} into \eqref{eq:unrolled_error_sum}, and noting the fundamental inequality $1 + x \le e^x$ for all $x \ge 0$, we have:
+\begin{equation}
+\label{eq:exponential_upper_bound}
+(1 + h\Lambda)^n \le \left(e^{h\Lambda}\right)^n = e^{n h \Lambda} = e^{\Lambda (t_n - t_0)} \le e^{\Lambda(T - t_0)}.
+\end{equation}
+Combining \eqref{eq:unrolled_error_sum}--\eqref{eq:exponential_upper_bound} produces the classical continuous Gr\"onwall bound on the global discretization error:
+\begin{equation}
+\label{eq:global_convergence_bound}
+\|\mathbf{e}_n\| \le \frac{e^{\Lambda(T - t_0)} - 1}{\Lambda} \tau_{\max}(h), \quad \forall n = 0, 1, \dots, N.
+\end{equation}
+
+\subsubsection{Global Convergence Order and the Lax--Dahlquist Equivalence}
+Theorem~\eqref{eq:global_convergence_bound} provides the fundamental mathematical bridge between the local truncation error rate $\boldsymbol{\tau}$ and the global error $\mathbf{e}_n$:
+\begin{itemize}
+    \item \textbf{Explicit / Implicit Euler ($p=1$):} Since $\|\boldsymbol{\tau}_{n+1}\| \le C_1 h$, the terminal error satisfies:
+    \begin{equation}
+    \label{eq:euler_global_order}
+    \|\mathbf{e}_N\| \le \left( \frac{e^{\Lambda(T - t_0)} - 1}{\Lambda} C_1 \right) h = \mathcal{O}(h).
+    \end{equation}
+    \item \textbf{Classical Runge--Kutta (RK4, $p=4$):} Since $\|\boldsymbol{\tau}_{n+1}\| \le C_4 h^4$, the terminal error satisfies:
+    \begin{equation}
+    \label{eq:rk4_global_order}
+    \|\mathbf{e}_N\| \le \left( \frac{e^{\Lambda(T - t_0)} - 1}{\Lambda} C_4 \right) h^4 = \mathcal{O}(h^4).
+    \end{equation}
+\end{itemize}
+This explains the apparent paradox regarding order indices: while an individual integration step generates a local defect of order $\mathcal{O}(h^{p+1})$, the accumulation of $N = \mathcal{O}(h^{-1})$ steps over a compact temporal interval $[t_0, T]$ causes the discrete sequence to converge globally at order $\mathcal{O}(h^p)$.
+
+In modern numerical analysis, this result is generalized by the celebrated \emph{Lax--Dahlquist Equivalence Theorem} adapted for one-step methods:
+\begin{equation}
+\label{eq:lax_dahlquist_relation}
+\text{\textbf{Consistency}} \; (\boldsymbol{\tau} \to \mathbf{0}) \quad + \quad \text{\textbf{Zero-Stability}} \quad \Longleftrightarrow \quad \text{\textbf{Convergence}} \; (\|\mathbf{e}_N\| \to 0).
+\end{equation}
+A numerical scheme is \emph{zero-stable} if small perturbations in the initial conditions or intermediate arithmetic operations remain uniformly bounded as $h \to 0$ over a finite interval. For any generic one-step integrator \eqref{eq:increment_form_convergence}, the characteristic polynomial of the difference scheme in the limit $h \to 0$ degenerates strictly to:
+\begin{equation}
+\label{eq:root_condition_onestep}
+\rho(\zeta) = \zeta - 1 = 0.
+\end{equation}
+The root $\zeta_1 = 1$ is simple and lies on the complex unit circle ($|\zeta_1| \le 1$), identically satisfying the Dahlquist root condition. Consequently, \emph{all consistent one-step integration schemes are unconditionally zero-stable}. Global convergence is thus guaranteed entirely by the algebraic consistency order of the numerical scheme, provided the continuous vector field $\mathbf{f}$ remains locally Lipschitz continuous.
+
+\subsubsection{Implications for Empirical Log-Log Validation}
+Taking the natural logarithm of the asymptotic global error relation $\|\mathbf{e}_N(h)\| \approx C h^p$ yields:
+\begin{equation}
+\label{eq:loglog_linear_relation}
+\ln \|\mathbf{e}_N(h)\| \approx p \ln h + \ln C.
+\end{equation}
+Equation \eqref{eq:loglog_linear_relation} establishes that plotting the terminal error against the discretization step size on a logarithmic scale yields an affine straight line whose asymptotic slope is identical to the theoretical convergence order $p$. In Section~\ref{sec:numerical_experiments}, this linear relationship serves as our primary quantitative metric to corroborate the theoretical convergence orders of Explicit Euler ($p \approx 1$), Implicit Euler ($p \approx 1$), and Classical RK4 ($p \approx 4$).
+
+\newpage
+% ============================================================
+\section{Implementation}
+% ============================================================
+
+\subsection{Algorithm}
+[Present the core algorithm in pseudocode using the \texttt{algorithmic}
+environment.]
+
+\begin{algorithm}[H]
+\caption{[Your method name]}
+\label{alg:main}
+\begin{algorithmic}[1]
+\Require [initial data $y_0$, step size $h$, final time $T$]
+\Ensure [approximate solution at $T$]
+\State [Step 1]
+\For{$n = 0, 1, \ldots, N-1$}
+    \State [Loop body]
+    \If{[condition]}
+        \State [Action]
+    \EndIf
+\EndFor
+\State \Return [result]
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Code Structure}
+[Briefly describe the organisation of your codebase. A table of files and their
+purposes is helpful.]
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{File} & \textbf{Purpose} \\
+\midrule
+\texttt{methods.py} & Core time-stepping: Euler, RK4, implicit Euler with Newton \\
+\texttt{model.py} & The right-hand side $f(t,y)$ and its Jacobian \\
+\texttt{adaptive.py} & Adaptive step-size controller \\
+\texttt{run\_all.py} & Reproduces all report figures \\
+\texttt{validation\_tests.py} & PASS/FAIL test suite \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Key Design Decisions}
+[Discuss non-obvious choices: why this implicit method, how Newton's initial
+guess is chosen, how the adaptive controller estimates local error.]
+
+\newpage
+% ============================================================
+\section{Numerical Experiments}
+% ============================================================
+
+\subsection{Verification: Method of Manufactured Solutions or Exact Solutions}
+[Present a test case with a known solution. Show the error table and the
+convergence plot.]
+
+\begin{table}[H]
+\centering
+\begin{tabular}{cccc}
+\toprule
+\textbf{Step size $h$} & \textbf{Error} & \textbf{Ratio} & \textbf{Order} \\
+\midrule
+$0.1$    & [value] & ---  & ---  \\
+$0.05$   & [value] & [ratio] & [order] \\
+$0.025$  & [value] & [ratio] & [order] \\
+\bottomrule
+\end{tabular}
+\caption{Convergence study for [test case].}
+\end{table}
+
+\subsection{Stability Experiments}
+[Show that your explicit methods blow up beyond their stability limit while the
+implicit method does not. Compare with the predicted threshold.]
+
+\subsection{Adaptivity}
+[Show the step size actually changes, the local error stays near the tolerance,
+and the $h(t)$ trajectory.]
+
+\subsection{Main Results and Comparison of Methods}
+[Present the experiments that answer the project's central question. Use
+high-quality figures with interpretive captions.]
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.8\textwidth}{\centering \vspace{3em} [Insert your figure here] \vspace{3em}}}
+\caption{[Caption that interprets, not merely describes. E.g., ``The log-log plot
+confirms second-order convergence (slope 1.98) on the smooth test case, and shows
+the round-off floor at $h \approx 10^{-6}$.'']}
+\label{fig:convergence}
+\end{figure}
+
+\subsection{Limitations and Robustness}
+[Discuss parameter regimes where your method struggles. This is not a weakness ---
+it is scientific honesty.]
+
+\newpage
+% ============================================================
+\section{Conclusions}
+% ============================================================
+
+[Summarise in 3--4 bullet points:]
+\begin{itemize}[leftmargin=2em]
+\item [What you achieved.]
+\item [The most surprising or instructive finding.]
+\item [The main limitation you identified.]
+\item [A concrete direction for future work.]
+\end{itemize}
+
+\newpage
+% ============================================================
+\section*{References}
+% ============================================================
+
+[Use BibTeX or list references manually. Include at least: (1) the textbook from
+which you learned the method; (2) a paper applying the method to a problem
+similar to yours; (3) a software reference (NumPy, SciPy, scikit-fem).]
+
+\begin{thebibliography}{9}
+\bibitem{ref1} Author, A. \emph{Title}. Journal, year.
+\bibitem{ref2} Author, B. \emph{Book title}. Publisher, year.
+\end{thebibliography}
+
+\newpage
+% ============================================================
+\appendix
+\section{AI Transparency Log}
+% ============================================================
+
+[Append the completed team AI Transparency Log here. See
+\texttt{06\_Templates/ICS} for the full form: tools used, significant claim audits,
+what you changed and why, and the intellectual ownership declarations.]
+
+\section{Individual Contribution Statements}
+% ============================================================
+
+Each team member must complete the following (repeat for all 5 members):
+
+\begin{formbox}
+\textbf{Name:} \underline{\hspace{5cm}}
+
+\vspace{0.5em}
+\textbf{1. My specific contributions to this project:}
+
+[3--5 sentences: which equations you derived, which code modules you wrote,
+which figures you produced, which report sections you drafted.]
+
+\vspace{0.5em}
+\textbf{2. The hardest conceptual obstacle I encountered:}
+
+[One specific mathematical or algorithmic difficulty and how you overcame it.]
+
+\vspace{0.5em}
+\textbf{3. One piece of AI-generated output my team used, and what I changed:}
+
+[Cross-reference an item from the AI Transparency Log.]
+
+\vspace{0.5em}
+\textbf{4. One thing I still do not fully understand:}
+
+[Not penalised; helps the instructor plan the next project.]
+
+\vspace{0.5em}
+\textbf{Signature:} \underline{\hspace{4cm}} \quad \textbf{Date:} \underline{\hspace{2cm}}
+\end{formbox}
+
+\section{Supplementary Figures and Data}
+% ============================================================
+
+[Place any additional figures, tables, or code listings that would interrupt the
+main narrative but may be useful to a curious reader.]
+
+\end{document}
