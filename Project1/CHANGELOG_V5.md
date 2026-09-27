@@ -23,13 +23,13 @@
 
 两版分别写入 `code/figures/`、`code_zh/figures/`。八张 PNG 分别是：`convergence.png`（三方法完整矩阵收敛阶、理论斜率和描述性回归带）、`cost_accuracy.png`（多网格实际误差与 RHS 次数曲线，星号标出同精度比较点）、`stability_regions.png`（三个标量稳定域）、`frozen_spectrum.png`（初始完整谱与显式稳定边界）、`stability_sweep.png`（非线性步长扫描）、`trajectory_diagnostics.png`（奇异值、精确能量、正交性、Lyapunov 残差）、`adaptive_steps.png`（接受的自适应步长）、`rank_deficient.png`（秩亏情况下的数值与精确奇异模态）。六份 CSV 保存相应实验的可复查数值；`summary.json` 保存设置和关键结果。每个图的读法和对应 CSV 见双语 README。
 
-按可视化 guide 复查后，收敛图补画拟合中心线，轨迹和秩亏图在图例中标明精确解虚线，并在适用坐标轴上写明无量纲。报告第 885 行把一步映射 Lipschitz 上界的推导关系从 “Equivalently” 更正为 “Consequently”。`report_v1/` 单独保存可编译的 LaTeX 源码、八张报告图片和 PDF；`code/`、`code_zh/`、`tests/` 与双语 README 对应当前实现。
+按可视化 guide 复查后，收敛图补画拟合中心线，轨迹和秩亏图在图例中标明精确解虚线，并在适用坐标轴上写明无量纲。报告第 885 行把一步映射 Lipschitz 上界的推导关系从 “Equivalently” 更正为 “Consequently”。`report_v1/` 单独保存可编译的 LaTeX 源码、八张报告图片和 PDF；`code/`、`code_zh/`、`report_v1/checklist/` 与双语 README 对应当前实现。
 
 按照提交清单补充 `slides/Topic5_presentation.tex/.pdf` 作为 11 页、约 10 分钟的演示内容初稿。展示批次、讲者姓名和最终排练由小组确认。
 
 ## 四、实际运行与证据
 
-在 `Project1` 下执行 `python code/run_all.py`、`python code_zh/run_all.py` 和 `python -m unittest discover -s tests -v`，两版运行成功，摘要一致。Topic ⑤ 原题复核后补入环境梯度流与正交群切向投影的区别，并增加对角初值的独立标量 sanity check；现在 9 项测试通过。显式 Euler、RK4、隐式 Euler 的固定步收敛斜率分别为 `1.010`、`3.927`、`1.014`；独立 Radau 解与完整有限时间 SVD 解在终点的 Frobenius 差为 `1.16×10⁻¹³`。
+在 `Project1` 下执行 `python code/run_all.py`、`python code_zh/run_all.py` 和 `python -m unittest discover -s report_v1/checklist -v`，两版运行成功，摘要一致。Topic ⑤ 原题复核后补入环境梯度流与正交群切向投影的区别，并增加对角初值的独立标量 sanity check；现在 10 项测试通过。显式 Euler、RK4、隐式 Euler 的固定步收敛斜率分别为 `1.010`、`3.927`、`1.014`；独立 Radau 解与完整有限时间 SVD 解在终点的 Frobenius 差为 `1.16×10⁻¹³`。
 
 匹配精度实验采用步数 `(160,17,160)`，三方法的终点误差分别为 `(9.2066,8.8502,9.3194)×10⁻⁴`，最大与最小之比为 `1.053`；RHS 调用为 `(160,68,862)`。这只是 RHS 次数比较，Jacobian、Newton 及线性代数工作分别说明，不能当成运行时间排名。RK4 `h=0.005` 的终点正交性缺陷为 `0.305932824226`，精确有限时间值为 `0.305932824210`，因此不应要求有限终点达到机器零。
 

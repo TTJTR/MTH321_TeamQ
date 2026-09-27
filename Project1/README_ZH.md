@@ -11,7 +11,7 @@ python -m venv .venv
 .venv\Scripts\python -m pip install -r requirements.txt
 .venv\Scripts\python code/run_all.py
 .venv\Scripts\python code_zh/run_all.py
-.venv\Scripts\python -m unittest discover -s tests -v
+.venv\Scripts\python -m unittest discover -s report_v1/checklist -v
 ```
 
 每个 `run_all.py` 都会重建其目录下 `figures/` 的 PNG 图片、CSV 数据及
@@ -47,8 +47,9 @@ X(0)  = R(0.4) diag(0.2, 1.4, 3) R(-0.7)^T .
 | `code_zh/solvers.py` | `code/solvers.py` 的中文注释版本，数值行为一致。 |
 | `code_zh/experiments.py` | `code/experiments.py` 的中文注释版本，输出到 `code_zh/figures/`。 |
 | `code_zh/run_all.py` | 中文版命令行入口。 |
-| `tests/test_validation.py` | 核对解析 Jacobian 与有限差分、初始及平衡态完整谱、能量恒等式、对角初值标量 sanity check、SVD/Radau 结果、三方法收敛阶、自适应行为及秩亏情形。 |
-| `tests/test_bilingual_parity.py` | 分别运行中英文源码并比较模型、固定步和自适应输出。 |
+| `report_v1/checklist/test_validation.py` | 核对解析 Jacobian 与有限差分、初始及平衡态完整谱、能量恒等式、对角初值标量 sanity check、SVD/Radau 结果、三方法收敛阶、自适应行为及秩亏情形。 |
+| `report_v1/checklist/test_bilingual_parity.py` | 分别运行中英文源码并比较模型、固定步和自适应输出。 |
+| `report_v1/checklist/README.md` | 仅针对代码的验收清单、证据、图片对应关系和复现命令。 |
 | `requirements.txt` | 列出 NumPy、SciPy、Matplotlib 三项依赖。 |
 | `CODE_HANDOFF.md` | 供报告第 3–4 节使用的具体数字和解释。 |
 | `report_v1/Section2Draft_v5.tex` | 已修正的 v5 理论/报告，伪代码与最终实现一致；直接引用 `report_v1/figures/` 中随报告提交的八张图片。 |

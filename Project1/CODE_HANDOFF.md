@@ -2,7 +2,7 @@
 
 This file is for assembling Sections 3 and 4 of the group report. The
 assignment brief and Problem Pack are the requirements; the aligned v5
-report is `report/Section2Draft_v5.tex`. All numbers below come from `python code/run_all.py`
+report is `report_v1/Section2Draft_v5.tex`. All numbers below come from `python code/run_all.py`
 and are reproducible from `code/figures/summary.json` and the companion CSVs.
 
 ## Reproduction and implementation (Section 3)
@@ -11,7 +11,7 @@ Run from `Project1` after installing `requirements.txt`:
 
 ```powershell
 python code/run_all.py
-python -m unittest discover -s tests -v
+python -m unittest discover -s report_v1/checklist -v
 ```
 
 The state is `vec(X)` with column-major ordering (`order='F'`) throughout.

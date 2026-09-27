@@ -1,5 +1,7 @@
 # Project 1 v1 交付说明与清单复核
 
+**代码部分的最新、独立清单：** [`report_v1/checklist/README.md`](report_v1/checklist/README.md)。本文件保留全组提交情况；个人代码交付以新清单为准。
+
 复核日期：2026-09-27。这里的 **v1** 指新建的 `report_v1/` 交付目录；其中报告源码名为 `Section2Draft_v5.tex`，表示理论正文经过 v5 修订。核对基准是本机 `课件/Project1/` 中的 `submission_checklist.tex`、`code_review_checklist.tex` 和 `visualization_guide.tex`，以及 `problem_pack.pdf` 第 8–9 页的 Topic ⑤ 题目要求。**可维护性确实是 `code_review_checklist.tex` 第 E 部分的明文要求**；“只判断题目是否完成”的单独结论见 [`CODE_REVIEW_2026-09-27.md`](CODE_REVIEW_2026-09-27.md)。
 
 状态说明：**通过**＝文件和运行证据已核对；**部分**＝已有内容但不能据此勾选完整提交；**待办**＝尚缺；**暂缓**＝此前明确交由小组处理或暂不打包；**不适用**＝本实验没有该因素。GitHub `main` 已有代码、`report_v1/`、八张报告图及本文档；`slides/` 演示初稿仍仅在本地。此前让团队补材料和暂缓 ZIP 的分工不改变课程清单的勾选标准。
@@ -12,7 +14,7 @@
 | 代码 | 英文版 [`code/`](code/) 与中文注释版 [`code_zh/`](code_zh/) 各四个 Python 文件，均可独立运行。实现显式 Euler、经典 RK4、隐式 Euler、阻尼 Newton、固定网格与步长加倍自适应控制。 |
 | 数值证据 | [`code/figures/summary.json`](code/figures/summary.json)、六份 CSV 和八张报告图。报告图保存在 [`report_v1/figures/`](report_v1/figures/)；中英文入口分别重建自己的 `figures/`。 |
 | 说明 | [`README_EN.md`](README_EN.md)、[`README_ZH.md`](README_ZH.md)、两版代码目录 README、[`report_v1/README.md`](report_v1/README.md) 说明安装、文件职责、重现命令及每张图的用途。 |
-| 验证 | [`tests/test_validation.py`](tests/test_validation.py) 与 [`tests/test_bilingual_parity.py`](tests/test_bilingual_parity.py)；2026-09-27 重跑中英文入口和 9 项测试，均成功。 |
+| 验证 | [`report_v1/checklist/test_validation.py`](report_v1/checklist/test_validation.py) 与 [`report_v1/checklist/test_bilingual_parity.py`](report_v1/checklist/test_bilingual_parity.py)；2026-09-27 重跑中英文入口和 10 项测试，均成功。 |
 | 幻灯片 | 本地有 [`slides/Topic5_presentation.tex`](slides/Topic5_presentation.tex) 和 11 页 PDF 初稿；未包含在上次确认的 GitHub 提交中，展示批次、讲者与实际计时仍待确认。 |
 
 ### 已修复的理论与实现瑕疵
@@ -24,7 +26,7 @@
 | RK4 负实轴稳定区间只有结论 | 报告第 2.3 节补充 `R(-a)>0`、端点方程及唯一正根的论证；`stability_regions.png` 和初始谱叠图给出可视化核对。 |
 | 步长加倍可能被误写为 Richardson 外推后的高阶更新 | 报告和代码统一使用 `(y_f-y_c)/(2^p-1)` 估计误差，接受的是两个半步得到的 `y_f`；没有声称提高基础方法阶数。 |
 | 初始正特征值和冻结谱步长界限容易被误读 | 报告说明 `+0.88` 是小奇异值趋向 1 的物理增长；`-26` 给出的显式步长是初始线性化的局部诊断，并用非线性扫描检验。 |
-| Topic ⑤ 原题要求区分环境流与正交群切向投影，且给出对角初值 sanity check | 报告第 2.1 节补上正确切向投影和受约束梯度流，指出 `(I-XXᵀ)G` 对方形正交矩阵恒为零；第 2.3 节说明对角初值按标量公式演化，`tests/test_validation.py` 增加独立对角测试。 |
+| Topic ⑤ 原题要求区分环境流与正交群切向投影，且给出对角初值 sanity check | 报告第 2.1 节补上正确切向投影和受约束梯度流，指出 `(I-XXᵀ)G` 对方形正交矩阵恒为零；第 2.3 节说明对角初值按标量公式演化，`report_v1/checklist/test_validation.py` 增加独立对角测试。 |
 | 原算法、代码、图表之间不闭合 | 报告中的 Newton 与自适应伪代码按现有代码重写；第 3–4 节接入实测表格和八张实际生成的图，使用有限时间**完整矩阵**精确解计算误差。 |
 | 图表表达和自适应边界条件 | 收敛图补拟合中心线，时间序列/秩亏图图例标出精确曲线，适用轴标明无量纲；修复自适应求解在最后一次允许尝试恰好到达终点时误报失败的问题。 |
 
@@ -45,7 +47,7 @@
 
 ## 3. 复现证据
 
-在 `Project1/` 运行 `python code/run_all.py` 和 `python code_zh/run_all.py` 均返回成功；`python -m unittest discover -s tests -v` 为 **9/9 通过**。英文运行后，将其八张 PNG 与 `report_v1/figures/` 逐个比较 SHA-256，**8/8 完全一致**，因此报告图并非旧运行残留。PDF 可读取，29 页，编译日志未见未定义引用、图片缺失或 overfull 警告。
+在 `Project1/` 运行 `python code/run_all.py` 和 `python code_zh/run_all.py` 均返回成功；`python -m unittest discover -s report_v1/checklist -v` 为 **10/10 通过**。英文运行后，将其八张 PNG 与 `report_v1/figures/` 逐个比较 SHA-256，**8/8 完全一致**，因此报告图并非旧运行残留。PDF 可读取，29 页，编译日志未见未定义引用、图片缺失或 overfull 警告。
 
 `summary.json` 的关键结果：三方法拟合斜率为 `1.010 / 3.927 / 1.014`；有限时间 SVD 解与独立 Radau 终点差为 `1.16×10⁻¹³`；三种方法在约 `9×10⁻⁴` 的相近终点误差处使用 `160 / 68 / 862` 次 RHS 调用。这里的成本指标**不是运行时间**，Jacobian/牛顿次数另列。RK4 自适应接受 17 步、拒绝 2 步，最大接受归一化局部误差为 `0.754`。
 

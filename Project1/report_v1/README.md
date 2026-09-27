@@ -5,10 +5,13 @@
 `../code/run_all.py`, saved at 220 DPI. Compile from this directory with
 `pdflatex Section2Draft_v5.tex` (run twice for references). The matching
 compiled PDF is `Section2Draft_v5.pdf`.
+The code-only acceptance record and runnable verification scripts are in
+[`checklist/`](checklist/README.md).
 
 `Section2Draft_v5.tex` 是报告 LaTeX 源码；图片路径指向本目录的 `figures/`。
 八张 PNG 均由 `../code/run_all.py` 生成，分辨率为 220 DPI。在本目录连续
 运行两次 `pdflatex Section2Draft_v5.tex` 可重建 PDF。
+代码专属验收清单和可运行验证脚本见 [`checklist/`](checklist/README.md)。
 
 | Figure | Purpose / 用途 |
 |---|---|

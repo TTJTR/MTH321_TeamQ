@@ -9,7 +9,7 @@ from pathlib import Path
 import numpy as np
 
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[2]
 PROBE = """
 import json
 import numpy as np

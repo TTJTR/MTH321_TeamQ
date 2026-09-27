@@ -10,6 +10,10 @@ The aligned report is [Section2Draft_v5.tex](report_v1/Section2Draft_v5.tex),
 and the revision record is [CHANGELOG_V5.md](CHANGELOG_V5.md).
 对应的 v5 理论正文及逐项修改记录见上述两个文件。
 
+The code-only acceptance record and runnable checks are in
+[report_v1/checklist/](report_v1/checklist/README.md).
+仅针对代码的验收清单和可运行验证见上述目录。
+
 The eight report images are committed under [report_v1/figures/](report_v1/figures/).
 八张报告图片随 `report_v1/figures/` 一起提交；运行代码也可重新生成。
 
@@ -23,7 +27,7 @@ From this directory / 在本目录运行：
 python -m pip install -r requirements.txt
 python code/run_all.py       # English source / 英文源码
 python code_zh/run_all.py    # Chinese source / 中文源码
-python -m unittest discover -s tests -v
+python -m unittest discover -s report_v1/checklist -v
 ```
 
 Each run writes its own `figures/` directory. / 两套代码分别写入各自的 `figures/` 目录。

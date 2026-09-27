@@ -4,7 +4,7 @@
 
 ## 结论
 
-**Topic ⑤ 的必做数学与数值任务已经完成。** 原先报告遗漏的“环境空间梯度流与正交群切向投影的区别”已补在第 2.1 节；原题给出的对角初值 sanity check 已加入自动测试。报告 PDF 重新编译后仍为 29 页，9 项测试全部通过。原题第 9 页的微波滤波器应用明确是可选扩展，未实现不影响本结论。
+**Topic ⑤ 的必做数学与数值任务已经完成。** 原先报告遗漏的“环境空间梯度流与正交群切向投影的区别”已补在第 2.1 节；原题给出的对角初值 sanity check 已加入自动测试。报告 PDF 重新编译后仍为 29 页，10 项测试全部通过。原题第 9 页的微波滤波器应用明确是可选扩展，未实现不影响本结论。
 
 ## 原题逐项核对
 
@@ -19,7 +19,7 @@
 | 平衡点线性化，区分中性切向与收缩法向，并联系 `s₃(0)=3` 的快瞬态 | **完成** | 报告第 2.3 节给出三个零切向模态、六个 `-2` 法向模态；初始完整 Jacobian 谱含快模态 `-26`。`frozen_spectrum.png` 与 `stability_sweep.png` 将局部显式步长估计和非线性实际表现联系起来。 |
 | 用秩亏初值再做实验，验证零奇异值，并解释部分等距极限 | **完成** | `rank_deficient.png/.csv` 使用 `(0,1.4,3)`，在 `[0,8]` 上数值零模态保持在约 `7.1×10⁻¹⁵` 以下；报告说明秩二极限是部分等距矩阵。 |
 | 区分环境空间梯度流与正交群约束优化的切向投影 | **完成** | 报告第 2.1 节新加 `P_X(G)=G-X sym(XᵀG)=X skew(XᵀG)`，说明约束流 `X'=-P_X(G)`，以及 `(I-XXᵀ)G` 对方形正交 `X` 恒为零，不能充当所需投影。 |
-| 对角初值 sanity check；一般初值从 SVD 重建精确矩阵 | **完成** | [`tests/test_validation.py`](tests/test_validation.py) 的 `test_diagonal_scalar_sanity_case` 对比独立标量公式、矩阵精确解和 RK4：在 `t=0.7`，解析矩阵与标量对角解差为 0，RK4 的非对角项为 0，终点矩阵误差约 `3.59×10⁻¹²`；一般初值另由 SVD/Radau 检查。 |
+| 对角初值 sanity check；一般初值从 SVD 重建精确矩阵 | **完成** | [`report_v1/checklist/test_validation.py`](report_v1/checklist/test_validation.py) 的 `test_diagonal_scalar_sanity_case` 对比独立标量公式、矩阵精确解和 RK4：在 `t=0.7`，解析矩阵与标量对角解差为 0，RK4 的非对角项为 0，终点矩阵误差约 `3.59×10⁻¹²`；一般初值另由 SVD/Radau 检查。 |
 
 ## Project Brief 中相关的共同要求
 
@@ -34,7 +34,7 @@
 ## 复核运行
 
 - `python code/run_all.py`、`python code_zh/run_all.py`：均成功；八张报告图与英文入口重生图逐个 SHA-256 相同，中英文 `summary.json` 和八张同名 PNG 也相同。
-- `python -m unittest discover -s tests -v`：**10/10 通过**，包括对角初值测试、解析 RHS Jacobian 与完整隐式残差 Jacobian 的有限差分测试、三方法收敛阶、Radau 交叉验证、适应步长、能量/秩亏和中英文数值一致性。
+- `python -m unittest discover -s report_v1/checklist -v`：**10/10 通过**，包括对角初值测试、解析 RHS Jacobian 与完整隐式残差 Jacobian 的有限差分测试、三方法收敛阶、Radau 交叉验证、适应步长、能量/秩亏和中英文数值一致性。
 - `report_v1/Section2Draft_v5.tex` 连续两次编译成功，PDF 为 **29 页**；未见未定义引用、缺图或 overfull 警告。
 
 **范围说明：** 上述“完成”指 Topic ⑤ 和 Project Brief 的数学、算法、数值验证任务。团队姓名/ICS、代码 ZIP、演示批次等提交材料在 [`V1_DELIVERY_CHECKLIST.md`](V1_DELIVERY_CHECKLIST.md) 另行标注；它们不属于本次题目完成度判断。
