@@ -47,6 +47,18 @@ class PolarFlowValidation(unittest.TestCase):
         self.assertLess(np.linalg.norm(unvectorize(oracle.y[:, -1]) -
                                        exact_matrix(2, self.x0)), 5e-12)
 
+    def test_diagonal_scalar_sanity_case(self):
+        initial = np.array([0.2, 1.4, 3.0])
+        x0 = np.diag(initial)
+        end = 0.7
+        scalar = initial / np.sqrt(initial**2 + (1 - initial**2) * np.exp(-2 * end))
+        exact = exact_matrix(end, x0)
+        np.testing.assert_allclose(exact, np.diag(scalar), rtol=0, atol=1e-14)
+        result = solve_fixed("rk4", rhs, jacobian, vectorize(x0), (0, end), 700)
+        computed = unvectorize(result.y[-1])
+        np.testing.assert_allclose(computed, np.diag(np.diag(computed)), rtol=0, atol=1e-14)
+        self.assertLess(np.linalg.norm(computed - np.diag(scalar), "fro"), 1e-10)
+
     def test_fixed_step_orders(self):
         exact = exact_matrix(2, self.x0)
         for method, coarse, fine, lower, upper in (

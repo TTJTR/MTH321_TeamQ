@@ -201,6 +201,24 @@ When vectorised in column-major order,
 $\mathbf{y}=\operatorname{vec}(\mathbf{X})\in\mathbb{R}^{n^2}$,
 this becomes the standard vector-valued IVP \eqref{eq:general_ivp}; the
 matrix formulas below are therefore equivalent to the vector formulation.
+This evolution is the ambient Euclidean negative-gradient flow of
+$\Phi(\mathbf X)=\|\mathbf X^T\mathbf X-\mathbf I_n\|_F^2/4$.
+For a separate differentiable objective $g$ constrained to the
+orthogonal group, let $\mathbf G=\nabla g(\mathbf X)$ and
+$\mathbf X^T\mathbf X=\mathbf I_n$. Its tangent projection is
+\begin{equation}
+\label{eq:orthogonal_tangent_projection}
+P_{\mathbf X}(\mathbf G)
+=\mathbf G-\mathbf X\operatorname{sym}(\mathbf X^T\mathbf G)
+=\mathbf X\operatorname{skew}(\mathbf X^T\mathbf G),
+\end{equation}
+where $\operatorname{sym}(A)=(A+A^T)/2$ and
+$\operatorname{skew}(A)=(A-A^T)/2$; the corresponding constrained
+gradient flow is $\dot{\mathbf X}=-P_{\mathbf X}(\mathbf G)$.
+The expression $(\mathbf I_n-\mathbf X\mathbf X^T)\mathbf G$ vanishes
+for every square orthogonal $\mathbf X$ and is not this tangent
+projection. This distinction is relevant because every orthogonal
+matrix is an equilibrium of the ambient flow \eqref{eq:topic5_matrix_model}.
 
 \subsubsection{Explicit Euler Method}
 The simplest one-step method is obtained by approximating the integral in \eqref{eq:integral_form} via the left-hand rectangle quadrature rule, evaluating the integrand solely at the known base state $(t_n, \mathbf{y}(t_n))$:
@@ -791,7 +809,7 @@ Solving this scalar logistic equation gives the exact finite-time singular value
 \label{eq:singular_value_exact}
 s_i(t)=\frac{s_{i,0}}{\sqrt{s_{i,0}^2+\left(1-s_{i,0}^2\right)e^{-2t}}}.
 \end{equation}
-Thus $0<s_{i,0}<1$ gives monotone increase to $1$, $s_{i,0}>1$ gives monotone decrease to $1$, and $s_{i,0}=0$ remains zero. For a rank-deficient initial matrix, the limiting matrix is therefore a partial isometry rather than an orthogonal matrix. These facts provide exact diagnostics for the numerical experiments.
+Thus $0<s_{i,0}<1$ gives monotone increase to $1$, $s_{i,0}>1$ gives monotone decrease to $1$, and $s_{i,0}=0$ remains zero. Scalar solutions cannot cross, so the ordering of the singular values is preserved. For a rank-deficient initial matrix, the limiting matrix is therefore a partial isometry rather than an orthogonal matrix. These facts provide exact diagnostics for the numerical experiments. As an independent sanity check, a positive diagonal initial matrix remains diagonal and each entry follows \eqref{eq:singular_value_exact}; this case is checked against the numerical RK4 trajectory in \texttt{tests/test\_validation.py}.
 
 The Fr\'echet derivative in a matrix direction $\mathbf{H}$ is the
 operator already derived in \eqref{eq:topic5_frechet_derivative}.
