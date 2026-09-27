@@ -47,7 +47,7 @@
 
 ## 3. 复现证据
 
-在 `Project1/` 运行 `python code/run_all.py` 和 `python code_zh/run_all.py` 均返回成功；`python -m unittest discover -s report_v1/checklist -v` 为 **10/10 通过**。英文运行后，将其八张 PNG 与 `report_v1/figures/` 逐个比较 SHA-256，**8/8 完全一致**，因此报告图并非旧运行残留。PDF 可读取，29 页，编译日志未见未定义引用、图片缺失或 overfull 警告。
+在 `Project1/` 运行 `python code/run_all.py` 和 `python code_zh/run_all.py` 均返回成功；`python -B -m unittest discover -s report_v1/checklist -v` 为 **10/10 通过**。英文运行后，将其八张 PNG 与 `report_v1/figures/` 逐个比较 SHA-256，**8/8 完全一致**，因此报告图并非旧运行残留。PDF 可读取，29 页，编译日志未见未定义引用、图片缺失或 overfull 警告。
 
 `summary.json` 的关键结果：三方法拟合斜率为 `1.010 / 3.927 / 1.014`；有限时间 SVD 解与独立 Radau 终点差为 `1.16×10⁻¹³`；三种方法在约 `9×10⁻⁴` 的相近终点误差处使用 `160 / 68 / 862` 次 RHS 调用。这里的成本指标**不是运行时间**，Jacobian/牛顿次数另列。RK4 自适应接受 17 步、拒绝 2 步，最大接受归一化局部误差为 `0.754`。
 

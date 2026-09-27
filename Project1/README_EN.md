@@ -11,7 +11,7 @@ python -m venv .venv
 .venv\Scripts\python -m pip install -r requirements.txt
 .venv\Scripts\python code/run_all.py
 .venv\Scripts\python code_zh/run_all.py
-.venv\Scripts\python -m unittest discover -s report_v1/checklist -v
+.venv\Scripts\python -B -m unittest discover -s report_v1/checklist -v
 ```
 
 Each `run_all.py` rebuilds the PNG figures, CSV data and `summary.json` in its

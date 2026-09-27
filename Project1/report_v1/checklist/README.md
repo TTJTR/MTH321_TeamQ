@@ -19,7 +19,7 @@
 python -m pip install -r requirements.txt
 python code/run_all.py
 python code_zh/run_all.py
-python -m unittest discover -s report_v1/checklist -v
+python -B -m unittest discover -s report_v1/checklist -v
 ```
 
 本轮结果：**10/10 测试通过**；中英文入口均完成；三方法观测阶分别为 `1.010 / 3.927 / 1.014`；有限时间 SVD 与独立 Radau 的终点差为 `1.16×10⁻¹³`；报告八张图与英文入口重生的 PNG 逐个 SHA-256 一致。报告 PDF 为 29 页。

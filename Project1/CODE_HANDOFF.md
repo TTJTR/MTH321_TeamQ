@@ -11,7 +11,7 @@ Run from `Project1` after installing `requirements.txt`:
 
 ```powershell
 python code/run_all.py
-python -m unittest discover -s report_v1/checklist -v
+python -B -m unittest discover -s report_v1/checklist -v
 ```
 
 The state is `vec(X)` with column-major ordering (`order='F'`) throughout.

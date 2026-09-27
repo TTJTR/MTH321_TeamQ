@@ -1,32 +1,40 @@
-# Topic 5 report / 题目 ⑤ 报告
+# Topic ⑤ report_v1 / 报告交付目录
 
-`Section2Draft_v5.tex` is the report source. Its `\graphicspath` points to
-`figures/` in this folder; the eight PNGs are the actual outputs of
-`../code/run_all.py`, saved at 220 DPI. Compile from this directory with
-`pdflatex Section2Draft_v5.tex` (run twice for references). The matching
-compiled PDF is `Section2Draft_v5.pdf`.
-The code-only acceptance record and runnable verification scripts are in
-[`checklist/`](checklist/README.md).
+This directory contains the current report and the evidence needed to build
+and check it. 本目录只保留当前报告及其必要的图片、代码验收资料。
 
-`Section2Draft_v5.tex` 是报告 LaTeX 源码；图片路径指向本目录的 `figures/`。
-八张 PNG 均由 `../code/run_all.py` 生成，分辨率为 220 DPI。在本目录连续
-运行两次 `pdflatex Section2Draft_v5.tex` 可重建 PDF。
-代码专属验收清单和可运行验证脚本见 [`checklist/`](checklist/README.md)。
-
-| Figure | Purpose / 用途 |
+| Item / 文件 | Purpose / 用途 |
 |---|---|
-| `convergence.png` | Full-matrix error, theoretical orders and fitted lines / 完整矩阵误差、理论阶与拟合线 |
-| `stability_regions.png` | Three scalar absolute-stability regions with initial modes at `h=0.08` / 三种标量稳定域与 `h=0.08` 的初始谱点 |
-| `frozen_spectrum.png` | Initial Jacobian spectrum against local explicit-step limits / 初始 Jacobian 谱与局部显式步长界限 |
-| `stability_sweep.png` | Nonlinear fast-mode amplification and terminal error versus step size / 非线性快模态放大与终点误差 |
-| `adaptive_steps.png` | Accepted step sizes under step doubling / 步长加倍算法接受的步长 |
-| `trajectory_diagnostics.png` | Singular values, energy, orthogonality and Lyapunov residual / 奇异值、能量、正交性与 Lyapunov 残差 |
-| `cost_accuracy.png` | Achieved full-matrix error versus measured RHS calls / 实际矩阵误差与 RHS 调用成本 |
-| `rank_deficient.png` | Rank-deficient singular values versus exact solution / 秩亏奇异值与精确解 |
+| `Section2Draft_v5.tex` | Editable LaTeX source / 可编辑报告源码 |
+| `Section2Draft_v5.pdf` | Compiled 29-page report / 已编译的 29 页报告 |
+| `figures/` | The eight PNGs cited by the LaTeX source / 正文引用的八张图 |
+| [`checklist/`](checklist/README.md) | Code-only checklist and two runnable verification scripts / 代码清单及两个验证脚本 |
 
-For each code file, numerical settings, CSV columns and interpretation, see
-[English README](../README_EN.md) or [中文 README](../README_ZH.md).
+The figures come from `../code/run_all.py` at 220 DPI. To rebuild the PDF,
+run twice from this directory / 图片由该入口生成；在本目录运行两次：
 
-Team names/IDs, the final AI Transparency Log and one ICS per member are
-intentionally pending team completion before final course submission.
-团队姓名学号、完整 AI 使用记录和每位成员的 ICS 仍须由小组据实填写。
+```powershell
+pdflatex -interaction=nonstopmode -halt-on-error Section2Draft_v5.tex
+pdflatex -interaction=nonstopmode -halt-on-error Section2Draft_v5.tex
+```
+
+LaTeX creates `.aux`, `.log`, `.out`, and `.toc` files. They are ignored by Git
+and can be removed after compilation / 这些是可删除的编译缓存：
+
+```powershell
+Remove-Item -LiteralPath Section2Draft_v5.aux,Section2Draft_v5.log,Section2Draft_v5.out,Section2Draft_v5.toc -ErrorAction SilentlyContinue
+```
+
+| Figure / 图片 | Purpose / 用途 |
+|---|---|
+| `convergence.png` | Full-matrix errors, theoretical orders and fitted slopes / 完整矩阵误差、理论阶与拟合阶 |
+| `stability_regions.png` | Three scalar stability regions and initial modes at `h=0.08` / 三种稳定域与初始谱点 |
+| `frozen_spectrum.png` | Initial Jacobian spectrum and local explicit-step limits / 初始谱与局部显式步长界 |
+| `stability_sweep.png` | Nonlinear fast-mode amplification and terminal error / 非线性快模态放大与终点误差 |
+| `adaptive_steps.png` | Accepted step lengths under step doubling / 自适应接受步长 |
+| `trajectory_diagnostics.png` | Singular values, energy, orthogonality and Lyapunov residual / 奇异值、能量、正交性和 Lyapunov 残差 |
+| `cost_accuracy.png` | Error versus counted RHS calls / 误差与 RHS 调用次数 |
+| `rank_deficient.png` | Zero singular mode and partial-isometry limit / 零奇异模态与部分等距极限 |
+
+For the code files and CSV columns, see [English](../README_EN.md) or
+[中文](../README_ZH.md). 代码文件及 CSV 数据列的说明见对应语言的 README。

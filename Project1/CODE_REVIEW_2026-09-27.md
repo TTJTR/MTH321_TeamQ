@@ -34,7 +34,7 @@
 ## 复核运行
 
 - `python code/run_all.py`、`python code_zh/run_all.py`：均成功；八张报告图与英文入口重生图逐个 SHA-256 相同，中英文 `summary.json` 和八张同名 PNG 也相同。
-- `python -m unittest discover -s report_v1/checklist -v`：**10/10 通过**，包括对角初值测试、解析 RHS Jacobian 与完整隐式残差 Jacobian 的有限差分测试、三方法收敛阶、Radau 交叉验证、适应步长、能量/秩亏和中英文数值一致性。
+- `python -B -m unittest discover -s report_v1/checklist -v`：**10/10 通过**，包括对角初值测试、解析 RHS Jacobian 与完整隐式残差 Jacobian 的有限差分测试、三方法收敛阶、Radau 交叉验证、适应步长、能量/秩亏和中英文数值一致性。
 - `report_v1/Section2Draft_v5.tex` 连续两次编译成功，PDF 为 **29 页**；未见未定义引用、缺图或 overfull 警告。
 
 **范围说明：** 上述“完成”指 Topic ⑤ 和 Project Brief 的数学、算法、数值验证任务。团队姓名/ICS、代码 ZIP、演示批次等提交材料在 [`V1_DELIVERY_CHECKLIST.md`](V1_DELIVERY_CHECKLIST.md) 另行标注；它们不属于本次题目完成度判断。

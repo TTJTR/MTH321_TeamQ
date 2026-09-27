@@ -29,7 +29,7 @@ From this directory / 在本目录运行：
 python -m pip install -r requirements.txt
 python code/run_all.py       # English source / 英文源码
 python code_zh/run_all.py    # Chinese source / 中文源码
-python -m unittest discover -s report_v1/checklist -v
+python -B -m unittest discover -s report_v1/checklist -v
 ```
 
 Each run writes its own `figures/` directory. / 两套代码分别写入各自的 `figures/` 目录。
