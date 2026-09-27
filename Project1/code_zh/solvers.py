@@ -1,7 +1,7 @@
-"""Three IVP methods and a step-doubling adaptive controller.
+"""三种初值问题数值方法，以及基于步长加倍的自适应控制器。
 
-SciPy is deliberately absent here: these are the methods evaluated in the
-project. SciPy's ``solve_ivp`` is used separately as an independent oracle.
+本模块自行实现被比较的三种方法；SciPy 的 ``solve_ivp`` 只在实验模块中
+充当独立验证基准。
 """
 
 from __future__ import annotations
@@ -19,11 +19,12 @@ Jacobian = Callable[[float, Array], Array]
 
 
 class StepFailure(RuntimeError):
-    """A nonlinear solve or integration step could not be completed."""
+    """非线性求解或积分步无法完成时抛出。"""
 
 
 @dataclass
 class Solution:
+    """保存时间、状态、函数调用次数、Newton 次数和拒绝步信息。"""
     t: Array
     y: Array
     nfev: int
@@ -34,6 +35,7 @@ class Solution:
 
 
 class _CountedProblem:
+    """包装右端函数与 Jacobian，以统计调用次数。"""
     def __init__(self, f: RHS, jac: Jacobian | None):
         self.f, self.jac = f, jac
         self.nfev = 0
@@ -45,13 +47,14 @@ class _CountedProblem:
 
     def derivative(self, t: float, y: Array) -> Array:
         if self.jac is None:
-            raise ValueError("Implicit Euler needs an analytic Jacobian")
+            raise ValueError("隐式 Euler 需要解析 Jacobian")
         self.njev += 1
         return self.jac(t, y)
 
 
 def _one_step(method: str, p: _CountedProblem, t: float, y: Array, h: float,
               newton_tol: float, max_newton: int) -> tuple[Array, int]:
+    """推进一步；隐式 Euler 使用解析 Jacobian 和残差下降的阻尼 Newton。"""
     if method == "euler":
         return y + h * p.eval(t, y), 0
     if method == "rk4":
@@ -61,13 +64,13 @@ def _one_step(method: str, p: _CountedProblem, t: float, y: Array, h: float,
         k4 = p.eval(t + h, y + h * k3)
         return y + h * (k1 + 2 * k2 + 2 * k3 + k4) / 6, 0
     if method != "implicit_euler":
-        raise ValueError(f"Unknown method: {method}")
+        raise ValueError(f"未知方法：{method}")
 
     w = y.copy()
     for iteration in range(max_newton + 1):
         residual = w - y - h * p.eval(t + h, w)
         norm = np.linalg.norm(residual, ord=np.inf)
-        # atol_F = rtol_F = newton_tol in the scale-aware rule from Section 2.
+        # 与理论稿第 2 节一致：atol_F = rtol_F = newton_tol。
         target = newton_tol * (1 + np.linalg.norm(w, ord=np.inf))
         if np.isfinite(norm) and norm <= target:
             return w, iteration
@@ -77,7 +80,7 @@ def _one_step(method: str, p: _CountedProblem, t: float, y: Array, h: float,
         try:
             delta = np.linalg.solve(matrix, -residual)
         except np.linalg.LinAlgError as exc:
-            raise StepFailure("Newton linear system is singular") from exc
+            raise StepFailure("Newton 线性系统奇异") from exc
         alpha = 1.0
         while alpha >= 1e-4:
             candidate = w + alpha * delta
@@ -87,16 +90,16 @@ def _one_step(method: str, p: _CountedProblem, t: float, y: Array, h: float,
                 break
             alpha *= 0.5
         else:
-            raise StepFailure("Newton line search did not reduce the residual")
-    raise StepFailure("Newton iteration did not converge")
+            raise StepFailure("Newton 回溯线搜索未能降低残差")
+    raise StepFailure("Newton 迭代未收敛")
 
 
 def solve_fixed(method: str, f: RHS, jac: Jacobian | None, y0: Array,
                 t_span: tuple[float, float], n_steps: int, *,
                 newton_tol: float = 1e-12, max_newton: int = 20) -> Solution:
-    """Uniform grid, exact final endpoint; use for convergence measurements."""
+    """在均匀网格上积分，精确落在终点；用于测量收敛阶。"""
     if n_steps < 1 or t_span[1] <= t_span[0]:
-        raise ValueError("Require n_steps >= 1 and t_end > t_start")
+        raise ValueError("需要 n_steps >= 1 且终止时间大于初始时间")
     p = _CountedProblem(f, jac)
     times = np.linspace(*t_span, n_steps + 1)
     values = np.empty((n_steps + 1, y0.size))
@@ -107,7 +110,7 @@ def solve_fixed(method: str, f: RHS, jac: Jacobian | None, y0: Array,
                                         times[k + 1] - times[k], newton_tol, max_newton)
         iterations += used
         if not np.all(np.isfinite(values[k + 1])):
-            raise StepFailure("Nonfinite numerical state")
+            raise StepFailure("数值状态出现非有限值")
     return Solution(times, values, p.nfev, p.njev, iterations)
 
 
@@ -116,12 +119,12 @@ def solve_adaptive(method: str, f: RHS, jac: Jacobian | None, y0: Array,
                    atol: float = 1e-8, rtol: float = 1e-6,
                    newton_tol: float = 1e-12, max_newton: int = 20,
                    min_step: float = 1e-10, max_attempts: int = 100000) -> Solution:
-    """Step doubling; accept the fine result and restart rejects from the old state."""
+    """步长加倍估计误差；接受细网格结果，拒绝步从原已接受状态重算。"""
     if method not in ("euler", "rk4", "implicit_euler"):
-        raise ValueError(f"Unknown method: {method}")
+        raise ValueError(f"未知方法：{method}")
     t0, end = t_span
     if not end > t0 or initial_step <= 0 or atol <= 0 or rtol < 0:
-        raise ValueError("Invalid interval, initial step, or tolerances")
+        raise ValueError("时间区间、初始步长或容差无效")
     p = _CountedProblem(f, jac)
     order = 4 if method == "rk4" else 1
     t, y, h = float(t0), np.asarray(y0, dtype=float).copy(), float(initial_step)
@@ -132,7 +135,7 @@ def solve_adaptive(method: str, f: RHS, jac: Jacobian | None, y0: Array,
             break
         h = min(h, end - t)
         if h < min_step and end - t > min_step:
-            raise StepFailure("Minimum step reached")
+            raise StepFailure("已达到最小步长")
         failed_newton = False
         try:
             coarse, n1 = _one_step(method, p, t, y, h, newton_tol, max_newton)
@@ -159,13 +162,13 @@ def solve_adaptive(method: str, f: RHS, jac: Jacobian | None, y0: Array,
         else:
             rejected += 1
         if failed_newton:
-            factor = 0.5  # Retry from the last accepted state, as in Algorithm 1.
+            factor = 0.5  # Newton 失败时从上一个已接受状态以半步长重试。
         else:
             factor = 2.0 if error == 0 else float(np.clip(0.9 * error ** (-1 / (order + 1)), 0.2, 2.0))
         h *= factor
     else:
-        raise StepFailure("Maximum adaptive step attempts exceeded")
+        raise StepFailure("超过自适应步长最大尝试次数")
     if t < end:
-        raise StepFailure("Adaptive integration stopped before final time")
+        raise StepFailure("自适应积分在到达终点前停止")
     return Solution(np.asarray(times), np.asarray(values), p.nfev, p.njev,
                     iterations, rejected, np.asarray(ratios))

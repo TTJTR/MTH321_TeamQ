@@ -1,7 +1,7 @@
-"""Reproducible Topic 5 experiments and report-ready figures.
+"""题目 ⑤ 的可复现实验与可直接用于英文报告的图表。
 
-Every figure is generated from numerical output. CSV files expose the numbers
-behind each plot; summary.json records settings and key diagnostics.
+每张图均由实际数值输出生成；同名 CSV 保存绘图数据，summary.json
+保存参数与主要诊断指标。图中的英文标签与英文版保持一致，方便两版结果核对。
 """
 
 from __future__ import annotations
@@ -35,6 +35,7 @@ MATCHED_STEPS = {"euler": 160, "rk4": 17, "implicit_euler": 160}
 
 
 def _csv(path: Path, rows: list[dict]) -> None:
+    """将字典列表写入带表头的 UTF-8 CSV。"""
     if not rows:
         return
     with path.open("w", newline="", encoding="utf-8") as file:
@@ -44,17 +45,20 @@ def _csv(path: Path, rows: list[dict]) -> None:
 
 
 def _save(fig: plt.Figure, path: Path) -> None:
+    """保存并关闭 Matplotlib 图，避免批量绘图时积累窗口。"""
     fig.savefig(path, dpi=220, bbox_inches="tight")
     plt.close(fig)
 
 
 def _style() -> None:
+    """设置所有图共用的字号、网格和输出分辨率。"""
     plt.rcParams.update({"font.size": 10, "axes.grid": True,
                          "grid.alpha": 0.2, "figure.dpi": 120,
                          "axes.spines.top": False, "axes.spines.right": False})
 
 
 def convergence(out: Path, x0: np.ndarray) -> dict:
+    """比较三种方法在 t=2 的完整矩阵误差，计算细网格收敛斜率。"""
     y0 = vectorize(x0)
     exact = exact_matrix(T_END, x0)
     rows = []
@@ -115,11 +119,12 @@ def convergence(out: Path, x0: np.ndarray) -> dict:
 
 
 def oracle(out: Path, x0: np.ndarray) -> dict:
+    """用高精度 SciPy Radau 对 SVD 精确解进行独立交叉验证。"""
     y0 = vectorize(x0)
     reference = solve_ivp(rhs, (0, T_END), y0, method="Radau", jac=jacobian,
                           rtol=1e-12, atol=1e-14)
     if not reference.success:
-        raise RuntimeError(f"Radau oracle failed: {reference.message}")
+        raise RuntimeError(f"Radau 参考求解失败：{reference.message}")
     disagreement = float(np.linalg.norm(unvectorize(reference.y[:, -1]) -
                                         exact_matrix(T_END, x0), "fro"))
     return {"method": "scipy.integrate.solve_ivp / Radau",
@@ -129,6 +134,7 @@ def oracle(out: Path, x0: np.ndarray) -> dict:
 
 
 def trajectory(out: Path, x0: np.ndarray) -> dict:
+    """绘制奇异值、Lyapunov 能量和正交性缺陷的时间轨迹。"""
     y0 = vectorize(x0)
     n = 400
     sol = solve_fixed("rk4", rhs, jacobian, y0, (0, T_END), n)
@@ -140,8 +146,8 @@ def trajectory(out: Path, x0: np.ndarray) -> dict:
     exact_phi = np.asarray([energy(x) for x in exact])
     defect = np.asarray([orthogonality_defect(x) for x in matrices])
     exact_defect = np.asarray([orthogonality_defect(x) for x in exact])
-    # Centered finite difference along the numerical trajectory. Its nonzero
-    # value reflects time discretisation, rather than a violation of the ODE.
+    # 沿数值轨迹用中心化差分检查 Lyapunov 恒等式；非零残差包含时间离散误差，
+    # 不能解释为连续方程违反了该恒等式。
     midpoint = (matrices[1:] + matrices[:-1]) / 2
     identity_residual = np.diff(phi) / np.diff(sol.t) - np.asarray(
         [lyapunov_rate(x) for x in midpoint])
@@ -191,6 +197,7 @@ def trajectory(out: Path, x0: np.ndarray) -> dict:
 
 
 def stability_regions(out: Path, x0: np.ndarray) -> dict:
+    """绘制三种方法的绝对稳定域和初值 Jacobian 的缩放谱。"""
     real = np.linspace(-4, 2, 500)
     imag = np.linspace(-3, 3, 500)
     z = real[:, None] + 1j * imag[None, :]
@@ -237,7 +244,7 @@ def stability_regions(out: Path, x0: np.ndarray) -> dict:
 
 
 def cost_accuracy(out: Path, x0: np.ndarray) -> dict:
-    """Compare counted work at nearly equal finite-time full-matrix error."""
+    """在几乎相同的有限时间完整矩阵误差下比较可计数的工作量。"""
     y0 = vectorize(x0)
     exact = exact_matrix(T_END, x0)
     rows = []
@@ -289,6 +296,7 @@ def cost_accuracy(out: Path, x0: np.ndarray) -> dict:
 
 
 def stability_sweep(out: Path, x0: np.ndarray) -> dict:
+    """扫过多个固定步长，记录扰动放大、能量变化、越界和终点误差。"""
     y0 = vectorize(x0)
     direction = vectorize(rotation(0.4) @ np.diag([0, 0, 1]) @ rotation(-0.7).T)
     epsilon = 1e-7
@@ -361,6 +369,7 @@ def stability_sweep(out: Path, x0: np.ndarray) -> dict:
 
 
 def adaptivity(out: Path, x0: np.ndarray) -> dict:
+    """比较三种方法在同一局部误差容差下的实际接受步长。"""
     y0 = vectorize(x0)
     settings = {"atol": 1e-8, "rtol": 1e-6, "initial_step": 0.15}
     rows = []
@@ -392,6 +401,7 @@ def adaptivity(out: Path, x0: np.ndarray) -> dict:
 
 
 def rank_deficient(out: Path) -> dict:
+    """重复秩亏初值实验，验证零奇异值与部分等距极限。"""
     x0 = benchmark((0.0, 1.4, 3.0))
     sol = solve_fixed("rk4", rhs, jacobian, vectorize(x0), (0, 8.0), 1600)
     matrices = [unvectorize(y) for y in sol.y]
@@ -422,6 +432,7 @@ def rank_deficient(out: Path) -> dict:
 
 
 def run_all(output_dir: Path) -> dict:
+    """按固定顺序执行全部实验并写入 PNG、CSV、JSON。"""
     output_dir.mkdir(parents=True, exist_ok=True)
     _style()
     x0 = benchmark()

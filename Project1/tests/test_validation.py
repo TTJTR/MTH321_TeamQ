@@ -1,0 +1,100 @@
+"""Independent checks of the model, methods, and project diagnostics."""
+
+import sys
+import unittest
+from pathlib import Path
+
+import numpy as np
+from scipy.integrate import solve_ivp
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "code"))
+
+from model import (benchmark, energy, exact_matrix, frechet, jacobian,
+                   matrix_rhs, orthogonality_defect, rhs, singular_values,
+                   rotation, unvectorize, vectorize)
+from solvers import solve_adaptive, solve_fixed
+
+
+class PolarFlowValidation(unittest.TestCase):
+    def setUp(self):
+        self.x0 = benchmark()
+        self.y0 = vectorize(self.x0)
+
+    def test_column_major_jacobian_against_finite_difference(self):
+        direction = np.arange(1, 10, dtype=float).reshape((3, 3), order="F") / 10
+        epsilon = 1e-6
+        numerical = (matrix_rhs(self.x0 + epsilon * direction) -
+                     matrix_rhs(self.x0 - epsilon * direction)) / (2 * epsilon)
+        self.assertLess(np.linalg.norm(numerical - frechet(self.x0, direction)), 1e-8)
+        self.assertLess(np.linalg.norm(vectorize(numerical) -
+                                       jacobian(0, self.y0) @ vectorize(direction)), 1e-8)
+
+    def test_full_initial_and_equilibrium_spectra(self):
+        initial = jacobian(0, self.y0)
+        np.testing.assert_allclose(initial, initial.T, atol=1e-13)
+        np.testing.assert_allclose(np.linalg.eigvalsh(initial),
+                                   [-26, -14.16, -8.64, -7.44, -5.76,
+                                    -4.88, -1.28, -0.72, 0.88], atol=1e-12)
+        equilibrium = rotation(0.4) @ rotation(-0.7).T
+        np.testing.assert_allclose(np.linalg.eigvalsh(jacobian(0, vectorize(equilibrium))),
+                                   [-2] * 6 + [0] * 3, atol=1e-12)
+
+    def test_exact_solution_and_independent_radau(self):
+        self.assertLess(np.linalg.norm(exact_matrix(0, self.x0) - self.x0), 1e-14)
+        oracle = solve_ivp(rhs, (0, 2), self.y0, method="Radau", jac=jacobian,
+                           rtol=1e-12, atol=1e-14)
+        self.assertTrue(oracle.success)
+        self.assertLess(np.linalg.norm(unvectorize(oracle.y[:, -1]) -
+                                       exact_matrix(2, self.x0)), 5e-12)
+
+    def test_fixed_step_orders(self):
+        exact = exact_matrix(2, self.x0)
+        for method, coarse, fine, lower, upper in (
+            ("euler", 160, 320, 0.9, 1.1),
+            ("implicit_euler", 160, 320, 0.9, 1.1),
+            ("rk4", 1280, 2560, 3.7, 4.2),
+        ):
+            with self.subTest(method=method):
+                errors = []
+                for n in (coarse, fine):
+                    sol = solve_fixed(method, rhs, jacobian, self.y0, (0, 2), n)
+                    errors.append(np.linalg.norm(unvectorize(sol.y[-1]) - exact))
+                observed = np.log2(errors[0] / errors[1])
+                self.assertGreater(observed, lower)
+                self.assertLess(observed, upper)
+
+    def test_adaptive_controller_changes_step_and_respects_local_budget(self):
+        result = solve_adaptive("rk4", rhs, jacobian, self.y0, (0, 2), 0.15,
+                                atol=1e-8, rtol=1e-6)
+        steps = np.diff(result.t)
+        self.assertEqual(result.t[-1], 2.0)
+        self.assertGreater(np.max(steps) / np.min(steps), 2)
+        self.assertLessEqual(np.max(result.error_ratios), 1)
+        self.assertLess(np.linalg.norm(unvectorize(result.y[-1]) -
+                                       exact_matrix(2, self.x0)), 1e-5)
+
+    def test_adaptive_can_finish_on_last_allowed_attempt(self):
+        equilibrium = vectorize(np.eye(3))
+        result = solve_adaptive("euler", rhs, jacobian, equilibrium, (0, 1), 1,
+                                max_attempts=1)
+        self.assertEqual(result.t[-1], 1.0)
+        self.assertEqual(result.rejected, 0)
+
+    def test_energy_and_rank_deficiency(self):
+        velocity = matrix_rhs(self.x0)
+        epsilon = 1e-6
+        energy_derivative = (energy(self.x0 + epsilon * velocity) -
+                             energy(self.x0 - epsilon * velocity)) / (2 * epsilon)
+        self.assertAlmostEqual(energy_derivative,
+                               -np.linalg.norm(velocity, "fro") ** 2, places=7)
+        x_zero = benchmark((0, 1.4, 3))
+        result = solve_fixed("rk4", rhs, jacobian, vectorize(x_zero), (0, 8), 800)
+        matrices = [unvectorize(row) for row in result.y]
+        energies = np.asarray([energy(x) for x in matrices])
+        self.assertTrue(np.all(np.diff(energies) <= 1e-12))
+        self.assertLess(max(singular_values(x)[-1] for x in matrices), 1e-12)
+        self.assertAlmostEqual(orthogonality_defect(matrices[-1]), 1, places=8)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -4,8 +4,11 @@
 .pytest_cache/
 
 # Generated figures and submitted exports
-code/figures/*
+# Commit the CSV/JSON evidence; regenerate PNGs from the code.
+code/figures/*.png
 !code/figures/.gitkeep
+code_zh/figures/*
+!code_zh/figures/.gitkeep
 report/*.pdf
 slides/*.pdf
 *.zip
