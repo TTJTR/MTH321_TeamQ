@@ -68,7 +68,7 @@ X(0)  = R(0.4) diag(0.2, 1.4, 3) R(-0.7)^T .
 |---|---|
 | `convergence.png` | 三个双对数面板展示终点**完整矩阵 Frobenius 误差**、理论 `h¹`/`h⁴` 参考斜率、拟合直线及 95% 回归带。`convergence.csv` 包含步数、步长、误差、相邻网格观测阶和工作量。RK4 仅用最细的三个网格拟合。回归带只是确定性网格数据的描述性最小二乘诊断，不代表 ODE 误差的概率区间。 |
 | `cost_accuracy.png` | 三种方法在多个固定网格上的**实际误差—RHS 调用次数**双对数曲线。星号标出误差约 `9×10⁻⁴` 的三个匹配点，灰带覆盖它们的实际误差。`cost_accuracy.csv` 包含全部绘图点、`matched_point` 标记、步数、RHS/Jacobian 调用和 Newton 更新次数。工作量解释见下文。 |
-| `stability_regions.png` | 分别显示 Euler、RK4、隐式 Euler 对标量测试方程满足 `|R(hλ)|≤1` 的解析绝对稳定域。阴影依据稳定函数计算，不是非线性实验拟合；这张图没有单独 CSV。 |
+| `stability_regions.png` | 分别显示三种方法满足 `|R(hλ)|≤1` 的解析标量稳定域，并叠加 `h=0.08` 时的初始 Jacobian 谱：叉号为收缩模态，空心圆为物理增长模态。阴影不是非线性实验拟合；此图没有单独 CSV。 |
 | `frozen_spectrum.png` | 初始 9×9 Jacobian 的特征值乘以 `h=0.05` 和 `h=0.10`，对照 Euler 与 RK4 负实轴截止点。两行标明步长，纵向位置不是特征值虚部；正特征值 `+0.88` 是最小奇异值真实增长。数字见 `summary.json`。 |
 | `stability_sweep.png` | 左图为初始最快方向小扰动经过一个非线性步后的放大倍数，右图为不同固定步长的终点精确矩阵误差。`stability_sweep.csv` 还含能量变化、奇异值越过 1 与失败状态。冻结 Jacobian 截止点只是**局部诊断**，不是全局非线性稳定保证。 |
 | `trajectory_diagnostics.png` | 四幅轨迹图：奇异值和精确曲线、数值与精确 Lyapunov 能量、数值与精确的有限时间正交性缺陷、离散 Lyapunov 恒等式残差。`trajectory.csv` 保存轨迹及每一行之后时间区间对应的残差。 |

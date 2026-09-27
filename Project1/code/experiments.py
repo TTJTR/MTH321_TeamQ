@@ -34,6 +34,7 @@ LINESTYLES = {"euler": "-", "rk4": "--", "implicit_euler": ":"}
 T_END = 2.0
 NEWTON_TOL = 1e-12
 MATCHED_STEPS = {"euler": 160, "rk4": 17, "implicit_euler": 160}
+STABILITY_OVERLAY_STEP = 0.08
 
 
 def _csv(path: Path, rows: list[dict]) -> None:
@@ -193,6 +194,9 @@ def trajectory(out: Path, x0: np.ndarray) -> dict:
 
 
 def stability_regions(out: Path, x0: np.ndarray) -> dict:
+    spectrum = np.sort(np.linalg.eigvalsh(jacobian(0, vectorize(x0))))
+    negative_modes = STABILITY_OVERLAY_STEP * spectrum[spectrum < 0]
+    growing_modes = STABILITY_OVERLAY_STEP * spectrum[spectrum > 0]
     real = np.linspace(-4, 2, 500)
     imag = np.linspace(-3, 3, 500)
     z = real[:, None] + 1j * imag[None, :]
@@ -201,7 +205,7 @@ def stability_regions(out: Path, x0: np.ndarray) -> dict:
         "rk4": 1 + z + z**2 / 2 + z**3 / 6 + z**4 / 24,
         "implicit_euler": 1 / (1 - z),
     }
-    fig, axes = plt.subplots(1, 3, figsize=(9, 3.6), sharex=True, sharey=True)
+    fig, axes = plt.subplots(1, 3, figsize=(10, 4), sharex=True, sharey=True)
     for ax, method in zip(axes, METHODS):
         values = np.abs(amplification[method]).T
         ax.contourf(real, imag, (values <= 1).astype(float),
@@ -209,19 +213,30 @@ def stability_regions(out: Path, x0: np.ndarray) -> dict:
         ax.contour(real, imag, values, levels=[1], colors=[COLORS[method]], linewidths=1.5)
         ax.axhline(0, color="black", linewidth=0.5)
         ax.axvline(0, color="black", linewidth=0.5)
+        ax.scatter(negative_modes, np.zeros_like(negative_modes), marker="x",
+                   s=40, linewidth=1.4, color="#222222", zorder=5)
+        ax.scatter(growing_modes, np.zeros_like(growing_modes), marker="o",
+                   s=58, facecolors="white", edgecolors="#222222",
+                   linewidth=1.3, zorder=6)
         ax.set(title=LABELS[method], xlabel=r"Re($z$) (dimensionless)",
                xlim=(-4, 2), ylim=(-3, 3))
+    axes[0].annotate(r"$h\lambda_{\rm fast}=-2.08$", xy=(-2.08, 0),
+                     xytext=(-3.75, 1.15), fontsize=8,
+                     arrowprops={"arrowstyle": "->", "color": "#333333", "lw": 0.8})
     axes[0].set_ylabel(r"Im($z$) (dimensionless)")
-    fig.suptitle(r"Implicit Euler covers the left half-plane; explicit stability regions are bounded", fontsize=11)
+    fig.suptitle(r"At $h=0.08$, the initial $-26$ mode leaves Euler's stable region", fontsize=11)
     fig.legend(handles=[Patch(facecolor="#888888", alpha=0.45,
                               label=r"Shading: $|R(z)|\leq1$"),
                         Line2D([], [], color="#444444", linewidth=1.5,
-                               label=r"Contour: $|R(z)|=1$")],
+                               label=r"Contour: $|R(z)|=1$"),
+                        Line2D([], [], color="#222222", marker="x", linestyle="None",
+                               label=r"Initial contracting modes ($h=0.08$)"),
+                        Line2D([], [], color="#222222", marker="o", markerfacecolor="white",
+                               linestyle="None", label="Initial physical growing mode")],
                loc="lower center", bbox_to_anchor=(0.5, -0.03), ncol=2, fontsize=8)
-    fig.tight_layout(rect=(0, 0.08, 1, 0.94))
+    fig.tight_layout(rect=(0, 0.12, 1, 0.94))
     _save(fig, out / "stability_regions.png")
 
-    spectrum = np.sort(np.linalg.eigvalsh(jacobian(0, vectorize(x0))))
     equilibrium = np.sort(np.linalg.eigvalsh(jacobian(0, vectorize(rotation(0.4) @ rotation(-0.7).T))))
     fig, ax = plt.subplots(figsize=(7.2, 3.8))
     for h, row_y, marker in ((0.05, 1, "o"), (0.10, 0, "s")):
@@ -240,6 +255,7 @@ def stability_regions(out: Path, x0: np.ndarray) -> dict:
     ax.legend(fontsize=8, loc="lower left", ncol=2)
     _save(fig, out / "frozen_spectrum.png")
     return {"initial_jacobian_spectrum": spectrum.tolist(),
+            "stability_region_overlay_step": STABILITY_OVERLAY_STEP,
             "orthogonal_equilibrium_spectrum": equilibrium.tolist(),
             "euler_local_h_limit": 2 / 26,
             "rk4_local_h_limit": 2.785293563 / 26}

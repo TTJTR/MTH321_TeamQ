@@ -16,7 +16,7 @@ The code-only acceptance record and runnable verification scripts are in
 | Figure | Purpose / 用途 |
 |---|---|
 | `convergence.png` | Full-matrix error, theoretical orders and fitted lines / 完整矩阵误差、理论阶与拟合线 |
-| `stability_regions.png` | Three scalar absolute-stability regions / 三种方法的标量绝对稳定域 |
+| `stability_regions.png` | Three scalar absolute-stability regions with initial modes at `h=0.08` / 三种标量稳定域与 `h=0.08` 的初始谱点 |
 | `frozen_spectrum.png` | Initial Jacobian spectrum against local explicit-step limits / 初始 Jacobian 谱与局部显式步长界限 |
 | `stability_sweep.png` | Nonlinear fast-mode amplification and terminal error versus step size / 非线性快模态放大与终点误差 |
 | `adaptive_steps.png` | Accepted step sizes under step doubling / 步长加倍算法接受的步长 |

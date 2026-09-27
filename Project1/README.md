@@ -9,6 +9,8 @@ all eight generated figures, their CSV data, and the experiment settings.
 The aligned report is [Section2Draft_v5.tex](report_v1/Section2Draft_v5.tex),
 and the revision record is [CHANGELOG_V5.md](CHANGELOG_V5.md).
 对应的 v5 理论正文及逐项修改记录见上述两个文件。
+The `report/` directory contains earlier drafts; `report_v1/` is the current submission.
+`report/` 保存早期草稿；当前提交版在 `report_v1/`。
 
 The code-only acceptance record and runnable checks are in
 [report_v1/checklist/](report_v1/checklist/README.md).

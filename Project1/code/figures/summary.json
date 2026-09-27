@@ -152,6 +152,7 @@
       -0.7199999999999991,
       0.88
     ],
+    "stability_region_overlay_step": 0.08,
     "orthogonal_equilibrium_spectrum": [
       -2.0000000000000004,
       -2.0,

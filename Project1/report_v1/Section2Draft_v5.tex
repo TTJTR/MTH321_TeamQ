@@ -722,8 +722,11 @@ We derive the analytic form of $R(z)$ for the three implemented solvers:
     \caption{Absolute-stability sets $|R(z)|\leq1$ computed from the
     amplification functions. The three panels show Explicit Euler, RK4,
     and Implicit Euler, respectively. The coloured masks visualize the
-    analytical regions in the dimensionless $z=h\lambda$ plane; they
-    do not by themselves establish nonlinear stability.}
+    analytical regions in the dimensionless $z=h\lambda$ plane. Crosses
+    locate the eight contracting eigenmodes of the initial Jacobian at
+    $h=0.08$; the open circle marks the physically growing $+0.88$ mode.
+    These frozen-spectrum markers do not by themselves establish
+    nonlinear stability.}
     \label{fig:stability_regions}
 \end{figure}
 
@@ -743,7 +746,11 @@ Both figures are produced by \texttt{code/experiments.py} through
 Euler disk intersects the real axis at $-2$ and $0$, while RK4 reaches
 $-2.78529$ on the negative real axis and $\pm2\sqrt2$ on the imaginary
 axis. The Implicit Euler panel contains the closed left half-plane, as
-required by A-stability. In Fig.~\ref{fig:frozen_spectrum}, the fastest
+required by A-stability. The overlaid fastest contracting mode at
+$h=0.08$ is $h\lambda_{\mathrm{fast}}=-2.08$: it falls
+outside Euler's disk but inside the RK4 and Implicit Euler regions.
+The open-circle mode is physical growth rather than a spurious numerical
+instability. In Fig.~\ref{fig:frozen_spectrum}, the fastest
 contracting Topic~5 mode gives $h\lambda_{\mathrm{fast}}=-1.30$ for $h=0.05$
 and $-2.60$ for $h=0.10$. The latter lies outside the Euler interval but
 inside the RK4 interval, matching the local estimates

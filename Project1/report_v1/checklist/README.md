@@ -70,7 +70,7 @@ F. 本轮无未解决的 blocker/major/minor。此前 C4 报告缺差分证据�
 | 图 | 用途 |
 |---|---|
 | `convergence.png` | 三方法完整矩阵误差、理论阶与拟合阶。 |
-| `stability_regions.png` | 三个标量稳定域与边界。 |
+| `stability_regions.png` | 三个标量稳定域、边界及 `h=0.08` 的初始谱点；`-26` 快模态在 Euler 域外。 |
 | `frozen_spectrum.png` | 初始 Jacobian 谱和局部显式步长界。 |
 | `stability_sweep.png` | 非线性快模态放大及终点误差对步长的响应。 |
 | `adaptive_steps.png` | 步长加倍控制器的接受步长。 |
