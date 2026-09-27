@@ -17,6 +17,13 @@ Array = NDArray[np.float64]
 RHS = Callable[[float, Array], Array]
 Jacobian = Callable[[float, Array], Array]
 
+# Controller bounds prevent abrupt changes in accepted trial length.
+ADAPTIVE_SAFETY = 0.9
+MIN_STEP_FACTOR = 0.2
+MAX_STEP_FACTOR = 2.0
+# Stop damped Newton before the trial correction becomes ineffective.
+MIN_NEWTON_DAMPING = 1e-4
+
 
 class StepFailure(RuntimeError):
     """A nonlinear solve or integration step could not be completed."""
@@ -79,7 +86,7 @@ def _one_step(method: str, p: _CountedProblem, t: float, y: Array, h: float,
         except np.linalg.LinAlgError as exc:
             raise StepFailure("Newton linear system is singular") from exc
         alpha = 1.0
-        while alpha >= 1e-4:
+        while alpha >= MIN_NEWTON_DAMPING:
             candidate = w + alpha * delta
             next_residual = candidate - y - h * p.eval(t + h, candidate)
             if np.all(np.isfinite(next_residual)) and np.linalg.norm(next_residual, ord=np.inf) < norm:
@@ -161,7 +168,9 @@ def solve_adaptive(method: str, f: RHS, jac: Jacobian | None, y0: Array,
         if failed_newton:
             factor = 0.5  # Retry from the last accepted state, as in Algorithm 1.
         else:
-            factor = 2.0 if error == 0 else float(np.clip(0.9 * error ** (-1 / (order + 1)), 0.2, 2.0))
+            factor = MAX_STEP_FACTOR if error == 0 else float(np.clip(
+                ADAPTIVE_SAFETY * error ** (-1 / (order + 1)),
+                MIN_STEP_FACTOR, MAX_STEP_FACTOR))
         h *= factor
     else:
         raise StepFailure("Maximum adaptive step attempts exceeded")

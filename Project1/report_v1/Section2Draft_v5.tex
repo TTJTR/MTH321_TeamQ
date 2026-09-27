@@ -1120,6 +1120,16 @@ generate the same numerical summary. Dependencies, invocation
 commands, and every generated figure are documented in the two
 README files.
 
+As an independent check of the implicit-step Jacobian, we use the
+benchmark vector $y_0=\operatorname{vec}(X_0)$, $h=0.05$, and direction
+$v=(0.1,0.2,\ldots,0.9)^T$. With
+$F(w)=w-y_0-hf(h,w)$ and $\varepsilon=10^{-6}$, the centred difference
+$[F(y_0+\varepsilon v)-F(y_0-\varepsilon v)]/(2\varepsilon)$ differs
+from $(I-hJ_f(y_0))v$ by $3.68\times10^{-10}$ in the infinity norm.
+This checks the complete residual derivative, including the identity
+term; the reproducible calculation is in
+\texttt{tests/test\_validation.py}.
+
 \newpage
 % ============================================================
 \section{Numerical Experiments}
@@ -1343,16 +1353,19 @@ runtime on a specified machine.
 \begin{itemize}[leftmargin=2em]
 \item The three implemented solvers attain observed finite-time
   full-matrix convergence slopes near their expected orders
-  $1$, $4$, and $1$.
+  $1$, $4$, and $1$ (Table~\ref{tab:order_results} and
+  Fig.~\ref{fig:convergence}).
 \item The initial matrix has both a fast contracting eigenvalue $-26$
   and a physically growing eigenvalue $0.88$; at orthogonal
-  equilibrium, the skew-symmetric tangent directions are neutral.
+  equilibrium, the skew-symmetric tangent directions are neutral
+  (Section~2.3 and Fig.~\ref{fig:frozen_spectrum}).
 \item Frozen-Jacobian stability estimates explain the onset of
   explicit-step risk but require nonlinear step sweeps for
   verification. Step doubling responds to estimated local error
-  without guaranteeing absolute stability.
+  without guaranteeing absolute stability
+  (Figs.~\ref{fig:stability_sweep} and~\ref{fig:adaptive_steps}).
 \item The rank-deficient experiment preserves its zero singular
-  mode. Future work could compare structure-preserving updates or
+  mode (Fig.~\ref{fig:rank_deficient}). Future work could compare structure-preserving updates or
   implicit solvers at matched wall-clock cost.
 \end{itemize}
 

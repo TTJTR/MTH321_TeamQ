@@ -14,6 +14,8 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
 import numpy as np
 import scipy
 from scipy.integrate import solve_ivp
@@ -108,7 +110,7 @@ def convergence(out: Path, x0: np.ndarray) -> dict:
         ax.fill_between(h_line, np.exp(log_fit - 1.96 * log_se),
                         np.exp(log_fit + 1.96 * log_se), color=COLORS[method],
                         alpha=0.13, label="95% regression band")
-        ax.set(ylabel=r"$\|X_h(2)-X(2)\|_F$", title=f"{LABELS[method]}: fitted slope {slope:.3f} ± {slope_se:.3f}")
+        ax.set(ylabel=r"$\|X_h(2)-X(2)\|_F$ (dimensionless)", title=f"{LABELS[method]}: fitted slope {slope:.3f} ± {slope_se:.3f}")
         ax.legend(fontsize=8, loc="upper left")
     axes[-1].set_xlabel("Step size h (dimensionless)")
     fig.suptitle("Full-matrix error follows the predicted orders", fontsize=12)
@@ -214,10 +216,16 @@ def stability_regions(out: Path, x0: np.ndarray) -> dict:
         ax.contour(real, imag, values, levels=[1], colors=[COLORS[method]], linewidths=1.5)
         ax.axhline(0, color="black", linewidth=0.5)
         ax.axvline(0, color="black", linewidth=0.5)
-        ax.set(title=LABELS[method], xlabel=r"Re($z$)", xlim=(-4, 2), ylim=(-3, 3))
-    axes[0].set_ylabel(r"Im($z$)")
-    fig.suptitle(r"Scalar absolute stability: shaded where $|R(z)|\leq 1$, $z=h\lambda$", fontsize=11)
-    fig.tight_layout()
+        ax.set(title=LABELS[method], xlabel=r"Re($z$) (dimensionless)",
+               xlim=(-4, 2), ylim=(-3, 3))
+    axes[0].set_ylabel(r"Im($z$) (dimensionless)")
+    fig.suptitle(r"Implicit Euler covers the left half-plane; explicit stability regions are bounded", fontsize=11)
+    fig.legend(handles=[Patch(facecolor="#888888", alpha=0.45,
+                              label=r"Shading: $|R(z)|\leq1$"),
+                        Line2D([], [], color="#444444", linewidth=1.5,
+                               label=r"Contour: $|R(z)|=1$")],
+               loc="lower center", bbox_to_anchor=(0.5, -0.03), ncol=2, fontsize=8)
+    fig.tight_layout(rect=(0, 0.08, 1, 0.94))
     _save(fig, out / "stability_regions.png")
 
     spectrum = np.sort(np.linalg.eigvalsh(jacobian(0, vectorize(x0))))
@@ -232,7 +240,8 @@ def stability_regions(out: Path, x0: np.ndarray) -> dict:
     ax.axvline(0, color="0.2", linewidth=0.8)
     ax.annotate("physical growth mode", xy=(0.088, 0), xytext=(0.23, 0.45),
                 arrowprops={"arrowstyle": "->", "color": "0.25"}, fontsize=8)
-    ax.set(xlabel=r"Re($h\lambda$) for initial Jacobian", ylabel="Step size h",
+    ax.set(xlabel=r"Re($h\lambda$) for initial Jacobian (dimensionless)",
+           ylabel="Step size h (dimensionless)",
            yticks=[0, 1], yticklabels=["0.10", "0.05"], ylim=(-0.45, 1.5),
            title="Frozen initial spectrum predicts local step restrictions")
     ax.legend(fontsize=8, loc="lower left", ncol=2)

@@ -2,6 +2,12 @@
 **/__pycache__/
 **/*.py[cod]
 .pytest_cache/
+**/*.aux
+**/*.log
+**/*.out
+**/*.toc
+**/*.nav
+**/*.snm
 
 # Generated figures and submitted exports
 # Commit the CSV/JSON evidence; regenerate PNGs from the code.
@@ -11,4 +17,5 @@ code_zh/figures/*
 !code_zh/figures/.gitkeep
 report/*.pdf
 slides/*.pdf
+!slides/Topic5_presentation.pdf
 *.zip

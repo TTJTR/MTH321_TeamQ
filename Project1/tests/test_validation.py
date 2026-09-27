@@ -29,6 +29,18 @@ class PolarFlowValidation(unittest.TestCase):
         self.assertLess(np.linalg.norm(vectorize(numerical) -
                                        jacobian(0, self.y0) @ vectorize(direction)), 1e-8)
 
+    def test_implicit_residual_jacobian_against_finite_difference(self):
+        h, epsilon = 0.05, 1e-6
+        direction = np.arange(1.0, 10.0) / 10.0
+
+        def residual(w):
+            return w - self.y0 - h * rhs(h, w)
+
+        numerical = (residual(self.y0 + epsilon * direction) -
+                     residual(self.y0 - epsilon * direction)) / (2 * epsilon)
+        analytical = (np.eye(self.y0.size) - h * jacobian(h, self.y0)) @ direction
+        self.assertLess(np.linalg.norm(numerical - analytical, ord=np.inf), 1e-8)
+
     def test_full_initial_and_equilibrium_spectra(self):
         initial = jacobian(0, self.y0)
         np.testing.assert_allclose(initial, initial.T, atol=1e-13)
