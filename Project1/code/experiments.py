@@ -57,7 +57,7 @@ def _style() -> None:
                          "axes.spines.top": False, "axes.spines.right": False})
 
 
-def convergence(out: Path, x0: np.ndarray) -> dict:
+def convergence(out: Path, data_dir: Path, x0: np.ndarray) -> dict:
     y0 = vectorize(x0)
     exact = exact_matrix(T_END, x0)
     rows = []
@@ -108,16 +108,21 @@ def convergence(out: Path, x0: np.ndarray) -> dict:
                         np.exp(log_fit + 1.96 * log_se), color=COLORS[method],
                         alpha=0.13, label="95% regression band")
         ax.set(ylabel=r"$\|X_h(2)-X(2)\|_F$ (dimensionless)", title=f"{LABELS[method]}: fitted slope {slope:.3f} ± {slope_se:.3f}")
+        if method == "rk4":
+            # The smallest measured error is near round-off scale; no flat floor is inferred.
+            ax.annotate("Finest grid: near round-off scale", xy=(h[-1], errors[-1]),
+                        xytext=(0.36, 0.14), textcoords="axes fraction", fontsize=8,
+                        arrowprops={"arrowstyle": "->", "color": "0.3", "lw": 0.8})
         ax.legend(fontsize=8, loc="upper left")
     axes[-1].set_xlabel("Step size h (dimensionless)")
     fig.suptitle("Full-matrix error follows the predicted orders", fontsize=12)
     fig.tight_layout()
     _save(fig, out / "convergence.png")
-    _csv(out / "convergence.csv", rows)
+    _csv(data_dir / "convergence.csv", rows)
     return summary
 
 
-def oracle(out: Path, x0: np.ndarray) -> dict:
+def oracle(x0: np.ndarray) -> dict:
     y0 = vectorize(x0)
     reference = solve_ivp(rhs, (0, T_END), y0, method="Radau", jac=jacobian,
                           rtol=1e-12, atol=1e-14)
@@ -131,7 +136,7 @@ def oracle(out: Path, x0: np.ndarray) -> dict:
             "rhs_evaluations": reference.nfev}
 
 
-def trajectory(out: Path, x0: np.ndarray) -> dict:
+def trajectory(out: Path, data_dir: Path, x0: np.ndarray) -> dict:
     y0 = vectorize(x0)
     n = 400
     sol = solve_fixed("rk4", rhs, jacobian, y0, (0, T_END), n)
@@ -169,12 +174,13 @@ def trajectory(out: Path, x0: np.ndarray) -> dict:
     axes[2].legend(fontsize=8)
     axes[3].semilogy((sol.t[1:] + sol.t[:-1]) / 2,
                     np.maximum(np.abs(identity_residual), np.finfo(float).tiny),
-                    color=COLORS["rk4"])
+                    color=COLORS["rk4"], label="midpoint Lyapunov residual")
+    axes[3].legend(fontsize=8)
     axes[3].set(xlabel="Time t (dimensionless)", ylabel="Absolute residual (dimensionless)",
                 title="Discrete Lyapunov residual stays small")
     fig.tight_layout()
     _save(fig, out / "trajectory_diagnostics.png")
-    _csv(out / "trajectory.csv", [
+    _csv(data_dir / "trajectory.csv", [
         {"t": t, "s1": s[0], "s2": s[1], "s3": s[2],
          "energy": e, "exact_energy": ee, "orthogonality_defect": d,
          "exact_orthogonality_defect": de,
@@ -261,7 +267,7 @@ def stability_regions(out: Path, x0: np.ndarray) -> dict:
             "rk4_local_h_limit": 2.785293563 / 26}
 
 
-def cost_accuracy(out: Path, x0: np.ndarray) -> dict:
+def cost_accuracy(out: Path, data_dir: Path, x0: np.ndarray) -> dict:
     """Compare counted work at nearly equal finite-time full-matrix error."""
     y0 = vectorize(x0)
     exact = exact_matrix(T_END, x0)
@@ -284,7 +290,7 @@ def cost_accuracy(out: Path, x0: np.ndarray) -> dict:
             rows.append(row)
             if row["matched_point"]:
                 matched_rows.append(row)
-    _csv(out / "cost_accuracy.csv", rows)
+    _csv(data_dir / "cost_accuracy.csv", rows)
     fig, ax = plt.subplots(figsize=(7.3, 4.5))
     for method in METHODS:
         subset = [row for row in rows if row["method"] == method]
@@ -313,7 +319,7 @@ def cost_accuracy(out: Path, x0: np.ndarray) -> dict:
             "max_to_min_error_ratio": upper / lower}
 
 
-def stability_sweep(out: Path, x0: np.ndarray) -> dict:
+def stability_sweep(out: Path, data_dir: Path, x0: np.ndarray) -> dict:
     y0 = vectorize(x0)
     direction = vectorize(rotation(0.4) @ np.diag([0, 0, 1]) @ rotation(-0.7).T)
     epsilon = 1e-7
@@ -356,7 +362,7 @@ def stability_sweep(out: Path, x0: np.ndarray) -> dict:
                              "max_energy_increase": np.nan,
                              "singular_value_crossing": "",
                              "terminal_exact_error": np.nan, "status": "diverged_or_failed"})
-    _csv(out / "stability_sweep.csv", rows)
+    _csv(data_dir / "stability_sweep.csv", rows)
     fig, axes = plt.subplots(1, 2, figsize=(9, 3.9))
     for method in METHODS:
         subset = [r for r in rows if r["method"] == method and r["status"] == "ok"]
@@ -364,7 +370,7 @@ def stability_sweep(out: Path, x0: np.ndarray) -> dict:
                      [r["one_step_fast_perturbation_amplification"] for r in subset],
                      marker=MARKERS[method], linestyle=LINESTYLES[method],
                      color=COLORS[method], label=LABELS[method])
-        axes[1].semilogy([r["h"] for r in subset],
+        axes[1].loglog([r["h"] for r in subset],
                          [r["terminal_exact_error"] for r in subset],
                          marker=MARKERS[method], linestyle=LINESTYLES[method],
                          color=COLORS[method], label=LABELS[method])
@@ -385,7 +391,7 @@ def stability_sweep(out: Path, x0: np.ndarray) -> dict:
             "failed_runs": [f"{r['method']} h={r['h']:.6g}" for r in rows if r["status"] != "ok"]}
 
 
-def adaptivity(out: Path, x0: np.ndarray) -> dict:
+def adaptivity(out: Path, data_dir: Path, x0: np.ndarray) -> dict:
     y0 = vectorize(x0)
     settings = {"atol": 1e-8, "rtol": 1e-6, "initial_step": 0.15}
     rows = []
@@ -412,11 +418,11 @@ def adaptivity(out: Path, x0: np.ndarray) -> dict:
            title="Step doubling resolves the fast initial transient")
     ax.legend()
     _save(fig, out / "adaptive_steps.png")
-    _csv(out / "adaptive_steps.csv", rows)
+    _csv(data_dir / "adaptive_steps.csv", rows)
     return {"settings": settings, "methods": summary}
 
 
-def rank_deficient(out: Path) -> dict:
+def rank_deficient(out: Path, data_dir: Path) -> dict:
     x0 = benchmark((0.0, 1.4, 3.0))
     sol = solve_fixed("rk4", rhs, jacobian, vectorize(x0), (0, 8.0), 1600)
     matrices = [unvectorize(y) for y in sol.y]
@@ -434,7 +440,7 @@ def rank_deficient(out: Path) -> dict:
            title="Rank-deficient initial matrix retains its zero mode")
     ax.legend()
     _save(fig, out / "rank_deficient.png")
-    _csv(out / "rank_deficient.csv", [
+    _csv(data_dir / "rank_deficient.csv", [
         {"t": t, "s1": s[0], "s2": s[1], "s3": s[2],
          "exact_s1": se[0], "exact_s2": se[1], "exact_s3": se[2]}
         for t, s, se in zip(sol.t, singular, exact_singular)])
@@ -446,22 +452,23 @@ def rank_deficient(out: Path) -> dict:
             "exact_final_error": float(np.linalg.norm(final - exact_matrix(8.0, x0), "fro"))}
 
 
-def run_all(output_dir: Path) -> dict:
-    output_dir.mkdir(parents=True, exist_ok=True)
+def run_all(figure_dir: Path, data_dir: Path) -> dict:
+    figure_dir.mkdir(parents=True, exist_ok=True)
+    data_dir.mkdir(parents=True, exist_ok=True)
     _style()
     x0 = benchmark()
     result = {"interval": [0.0, T_END], "benchmark_singular_values": [0.2, 1.4, 3.0],
               "software": {"python": platform.python_version(), "numpy": np.__version__,
                            "scipy": scipy.__version__, "matplotlib": matplotlib.__version__},
               "newton_residual_tolerance": NEWTON_TOL,
-              "convergence": convergence(output_dir, x0),
-              "cost_accuracy": cost_accuracy(output_dir, x0),
-              "independent_oracle": oracle(output_dir, x0),
-              "trajectory": trajectory(output_dir, x0),
-              "stability_regions": stability_regions(output_dir, x0),
-              "stability_sweep": stability_sweep(output_dir, x0),
-              "adaptivity": adaptivity(output_dir, x0),
-              "rank_deficient": rank_deficient(output_dir)}
-    (output_dir / "summary.json").write_text(json.dumps(result, indent=2, allow_nan=False),
+              "convergence": convergence(figure_dir, data_dir, x0),
+              "cost_accuracy": cost_accuracy(figure_dir, data_dir, x0),
+              "independent_oracle": oracle(x0),
+              "trajectory": trajectory(figure_dir, data_dir, x0),
+              "stability_regions": stability_regions(figure_dir, x0),
+              "stability_sweep": stability_sweep(figure_dir, data_dir, x0),
+              "adaptivity": adaptivity(figure_dir, data_dir, x0),
+              "rank_deficient": rank_deficient(figure_dir, data_dir)}
+    (data_dir / "summary.json").write_text(json.dumps(result, indent=2, allow_nan=False),
                                              encoding="utf-8")
     return result

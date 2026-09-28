@@ -1,35 +1,39 @@
-# MTH321 Project 1 / MTH321 项目一
+# MTH321 Project 1 — Topic ⑤
 
-**English:** [README_EN.md](README_EN.md) explains setup, every source file,
-all eight generated figures, their CSV data, and the experiment settings.
+当前交付为 [report_v2](report_v2/README.md)：第 2、3、4 节和附录 C。
+本次不编写第 1、5 节，供小组整合到最终报告。
+[report_v1](report_v1/README.md) 原样保留。
+版本、Git 标签和恢复方法见 [版本索引](notes/REPORT_VERSIONS.md)。
 
-**中文：** [README_ZH.md](README_ZH.md) 说明安装运行、每个代码文件、
-八张图片、对应 CSV，以及实验参数。
+Current delivery: Sections 2–4 and Appendix C, ready for team integration.
+The previous report_v1 is preserved. See the version index for recovery.
 
-The aligned report is [Section2Draft_v5.tex](report_v1/Section2Draft_v5.tex),
-and the revision record is [CHANGELOG_V5.md](CHANGELOG_V5.md).
-对应的 v5 理论正文及逐项修改记录见上述两个文件。
-The `report/` directory contains earlier drafts; `report_v1/` is the current submission.
-`report/` 保存早期草稿；当前提交版在 `report_v1/`。
+## 运行 / Run
 
-The code-only acceptance record is in
-[report_v1/checklist/](report_v1/checklist/README.md); runnable tests are in [test/](test/).
-代码验收清单保留在 `report_v1/checklist/`；可运行测试位于与 `code/` 平级的 `test/`。
-
-The eight report images are committed under [report_v1/figures/](report_v1/figures/).
-八张报告图片随 `report_v1/figures/` 一起提交；运行代码也可重新生成。
-
-The two runnable code versions implement the same algorithms:
-`code/` has English documentation, and `code_zh/` has Chinese documentation.
-两套代码的算法相同：`code/` 是英文注释版，`code_zh/` 是中文注释版。
-
-From this directory / 在本目录运行：
+在本目录运行 / Run from this directory:
 
 ```powershell
 python -m pip install -r requirements.txt
-python code/run_all.py       # English source / 英文源码
-python code_zh/run_all.py    # Chinese source / 中文源码
+python -B code/run_all.py
+python -B code_zh/run_all.py
 python -B -m unittest discover -s test -v
 ```
 
-Each run writes its own `figures/` directory. / 两套代码分别写入各自的 `figures/` 目录。
+## 目录 / Layout
+
+| 目录 | 用途 / Purpose |
+|---|---|
+| `code/` | 英文注释源码；English source only. |
+| `code_zh/` | 中文注释的独立源码；independent Chinese source. |
+| `test/` | 两份验证脚本，11 项测试。 |
+| `data/` | 当前运行的六份 CSV 与 summary.json；含字段说明。 |
+| `figures/` | 当前运行的八张 PNG，工作图不提交到 Git。 |
+| `outputs_zh/` | 中文入口独立输出，不提交到 Git。 |
+| `report_v1/` | 保留的上一版报告和图。 |
+| `report_v2/` | 本次 PDF、LaTeX、八图、七份数据、清单和修改记录。 |
+| `notes/` | 版本索引、历史材料；早期 report 草稿在 archive 中。 |
+| `slides/` | 既有小组演示文件，本次不更新。 |
+
+完整说明：[中文 README](README_ZH.md)、[English README](README_EN.md)。
+修复记录：[v2 CHANGELOG](report_v2/CHANGELOG.md)。
+验收证据：[v2 checklist](report_v2/checklist/README.md)。

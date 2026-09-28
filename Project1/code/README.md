@@ -1,20 +1,16 @@
-# Numerical code / 数值代码
+# English source
 
-From `Project1/`, install `requirements.txt` and run `python code/run_all.py`.
-It regenerates eight figures, six CSV datasets and `summary.json` under
-`code/figures/`. All paths are relative to the source files.
+Run `python -B code/run_all.py` from `Project1/` after installing
+`requirements.txt`. PNGs go to project-level `figures/`; CSV/JSON files go
+to `data/`. This directory contains source only.
 
-在 `Project1/` 安装 `requirements.txt` 后运行 `python code/run_all.py`；
-程序会在 `code/figures/` 重建八张图、六份 CSV 和 `summary.json`。
-
-| File | Role / 作用 |
+| File | Purpose |
 |---|---|
-| `model.py` | Matrix flow, Jacobian, exact SVD solution and diagnostics / 矩阵方程、Jacobian、精确解与诊断 |
-| `solvers.py` | Euler, RK4, Implicit Euler, Newton and step doubling / 三种积分法、Newton 与自适应步长 |
-| `experiments.py` | Benchmarks, tables, figure generation and summaries / 数值实验、图表与摘要 |
-| `run_all.py` | One-command entry point / 一键运行入口 |
+| `model.py` | Benchmark, matrix/vector conversion, RHS, analytic Jacobian, finite-time SVD solution and diagnostics. |
+| `solvers.py` | Three methods, damped Newton, fixed/adaptive drivers and work counts. |
+| `experiments.py` | All experiments, eight figures, six CSVs and the JSON summary. |
+| `run_all.py` | Selects output paths and runs every experiment. |
 
-See [English README](../README_EN.md) or [中文 README](../README_ZH.md)
-for the purpose of **each figure** and the matching data file. The eight
-PNG files used in the report are also committed in
-[`../report_v1/figures/`](../report_v1/figures/).
+Details: [English README](../README_EN.md).
+Current chapters: [report_v2](../report_v2/README.md).
+Running the code does not overwrite report snapshots.

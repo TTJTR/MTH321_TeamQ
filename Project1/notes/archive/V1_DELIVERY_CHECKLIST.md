@@ -1,6 +1,8 @@
+> 历史记录：保留原日期与当时结论。当前交付见 [report_v2](../../report_v2/README.md)。
+
 # Project 1 v1 交付说明与清单复核
 
-**代码部分的最新、独立清单：** [`report_v1/checklist/README.md`](report_v1/checklist/README.md)。本文件保留全组提交情况；个人代码交付以新清单为准。
+**代码部分的最新、独立清单：** [`report_v1/checklist/README.md`](../../report_v1/checklist/README.md)。本文件保留全组提交情况；个人代码交付以新清单为准。
 
 复核日期：2026-09-27。这里的 **v1** 指新建的 `report_v1/` 交付目录；其中报告源码名为 `Section2Draft_v5.tex`，表示理论正文经过 v5 修订。核对基准是本机 `课件/Project1/` 中的 `submission_checklist.tex`、`code_review_checklist.tex` 和 `visualization_guide.tex`，以及 `problem_pack.pdf` 第 8–9 页的 Topic ⑤ 题目要求。**可维护性确实是 `code_review_checklist.tex` 第 E 部分的明文要求**；“只判断题目是否完成”的单独结论见 [`CODE_REVIEW_2026-09-27.md`](CODE_REVIEW_2026-09-27.md)。
 
@@ -10,12 +12,12 @@
 
 | 交付物 | 现有内容与位置 |
 |---|---|
-| 报告 | [`report_v1/Section2Draft_v5.tex`](report_v1/Section2Draft_v5.tex) 与 [29 页 PDF](report_v1/Section2Draft_v5.pdf)。正文包含模型、三种方法、稳定性、实现、数值实验、结论和参考文献；附录已建立 AI Log 与 ICS 结构。 |
-| 代码 | 英文版 [`code/`](code/) 与中文注释版 [`code_zh/`](code_zh/) 各四个 Python 文件，均可独立运行。实现显式 Euler、经典 RK4、隐式 Euler、阻尼 Newton、固定网格与步长加倍自适应控制。 |
-| 数值证据 | [`code/figures/summary.json`](code/figures/summary.json)、六份 CSV 和八张报告图。报告图保存在 [`report_v1/figures/`](report_v1/figures/)；中英文入口分别重建自己的 `figures/`。 |
-| 说明 | [`README_EN.md`](README_EN.md)、[`README_ZH.md`](README_ZH.md)、两版代码目录 README、[`report_v1/README.md`](report_v1/README.md) 说明安装、文件职责、重现命令及每张图的用途。 |
-| 验证 | [`test/test_validation.py`](test/test_validation.py) 与 [`test/test_bilingual_parity.py`](test/test_bilingual_parity.py)；2026-09-27 重跑中英文入口和 10 项测试，均成功。 |
-| 幻灯片 | 本地有 [`slides/Topic5_presentation.tex`](slides/Topic5_presentation.tex) 和 11 页 PDF 初稿；未包含在上次确认的 GitHub 提交中，展示批次、讲者与实际计时仍待确认。 |
+| 报告 | [`report_v1/Section2Draft_v5.tex`](../../report_v1/Section2Draft_v5.tex) 与 [29 页 PDF](../../report_v1/Section2Draft_v5.pdf)。正文包含模型、三种方法、稳定性、实现、数值实验、结论和参考文献；附录已建立 AI Log 与 ICS 结构。 |
+| 代码 | 英文版 [`code/`](../../code/) 与中文注释版 [`code_zh/`](../../code_zh/) 各四个 Python 文件，均可独立运行。实现显式 Euler、经典 RK4、隐式 Euler、阻尼 Newton、固定网格与步长加倍自适应控制。 |
+| 数值证据 | [`code/figures/summary.json`](https://github.com/TTJTR/MTH321_TeamQ/blob/371cb73/Project1/code/figures/summary.json)、六份 CSV 和八张报告图。报告图保存在 [`report_v1/figures/`](../../report_v1/figures/)；中英文入口分别重建自己的 `figures/`。 |
+| 说明 | [`README_EN.md`](../../README_EN.md)、[`README_ZH.md`](../../README_ZH.md)、两版代码目录 README、[`report_v1/README.md`](../../report_v1/README.md) 说明安装、文件职责、重现命令及每张图的用途。 |
+| 验证 | [`test/test_validation.py`](../../test/test_validation.py) 与 [`test/test_bilingual_parity.py`](../../test/test_bilingual_parity.py)；2026-09-27 重跑中英文入口和 10 项测试，均成功。 |
+| 幻灯片 | 本地有 [`slides/Topic5_presentation.tex`](../../slides/Topic5_presentation.tex) 和 11 页 PDF 初稿；未包含在上次确认的 GitHub 提交中，展示批次、讲者与实际计时仍待确认。 |
 
 ### 已修复的理论与实现瑕疵
 
@@ -36,11 +38,11 @@
 
 | 文件/位置 | 职责及对应关系 |
 |---|---|
-| [`code/model.py`](code/model.py)；中文对应 [`code_zh/model.py`](code_zh/model.py) | `benchmark` 构造指定初值；`vectorize`/`unvectorize` 使用列优先顺序；`rhs` 和 `jacobian` 给出模型与解析 Jacobian；`exact_matrix` 重建有限时间 SVD 精确解；其余函数计算能量、奇异值及正交性诊断。 |
-| [`code/solvers.py`](code/solvers.py) 第 53 行 `_one_step`；中文对应 [`code_zh/solvers.py`](code_zh/solvers.py) | 三种单步格式及隐式 Euler 的阻尼 Newton。Euler/RK4 阶段参数、隐式残差 `F` 和残差 Jacobian `I-hJ_f` 均在此处。 |
+| [`code/model.py`](../../code/model.py)；中文对应 [`code_zh/model.py`](../../code_zh/model.py) | `benchmark` 构造指定初值；`vectorize`/`unvectorize` 使用列优先顺序；`rhs` 和 `jacobian` 给出模型与解析 Jacobian；`exact_matrix` 重建有限时间 SVD 精确解；其余函数计算能量、奇异值及正交性诊断。 |
+| [`code/solvers.py`](../../code/solvers.py) 第 53 行 `_one_step`；中文对应 [`code_zh/solvers.py`](../../code_zh/solvers.py) | 三种单步格式及隐式 Euler 的阻尼 Newton。Euler/RK4 阶段参数、隐式残差 `F` 和残差 Jacobian `I-hJ_f` 均在此处。 |
 | `code/solvers.py` 第 94 行 `solve_fixed`、第 114 行 `solve_adaptive` | 固定网格供收敛阶实验；自适应求解使用一个全步、两个半步及归一化误差控制，失败步从最后接受状态重试。 |
-| [`code/experiments.py`](code/experiments.py) 第 57–424 行 | `convergence`、`oracle`、`trajectory`、`stability_regions`、`cost_accuracy`、`stability_sweep`、`adaptivity`、`rank_deficient`；第 424 行 `run_all` 汇总结果并写出 `summary.json`。中文对应 [`code_zh/experiments.py`](code_zh/experiments.py)。 |
-| [`code/run_all.py`](code/run_all.py)、[`code_zh/run_all.py`](code_zh/run_all.py) | 两版命令行入口。应从 `Project1/` 执行 `python code/run_all.py` 或 `python code_zh/run_all.py`。 |
+| [`code/experiments.py`](../../code/experiments.py) 第 57–424 行 | `convergence`、`oracle`、`trajectory`、`stability_regions`、`cost_accuracy`、`stability_sweep`、`adaptivity`、`rank_deficient`；第 424 行 `run_all` 汇总结果并写出 `summary.json`。中文对应 [`code_zh/experiments.py`](../../code_zh/experiments.py)。 |
+| [`code/run_all.py`](../../code/run_all.py)、[`code_zh/run_all.py`](../../code_zh/run_all.py) | 两版命令行入口。应从 `Project1/` 执行 `python code/run_all.py` 或 `python code_zh/run_all.py`。 |
 | 报告第 2.1 节，第 379–422 行，PDF 第 7 页 | **Algorithm 1：隐式 Euler 一步求解的阻尼 Newton 伪代码**，对应 `_one_step` 隐式分支；包括停止阈值、线搜索和失败信号。 |
 | 报告第 3.1 节，第 1035–1078 行，PDF 第 19 页 | **Algorithm 2：步长加倍自适应积分伪代码**，对应 `solve_adaptive`；包括局部误差、接受/拒绝、步长更新和隐式解失败重试。 |
 | 报告第 2.1 节、第 3.1 节 | 三种方法的单步公式与固定网格规则。报告没有再单独重复三份几乎等同于公式的伪代码，也没有独立伪代码 `.md` 文件。 |

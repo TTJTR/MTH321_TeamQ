@@ -76,7 +76,8 @@ class PolarFlowValidation(unittest.TestCase):
         for method, coarse, fine, lower, upper in (
             ("euler", 160, 320, 0.9, 1.1),
             ("implicit_euler", 160, 320, 0.9, 1.1),
-            ("rk4", 1280, 2560, 3.7, 4.2),
+            # Avoid the finest experiment grid, whose error is near round-off scale.
+            ("rk4", 640, 1280, 3.7, 4.2),
         ):
             with self.subTest(method=method):
                 errors = []
@@ -88,14 +89,28 @@ class PolarFlowValidation(unittest.TestCase):
                 self.assertLess(observed, upper)
 
     def test_adaptive_controller_changes_step_and_respects_local_budget(self):
-        result = solve_adaptive("rk4", rhs, jacobian, self.y0, (0, 2), 0.15,
-                                atol=1e-8, rtol=1e-6)
-        steps = np.diff(result.t)
-        self.assertEqual(result.t[-1], 2.0)
-        self.assertGreater(np.max(steps) / np.min(steps), 2)
-        self.assertLessEqual(np.max(result.error_ratios), 1)
-        self.assertLess(np.linalg.norm(unvectorize(result.y[-1]) -
-                                       exact_matrix(2, self.x0)), 1e-5)
+        for method in ("euler", "rk4", "implicit_euler"):
+            with self.subTest(method=method):
+                result = solve_adaptive(method, rhs, jacobian, self.y0, (0, 2), 0.15,
+                                        atol=1e-8, rtol=1e-6)
+                steps = np.diff(result.t)
+                self.assertEqual(result.t[-1], 2.0)
+                self.assertGreater(np.max(steps) / np.min(steps), 2)
+                self.assertLessEqual(np.max(result.error_ratios), 1)
+                # Independently check global error; a local budget is not a global bound.
+                bound = 1e-5 if method == "rk4" else 1e-4
+                self.assertLess(np.linalg.norm(unvectorize(result.y[-1]) -
+                                               exact_matrix(2, self.x0)), bound)
+
+    def test_resolved_singular_values_approach_one_without_crossing(self):
+        for method in ("euler", "rk4", "implicit_euler"):
+            with self.subTest(method=method):
+                result = solve_fixed(method, rhs, jacobian, self.y0, (0, 2), 400)
+                matrices = [unvectorize(row) for row in result.y]
+                singular = np.asarray([singular_values(x) for x in matrices])
+                self.assertTrue(np.all(np.diff(np.abs(singular - 1), axis=0) <= 1e-10))
+                self.assertTrue(np.all((singular - 1) * (singular[0] - 1) >= -1e-10))
+                self.assertTrue(np.all(np.diff([energy(x) for x in matrices]) <= 1e-12))
 
     def test_adaptive_can_finish_on_last_allowed_attempt(self):
         equilibrium = vectorize(np.eye(3))
@@ -118,6 +133,11 @@ class PolarFlowValidation(unittest.TestCase):
         self.assertTrue(np.all(np.diff(energies) <= 1e-12))
         self.assertLess(max(singular_values(x)[-1] for x in matrices), 1e-12)
         self.assertAlmostEqual(orthogonality_defect(matrices[-1]), 1, places=8)
+        np.testing.assert_allclose(singular_values(matrices[-1])[:2],
+                                   [1, 1], rtol=0, atol=1e-6)
+        left, initial_singular, right = np.linalg.svd(x_zero)
+        partial_isometry = (left * (initial_singular > 1e-12)) @ right
+        self.assertLess(np.linalg.norm(matrices[-1] - partial_isometry, "fro"), 1e-6)
 
 
 if __name__ == "__main__":

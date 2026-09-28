@@ -6,9 +6,12 @@ from experiments import run_all
 
 
 if __name__ == "__main__":
-    destination = Path(__file__).resolve().parent / "figures"
-    result = run_all(destination)
-    print(f"Generated all results in {destination}")
+    project_root = Path(__file__).resolve().parents[1]
+    figure_dir = project_root / "figures"
+    data_dir = project_root / "data"
+    result = run_all(figure_dir, data_dir)
+    print(f"Generated figures in {figure_dir}")
+    print(f"Generated numerical data in {data_dir}")
     print("Observed convergence slopes:")
     for method, info in result["convergence"].items():
         print(f"  {method}: {info['asymptotic_fit_slope']:.3f}")

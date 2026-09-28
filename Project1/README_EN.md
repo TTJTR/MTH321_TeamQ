@@ -9,17 +9,18 @@ SciPy 1.13.1 and Matplotlib 3.8.4.
 ```powershell
 python -m venv .venv
 .venv\Scripts\python -m pip install -r requirements.txt
-.venv\Scripts\python code/run_all.py
-.venv\Scripts\python code_zh/run_all.py
+.venv\Scripts\python -B code/run_all.py
+.venv\Scripts\python -B code_zh/run_all.py
 .venv\Scripts\python -B -m unittest discover -s test -v
 ```
 
-Each `run_all.py` rebuilds the PNG figures, CSV data and `summary.json` in its
-own `figures/` directory. The two source trees are independently runnable:
-`code/` has English comments and `code_zh/` has Chinese comments. Function
-names, data columns and plot labels are shared so that results can be compared
-and inserted into an English report. `summary.json` records the Python and
-library versions used for each run.
+
+The English entry writes eight PNGs to project-level `figures/` and six
+CSVs plus `summary.json` to `data/`. The Chinese entry writes matching
+files to `outputs_zh/figures/` and `outputs_zh/data/`.
+Both source directories contain code only; running either entry does not
+overwrite archived reports. Function names, data columns and plot labels
+are shared for comparison. The JSON records actual software versions.
 
 ## Model and verification
 
@@ -50,24 +51,31 @@ one of the three methods being compared.
 | `code/run_all.py` | English command-line entry point; calls every experiment and prints the fitted orders and reference disagreement. |
 | `code_zh/model.py` | Chinese-commented, independently runnable counterpart of `code/model.py`. |
 | `code_zh/solvers.py` | Chinese-commented counterpart of `code/solvers.py` with the same numerical behavior. |
-| `code_zh/experiments.py` | Chinese-commented counterpart of `code/experiments.py`; writes to `code_zh/figures/`. |
+| `code_zh/experiments.py` | Chinese-commented counterpart of `code/experiments.py`; takes separate figure and data destinations from the entry point. |
 | `code_zh/run_all.py` | Chinese command-line entry point. |
 | `test/test_validation.py` | Checks the analytic Jacobian against finite differences, both full spectra, the energy identity, the diagonal scalar sanity case, the SVD/Radau comparison, convergence orders, adaptive behavior and the rank-deficient case. |
 | `test/test_bilingual_parity.py` | Runs both source trees separately and compares their model, fixed-step and adaptive numerical outputs. |
-| `report_v1/checklist/README.md` | Code-only acceptance checklist, evidence, figure mapping and reproduction commands. |
+| `report_v2/checklist/README.md` | Code-only acceptance checklist, evidence, figure mapping and reproduction commands. |
+| `report_v2/sections/section2.tex` | Theory and Newton pseudocode (Algorithm 1). |
+| `report_v2/sections/section3.tex` | Implementation and adaptive pseudocode (Algorithm 2). |
+| `report_v2/sections/section4.tex` | Experiments, results and verification coverage. |
+| `report_v2/appendices/appendix_c.tex` | Data/figure map, field dictionary and extracts. |
+| `notes/REPORT_VERSIONS.md` | Versions, tags and recovery instructions. |
 | `requirements.txt` | Lists NumPy, SciPy and Matplotlib. |
 | `CODE_HANDOFF.md` | Numbers and interpretation for integrating the code results into report Sections 3–4. |
-| `report_v1/Section2Draft_v5.tex` | Corrected v5 theory/report with pseudocode matched to the completed implementation; compiles directly against the eight committed images in `report_v1/figures/`. |
+| `report_v2/report.tex` | Standalone Sections 2–4 and Appendix C; pseudocode matches the implementation and figures/data are bundled. |
 | `slides/Topic5_presentation.tex` | Source for the 11-slide presentation draft; `slides/Topic5_presentation.pdf` is the compiled deck. |
-| `CHANGELOG_V5.md` | Records each theory/code correction, reproducible evidence, and the team-specific items left for submission. |
+| `report_v2/CHANGELOG.md` | Records v2 changes, verified results and the chapter delivery scope. |
 
 ## What each figure shows
 
-The filenames below are generated under `code/figures/`. The Chinese code generates
-the same filenames under `code_zh/figures/`. The eight report PNGs are committed under
-`report_v1/figures/` so the LaTeX source builds without first running the code.
-The English run's six CSV files and `summary.json` are committed as numerical
-evidence; the Chinese run regenerates its own matching outputs locally.
+
+The English run generates these PNGs in `figures/` and companion data in
+`data/`. The Chinese run uses `outputs_zh/`. The current report bundles
+eight PNGs in `report_v2/figures/` and six CSVs plus JSON in
+`report_v2/data/`, so compilation does not require running Python first.
+Appendix C provides their mapping, field definitions and numerical extracts.
+`report_v1/` remains unchanged.
 
 | Figure | Meaning and companion data |
 |---|---|
@@ -107,3 +115,13 @@ wall-clock ranking. The Lyapunov identity panel uses a finite difference
 along a numerical trajectory and the exact rate at the midpoint; its
 nonzero residual reflects discretization. The reported *scaled* residual
 divides by `max(1, |rate|)` and is not a pure relative error.
+
+
+## Current chapter delivery
+
+`report_v2/report.pdf` includes Sections 2, 3, 4 and Appendix C.
+Sections 1 and 5 and team submission forms are separate team work.
+All 11 tests passed, including adaptivity and bilingual parity for all three
+methods. See `report_v2/checklist/README.md` for evidence.
+Future snapshots use `report_v3/` or `report_final/`; see
+[the version index](notes/REPORT_VERSIONS.md) for Git tags and recovery.

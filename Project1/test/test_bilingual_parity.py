@@ -24,18 +24,20 @@ result = {
     'jacobian': jacobian(0, y0).tolist(),
     'exact_t2': exact_matrix(2, x0).tolist(),
     'fixed': {},
+    'adaptive': {},
 }
 for method in ('euler', 'rk4', 'implicit_euler'):
     solution = solve_fixed(method, rhs, jacobian, y0, (0, 2), 80)
     result['fixed'][method] = solution.y[-1].tolist()
-adaptive = solve_adaptive('rk4', rhs, jacobian, y0, (0, 2), 0.15,
-                          atol=1e-8, rtol=1e-6)
-result['adaptive'] = {
-    'time': adaptive.t.tolist(),
-    'final': adaptive.y[-1].tolist(),
-    'errors': adaptive.error_ratios.tolist(),
-    'rejected': adaptive.rejected,
-}
+for method in ('euler', 'rk4', 'implicit_euler'):
+    adaptive = solve_adaptive(method, rhs, jacobian, y0, (0, 2), 0.15,
+                              atol=1e-8, rtol=1e-6)
+    result['adaptive'][method] = {
+        'time': adaptive.t.tolist(),
+        'final': adaptive.y[-1].tolist(),
+        'errors': adaptive.error_ratios.tolist(),
+        'rejected': adaptive.rejected,
+    }
 print(json.dumps(result))
 """
 
@@ -58,10 +60,14 @@ class BilingualParity(unittest.TestCase):
             with self.subTest(method=method):
                 np.testing.assert_allclose(english["fixed"][method],
                                            chinese["fixed"][method], rtol=0, atol=1e-14)
-        self.assertEqual(english["adaptive"]["rejected"], chinese["adaptive"]["rejected"])
-        for key in ("time", "final", "errors"):
-            np.testing.assert_allclose(english["adaptive"][key],
-                                       chinese["adaptive"][key], rtol=0, atol=1e-14)
+        for method in ("euler", "rk4", "implicit_euler"):
+            with self.subTest(adaptive_method=method):
+                self.assertEqual(english["adaptive"][method]["rejected"],
+                                 chinese["adaptive"][method]["rejected"])
+                for key in ("time", "final", "errors"):
+                    np.testing.assert_allclose(english["adaptive"][method][key],
+                                               chinese["adaptive"][method][key],
+                                               rtol=0, atol=1e-14)
 
 
 if __name__ == "__main__":

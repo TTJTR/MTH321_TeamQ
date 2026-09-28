@@ -1,0 +1,136 @@
+\section{Implementation}
+% ============================================================
+
+\subsection{Algorithm}
+The three one-step updates are \eqref{eq:explicit_euler},
+\eqref{eq:rk4_update}, and \eqref{eq:implicit_euler}; the last calls
+Algorithm~\ref{alg:implicit_euler_newton}. For a fixed-grid convergence
+run, the implementation chooses an integer $N$, sets
+$h=(T-t_0)/N$, and performs exactly $N$ updates. A failed nonlinear
+solve raises an error so that no grid is silently changed.
+Algorithm~\ref{alg:adaptive} describes the separate adaptive
+controller implemented for all three base methods. A standard
+treatment of these one-step methods appears in \cite{hairer1993}.
+
+\begin{algorithm}[htbp]
+\caption{Step-doubling adaptive integration}
+\label{alg:adaptive}
+\footnotesize
+\begin{algorithmic}[1]
+\Require Method $\Psi_h$ of order $p$; $t_0,\mathbf y_0,T,h$;
+  $\mathrm{atol}>0$, $\mathrm{rtol}\geq0$.
+\Ensure Accepted trajectory ending at $T$, or a reported failure.
+\State $(t,\mathbf y)\gets(t_0,\mathbf y_0)$
+\While{$t<T$ and the trial limit is not exhausted}
+    \State $h\gets\min\{h,T-t\}$
+    \If{$h$ falls below the permitted minimum away from the final endpoint}
+        \State \Return failure
+    \EndIf
+    \State Try $\mathbf y_c=\Psi_h(t,\mathbf y)$,
+      $\mathbf y_m=\Psi_{h/2}(t,\mathbf y)$, and
+      $\mathbf y_f=\Psi_{h/2}(t+h/2,\mathbf y_m)$
+    \If{a nonlinear one-step solve reports failure}
+        \State Reject; $h\gets h/2$; \textbf{continue} from $(t,\mathbf y)$
+    \EndIf
+    \State $\widehat{\mathbf e}\gets
+      (\mathbf y_f-\mathbf y_c)/(2^p-1)$
+    \State $s_i\gets \mathrm{atol}+
+      \mathrm{rtol}\max\{|y_i|,|y_{f,i}|\}$;
+      $E\gets\max_i|\widehat e_i|/s_i$
+    \If{$E$ is non-finite}
+        \State $E\gets\infty$
+    \EndIf
+    \If{$E\leq1$}
+        \State Accept: $(t,\mathbf y)\gets(t+h,\mathbf y_f)$;
+          store the time, state, actual $h$, and $E$
+        \If{$t=T$}
+            \State \Return accepted trajectory
+        \EndIf
+    \Else
+        \State Reject; keep $(t,\mathbf y)$ unchanged
+    \EndIf
+    \State $r\gets 2$ if $E=0$; otherwise
+      $r\gets\operatorname{clip}(0.9E^{-1/(p+1)},0.2,2)$
+    \State $h\gets rh$
+\EndWhile
+\State \Return failure if $T$ was not reached
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Code Structure}
+\begin{table}[H]
+\centering
+\begin{tabular}{lp{0.68\textwidth}}
+\toprule
+\textbf{File} & \textbf{Purpose} \\
+\midrule
+\texttt{code/model.py} & Topic~5 benchmark, column-major vectorization,
+  matrix RHS, analytic Jacobian, exact SVD solution, and diagnostics. \\
+\texttt{code/solvers.py} & Explicit Euler, RK4, Implicit Euler with
+  damped Newton, fixed-grid and adaptive drivers, and work counters. \\
+\texttt{code/experiments.py} & Convergence, reference, stability,
+  trajectory, adaptivity, cost, and rank-deficient experiments;
+  exports PNGs to \path{figures/}, and CSV/JSON to \path{data/}. \\
+\texttt{code/run\_all.py} & One command regenerates every report figure. \\
+\texttt{code\_zh/} & Independently runnable Chinese-commented version of
+  the same four modules. \\
+\texttt{test/} & Model, order, geometry, adaptivity, and bilingual
+  parity checks for all three methods. \\
+\texttt{report\_v2/data/} & Frozen CSV/JSON evidence documented in Appendix~\ref{sec:appendix_c}. \\
+\bottomrule
+\end{tabular}
+\caption{Files used to reproduce the numerical results.}
+\label{tab:code_structure}
+\end{table}
+
+
+\subsection{Output Layout and Reproduction}
+Run \texttt{python code/run\_all.py} from \path{Project1/}.
+The source directory contains only source and documentation.
+Eight regenerated images are written to the sibling \path{figures/}
+directory, while six CSV files and \path{summary.json} are written
+to \path{data/}. The Chinese-commented implementation is independently
+run with \texttt{python code\_zh/run\_all.py}; its isolated outputs are in
+\path{outputs_zh/figures/} and \path{outputs_zh/data/}.
+All paths are resolved from the entry-point file rather than a
+machine-specific drive or the shell's current directory.
+
+This report version bundles its own \path{figures/} and \path{data/}
+snapshots. Appendix~\ref{sec:appendix_c} maps every evidence file to
+its figures, fields, and claims. Reproduction writes to the project-level
+output directories; it does not overwrite archived report versions.
+\texttt{python -B -m unittest discover -s test -v} runs the numerical
+and bilingual checks. The version index in
+\path{notes/REPORT_VERSIONS.md} identifies the current report and
+the Git tags used to recover earlier complete project states.
+
+\subsection{Key Design Decisions}
+The state is a nine-component column-major vector
+$\operatorname{vec}(X)$ throughout. The analytic Fr\'echet derivative
+\eqref{eq:topic5_frechet_derivative} supplies Newton's Jacobian;
+Newton starts from the previous accepted state and uses the
+scale-aware residual threshold
+$\|F(w)\|_\infty\leq10^{-12}(1+\|w\|_\infty)$.
+Backtracking accepts only a finite candidate whose \emph{complete}
+residual decreases. The adaptive controller accepts two half steps,
+not a Richardson-corrected state, so its base method retains order
+$p$. It reports accepted and rejected trials separately. The exact
+SVD solution is excluded from all solver steps and is used only for
+validation; an independently integrated Radau trajectory through
+SciPy provides a second check \cite{virtanen2020}. Both English- and Chinese-commented implementations
+generate the same numerical summary. Dependencies, invocation
+commands, and every generated figure are documented in the two
+README files.
+
+As an independent check of the implicit-step Jacobian, we use the
+benchmark vector $y_0=\operatorname{vec}(X_0)$, $h=0.05$, and direction
+$v=(0.1,0.2,\ldots,0.9)^T$. With
+$F(w)=w-y_0-hf(h,w)$ and $\varepsilon=10^{-6}$, the centred difference
+$[F(y_0+\varepsilon v)-F(y_0-\varepsilon v)]/(2\varepsilon)$ differs
+from $(I-hJ_f(y_0))v$ by $3.68\times10^{-10}$ in the infinity norm.
+This checks the complete residual derivative, including the identity
+term; the reproducible calculation is in
+\texttt{test/test\_validation.py}.
+
+\newpage
+% ============================================================

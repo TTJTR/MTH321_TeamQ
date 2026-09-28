@@ -9,15 +9,18 @@ Matplotlib 3.8.4 生成。
 ```powershell
 python -m venv .venv
 .venv\Scripts\python -m pip install -r requirements.txt
-.venv\Scripts\python code/run_all.py
-.venv\Scripts\python code_zh/run_all.py
+.venv\Scripts\python -B code/run_all.py
+.venv\Scripts\python -B code_zh/run_all.py
 .venv\Scripts\python -B -m unittest discover -s test -v
 ```
 
-每个 `run_all.py` 都会重建其目录下 `figures/` 的 PNG 图片、CSV 数据及
-`summary.json`。`code/` 是英文注释源码，`code_zh/` 是可以独立运行的
-中文注释源码。两版保留相同的函数名、数据列名和英文图标签，便于核对输出
-并把图片放入英文报告。`summary.json` 记录运行时 Python 和依赖库版本。
+
+英文入口把八张 PNG 写到项目级 `figures/`，把六份 CSV 和
+`summary.json` 写到 `data/`。中文入口使用独立的
+`outputs_zh/figures/` 和 `outputs_zh/data/`。
+两个源码目录只放代码；运行入口不会覆盖已归档报告。
+两版保留相同的函数名、数据列名和英文图标签，便于核对并放入英文报告。
+`summary.json` 记录运行时 Python 和依赖库版本。
 
 ## 数学模型与验证基准
 
@@ -45,24 +48,31 @@ X(0)  = R(0.4) diag(0.2, 1.4, 3) R(-0.7)^T .
 | `code/run_all.py` | 英文版命令行入口；调用全部实验并打印拟合收敛阶与独立参考解差异。 |
 | `code_zh/model.py` | `code/model.py` 的中文注释、独立运行版本。 |
 | `code_zh/solvers.py` | `code/solvers.py` 的中文注释版本，数值行为一致。 |
-| `code_zh/experiments.py` | `code/experiments.py` 的中文注释版本，输出到 `code_zh/figures/`。 |
+| `code_zh/experiments.py` | `code/experiments.py` 的中文注释版本，由入口分别传入图片和数据输出目录。 |
 | `code_zh/run_all.py` | 中文版命令行入口。 |
 | `test/test_validation.py` | 核对解析 Jacobian 与有限差分、初始及平衡态完整谱、能量恒等式、对角初值标量 sanity check、SVD/Radau 结果、三方法收敛阶、自适应行为及秩亏情形。 |
 | `test/test_bilingual_parity.py` | 分别运行中英文源码并比较模型、固定步和自适应输出。 |
-| `report_v1/checklist/README.md` | 仅针对代码的验收清单、证据、图片对应关系和复现命令。 |
+| `report_v2/checklist/README.md` | 仅针对代码的验收清单、证据、图片对应关系和复现命令。 |
+| `report_v2/sections/section2.tex` | 理论和 Newton 伪代码（Algorithm 1）。 |
+| `report_v2/sections/section3.tex` | 实现和自适应伪代码（Algorithm 2）。 |
+| `report_v2/sections/section4.tex` | 实验、结果和验证覆盖。 |
+| `report_v2/appendices/appendix_c.tex` | 数据/图对应、字段字典和摘录。 |
+| `notes/REPORT_VERSIONS.md` | 保留版本、Git 标签和恢复说明。 |
 | `requirements.txt` | 列出 NumPy、SciPy、Matplotlib 三项依赖。 |
 | `CODE_HANDOFF.md` | 供报告第 3–4 节使用的具体数字和解释。 |
-| `report_v1/Section2Draft_v5.tex` | 已修正的 v5 理论/报告，伪代码与最终实现一致；直接引用 `report_v1/figures/` 中随报告提交的八张图片。 |
+| `report_v2/report.tex` | 第 2–4 节与附录 C 的独立章节交付；伪代码与实现一致，图片和数据随版本保存。 |
 | `slides/Topic5_presentation.tex` | 11 页演示初稿源码；`slides/Topic5_presentation.pdf` 为对应 PDF。 |
-| `CHANGELOG_V5.md` | 逐项记录理论和代码修改、复现证据，以及提交前需由小组填写的内容。 |
+| `report_v2/CHANGELOG.md` | 逐项记录 v2 修改、验证结果和交付范围。 |
 
 ## `figures/` 中每张图是什么
 
-下表以 `code/figures/` 为例；运行中文版将在 `code_zh/figures/`
-生成同名文件。`report_v1/figures/` 同时保存八张提交版图片，LaTeX
-源码无需先运行代码即可编译。
-英文版的六份 CSV 和 `summary.json` 随代码提交，作为数值证据；中文版运行时
-会在本地重新生成相同结果。
+
+英文运行的八张工作图在 `figures/`，对应 CSV/JSON 在 `data/`；
+中文输出在 `outputs_zh/`。本版八张图位于 `report_v2/figures/`，
+六份完整 CSV 和 `summary.json` 位于 `report_v2/data/`，
+无需先运行 Python 即可编译报告。
+附录 C 解释文件—图对应、每列的含义、缺失值和数值摘录。
+`report_v1/` 原样保留，作为上一版报告快照。
 
 | 图片 | 含义及对应数据 |
 |---|---|
@@ -98,3 +108,13 @@ X(0)  = R(0.4) diag(0.2, 1.4, 3) R(-0.7)^T .
 直接当作墙钟时间排名。Lyapunov 残差图用数值轨迹上的能量有限差分及
 中点处连续理论变化率；非零残差反映离散误差。摘要里的“缩放残差”
 以 `max(1, |变化率|)` 为分母，**不是严格的相对误差**。
+
+
+## 当前章节交付与版本
+
+`report_v2/report.pdf` 只交付第 2、3、4 节和附录 C；
+第 1、5 节及团队提交表单由小组另行完成。
+11 项测试全部通过，包括三方法自适应与双语输出一致性。
+证据见 `report_v2/checklist/README.md`。
+以后正式交付可新增 `report_v3/` 或 `report_final/`，
+Git 标签与恢复方法见 [版本索引](notes/REPORT_VERSIONS.md)。

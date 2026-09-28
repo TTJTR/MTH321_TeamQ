@@ -1,16 +1,16 @@
 # Code and numerical-results handoff
 
 This file is for assembling Sections 3 and 4 of the group report. The
-assignment brief and Problem Pack are the requirements; the aligned v5
-report is `report_v1/Section2Draft_v5.tex`. All numbers below come from `python code/run_all.py`
-and are reproducible from `code/figures/summary.json` and the companion CSVs.
+assignment brief and Problem Pack are the requirements; the current chapter
+report is `report_v2/report.tex`. All numbers below come from `python -B code/run_all.py`
+and are reproducible from `data/summary.json` and the companion CSVs.
 
 ## Reproduction and implementation (Section 3)
 
 Run from `Project1` after installing `requirements.txt`:
 
 ```powershell
-python code/run_all.py
+python -B code/run_all.py
 python -B -m unittest discover -s test -v
 ```
 
@@ -102,7 +102,7 @@ meet the same local budget. The final clipped step can be unusually short;
 do not interpret it as renewed stiffness. Use `adaptive_steps.png` and CSV.
 The local error tolerance is not a bound on the *global* terminal error.
 
-## Rank-deficient experiment (Section 4.5)
+## Rank-deficient experiment (Section 4.4)
 
 Replacing `0.2` by zero and integrating over `[0,8]` with RK4 `h=0.005`
 leaves the smallest singular value below `7.1e-15`. The final
@@ -110,13 +110,16 @@ orthogonality defect is `1.0000000000000064`, consistent with a rank-two
 partial isometry rather than an orthogonal matrix. Use
 `rank_deficient.png` and `rank_deficient.csv`.
 
+
 ## Report integration status
 
-The v5 report in `report/Section2Draft_v5.tex` now identifies
-`code/experiments.py` as the generator, includes both stability figures and
-the other six PNGs, and replaces the old Sections 3 and 4 placeholders with
-the measured experiments above. Its implicit Euler argument separates the
-exact-endpoint residual from the one-step error, and its Newton and adaptive
-pseudocode follow the completed code. The remaining team-specific inputs are
-names/IDs, full AI transparency information, and individual contribution
-statements. See `CHANGELOG_V5.md` for the itemized revision record.
+The chapter delivery `report_v2/report.tex` contains Sections 2–4 and
+Appendix C. Modular sources in `report_v2/sections/` are ready for integration.
+Appendix C explains the six complete CSVs and JSON in `report_v2/data/`;
+the eight submitted PNGs are in `report_v2/figures/`.
+
+Newton pseudocode is Algorithm 1 in `sections/section2.tex`; adaptive
+pseudocode is Algorithm 2 in `sections/section3.tex`. Both match the code.
+Sections 1 and 5 are not written here. `report_v1/` is preserved.
+See `report_v2/CHANGELOG.md` and `report_v2/checklist/README.md` for revisions
+and the 11 passing checks.

@@ -1,3 +1,5 @@
+> 历史记录：保留原日期与当时结论。当前交付见 [report_v2](../../report_v2/README.md)。
+
 # v5 修改与复核记录
 
 本文记录 `report/Section2Draft_v5.tex`、中英文代码和运行结果之间的对应关系。理论基线是组员提供的最新 `Section2Draft.tex`／聊天中粘贴的同版正文；项目要求以课程 Problem Pack 的 Topic ⑤ 为准。原始附件没有被改写。
