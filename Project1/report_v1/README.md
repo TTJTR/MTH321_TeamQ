@@ -8,7 +8,9 @@ and check it. 本目录只保留当前报告及其必要的图片、代码验收
 | `Section2Draft_v5.tex` | Editable LaTeX source / 可编辑报告源码 |
 | `Section2Draft_v5.pdf` | Compiled 29-page report / 已编译的 29 页报告 |
 | `figures/` | The eight PNGs cited by the LaTeX source / 正文引用的八张图 |
-| [`checklist/`](checklist/README.md) | Code-only checklist and two runnable verification scripts / 代码清单及两个验证脚本 |
+| [`checklist/`](checklist/README.md) | Code-only checklist and verification evidence / 代码验收清单及验证证据 |
+
+The two verification scripts are in [`../test/`](../test/), alongside `code/`. 两个测试脚本位于同级 `test/`，运行命令为 `python -B -m unittest discover -s test -v`（在 `Project1/` 下执行）。
 
 The figures come from `../code/run_all.py` at 220 DPI. To rebuild the PDF,
 run twice from this directory / 图片由该入口生成；在本目录运行两次：

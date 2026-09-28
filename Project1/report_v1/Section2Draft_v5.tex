@@ -816,7 +816,7 @@ Solving this scalar logistic equation gives the exact finite-time singular value
 \label{eq:singular_value_exact}
 s_i(t)=\frac{s_{i,0}}{\sqrt{s_{i,0}^2+\left(1-s_{i,0}^2\right)e^{-2t}}}.
 \end{equation}
-Thus $0<s_{i,0}<1$ gives monotone increase to $1$, $s_{i,0}>1$ gives monotone decrease to $1$, and $s_{i,0}=0$ remains zero. Scalar solutions cannot cross, so the ordering of the singular values is preserved. For a rank-deficient initial matrix, the limiting matrix is therefore a partial isometry rather than an orthogonal matrix. These facts provide exact diagnostics for the numerical experiments. As an independent sanity check, a positive diagonal initial matrix remains diagonal and each entry follows \eqref{eq:singular_value_exact}; this case is checked against the numerical RK4 trajectory in \texttt{report\_v1/checklist/test\_validation.py}.
+Thus $0<s_{i,0}<1$ gives monotone increase to $1$, $s_{i,0}>1$ gives monotone decrease to $1$, and $s_{i,0}=0$ remains zero. Scalar solutions cannot cross, so the ordering of the singular values is preserved. For a rank-deficient initial matrix, the limiting matrix is therefore a partial isometry rather than an orthogonal matrix. These facts provide exact diagnostics for the numerical experiments. As an independent sanity check, a positive diagonal initial matrix remains diagonal and each entry follows \eqref{eq:singular_value_exact}; this case is checked against the numerical RK4 trajectory in \texttt{test/test\_validation.py}.
 
 The Fr\'echet derivative in a matrix direction $\mathbf{H}$ is the
 operator already derived in \eqref{eq:topic5_frechet_derivative}.
@@ -1101,7 +1101,7 @@ treatment of these one-step methods appears in \cite{hairer1993}.
 \texttt{code/run\_all.py} & One command regenerates every report figure. \\
 \texttt{code\_zh/} & Independently runnable Chinese-commented version of
   the same four modules. \\
-\texttt{report\_v1/checklist/} & Model, order, geometry, adaptivity, and bilingual
+\texttt{test/} & Model, order, geometry, adaptivity, and bilingual
   parity checks. \\
 \bottomrule
 \end{tabular}
@@ -1135,7 +1135,7 @@ $[F(y_0+\varepsilon v)-F(y_0-\varepsilon v)]/(2\varepsilon)$ differs
 from $(I-hJ_f(y_0))v$ by $3.68\times10^{-10}$ in the infinity norm.
 This checks the complete residual derivative, including the identity
 term; the reproducible calculation is in
-\texttt{report\_v1/checklist/test\_validation.py}.
+\texttt{test/test\_validation.py}.
 
 \newpage
 % ============================================================

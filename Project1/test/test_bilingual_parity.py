@@ -9,7 +9,7 @@ from pathlib import Path
 import numpy as np
 
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 PROBE = """
 import json
 import numpy as np
@@ -42,7 +42,7 @@ print(json.dumps(result))
 
 def probe(folder: str) -> dict:
     output = subprocess.check_output(
-        [sys.executable, "-c", PROBE], cwd=ROOT / folder, text=True,
+        [sys.executable, "-B", "-c", PROBE], cwd=ROOT / folder, text=True,
         encoding="utf-8")
     return json.loads(output)
 

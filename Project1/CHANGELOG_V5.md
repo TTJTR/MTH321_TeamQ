@@ -29,10 +29,14 @@
 
 ## 四、实际运行与证据
 
-在 `Project1` 下执行 `python code/run_all.py`、`python code_zh/run_all.py` 和 `python -m unittest discover -s report_v1/checklist -v`，两版运行成功，摘要一致。Topic ⑤ 原题复核后补入环境梯度流与正交群切向投影的区别，并增加对角初值的独立标量 sanity check；现在 10 项测试通过。显式 Euler、RK4、隐式 Euler 的固定步收敛斜率分别为 `1.010`、`3.927`、`1.014`；独立 Radau 解与完整有限时间 SVD 解在终点的 Frobenius 差为 `1.16×10⁻¹³`。
+在 `Project1` 下执行 `python code/run_all.py`、`python code_zh/run_all.py` 和 `python -m unittest discover -s test -v`，两版运行成功，摘要一致。Topic ⑤ 原题复核后补入环境梯度流与正交群切向投影的区别，并增加对角初值的独立标量 sanity check；现在 10 项测试通过。显式 Euler、RK4、隐式 Euler 的固定步收敛斜率分别为 `1.010`、`3.927`、`1.014`；独立 Radau 解与完整有限时间 SVD 解在终点的 Frobenius 差为 `1.16×10⁻¹³`。
 
 匹配精度实验采用步数 `(160,17,160)`，三方法的终点误差分别为 `(9.2066,8.8502,9.3194)×10⁻⁴`，最大与最小之比为 `1.053`；RHS 调用为 `(160,68,862)`。这只是 RHS 次数比较，Jacobian、Newton 及线性代数工作分别说明，不能当成运行时间排名。RK4 `h=0.005` 的终点正交性缺陷为 `0.305932824226`，精确有限时间值为 `0.305932824210`，因此不应要求有限终点达到机器零。
 
 ## 五、提交前由小组补充
 
 `report/Section2Draft_v5.tex` 的队号、姓名、学号、个人贡献与签名仍需真人填写；AI Transparency Log 目前只记载本次 v5 工作，其他组员若使用了工具须如实补全。本机使用 TeX Live 2022 的 `pdflatex` 完成编译并复跑交叉引用，生成了 27 页的 `report/Section2Draft_v5.pdf`；最终编译日志没有未定义引用、缺失图片或 overfull 警告，也已逐页查看缩略图及关键页排版。今后可从 `Project1/report/` 再运行两次 `pdflatex Section2Draft_v5.tex` 更新 PDF。此本地目录不是 Git 工作树，没有代替你提交或推送到 GitHub。
+
+## 六、测试目录调整（2026-09-28）
+
+按要求将两个测试脚本从 `report_v1/checklist/` 移至与 `code/`、`code_zh/` 平级的 `test/`。修正迁移后的项目根目录定位；中英文比较的子进程也禁用字节码缓存。README、交付清单及报告正文中的测试路径同步更新，统一运行命令为 `python -B -m unittest discover -s test -v`。`report_v1/checklist/` 保留验收清单。

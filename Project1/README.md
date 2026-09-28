@@ -12,9 +12,9 @@ and the revision record is [CHANGELOG_V5.md](CHANGELOG_V5.md).
 The `report/` directory contains earlier drafts; `report_v1/` is the current submission.
 `report/` 保存早期草稿；当前提交版在 `report_v1/`。
 
-The code-only acceptance record and runnable checks are in
-[report_v1/checklist/](report_v1/checklist/README.md).
-仅针对代码的验收清单和可运行验证见上述目录。
+The code-only acceptance record is in
+[report_v1/checklist/](report_v1/checklist/README.md); runnable tests are in [test/](test/).
+代码验收清单保留在 `report_v1/checklist/`；可运行测试位于与 `code/` 平级的 `test/`。
 
 The eight report images are committed under [report_v1/figures/](report_v1/figures/).
 八张报告图片随 `report_v1/figures/` 一起提交；运行代码也可重新生成。
@@ -29,7 +29,7 @@ From this directory / 在本目录运行：
 python -m pip install -r requirements.txt
 python code/run_all.py       # English source / 英文源码
 python code_zh/run_all.py    # Chinese source / 中文源码
-python -B -m unittest discover -s report_v1/checklist -v
+python -B -m unittest discover -s test -v
 ```
 
 Each run writes its own `figures/` directory. / 两套代码分别写入各自的 `figures/` 目录。

@@ -11,7 +11,7 @@ python -m venv .venv
 .venv\Scripts\python -m pip install -r requirements.txt
 .venv\Scripts\python code/run_all.py
 .venv\Scripts\python code_zh/run_all.py
-.venv\Scripts\python -B -m unittest discover -s report_v1/checklist -v
+.venv\Scripts\python -B -m unittest discover -s test -v
 ```
 
 Each `run_all.py` rebuilds the PNG figures, CSV data and `summary.json` in its
@@ -52,8 +52,8 @@ one of the three methods being compared.
 | `code_zh/solvers.py` | Chinese-commented counterpart of `code/solvers.py` with the same numerical behavior. |
 | `code_zh/experiments.py` | Chinese-commented counterpart of `code/experiments.py`; writes to `code_zh/figures/`. |
 | `code_zh/run_all.py` | Chinese command-line entry point. |
-| `report_v1/checklist/test_validation.py` | Checks the analytic Jacobian against finite differences, both full spectra, the energy identity, the diagonal scalar sanity case, the SVD/Radau comparison, convergence orders, adaptive behavior and the rank-deficient case. |
-| `report_v1/checklist/test_bilingual_parity.py` | Runs both source trees separately and compares their model, fixed-step and adaptive numerical outputs. |
+| `test/test_validation.py` | Checks the analytic Jacobian against finite differences, both full spectra, the energy identity, the diagonal scalar sanity case, the SVD/Radau comparison, convergence orders, adaptive behavior and the rank-deficient case. |
+| `test/test_bilingual_parity.py` | Runs both source trees separately and compares their model, fixed-step and adaptive numerical outputs. |
 | `report_v1/checklist/README.md` | Code-only acceptance checklist, evidence, figure mapping and reproduction commands. |
 | `requirements.txt` | Lists NumPy, SciPy and Matplotlib. |
 | `CODE_HANDOFF.md` | Numbers and interpretation for integrating the code results into report Sections 3–4. |
