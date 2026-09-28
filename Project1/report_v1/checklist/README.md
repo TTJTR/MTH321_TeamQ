@@ -1,6 +1,6 @@
 # Topic ⑤ 代码交付 Checklist
 
-复核日期：2026-09-27。本目录只记录**代码部分**的验收与可运行验证。依据为课程 `code_review_checklist.tex` 的 A–E 项、`submission_checklist.tex` 的代码与提交环境项、Topic ⑤ 原题和 `visualization_guide.tex`。团队姓名、AI Log、ICS、slides 不属于本清单。代码 ZIP 按现有分工暂缓，因此这里不把“最终提交包”标为完成。
+复核日期：2026-09-28。本目录只记录**代码部分**的验收与可运行验证。依据为课程 `code_review_checklist.tex` 的 A–E 项、`submission_checklist.tex` 的代码与提交环境项、Topic ⑤ 原题和 `visualization_guide.tex`。团队姓名、AI Log、ICS、slides 不属于本清单。代码 ZIP 按现有分工暂缓，因此这里不把“最终提交包”标为完成。
 
 ## 文件与复现
 
@@ -8,8 +8,9 @@
 |---|---|
 | `../../code/` | 英文版模型、三种求解器、实验与一键入口 `run_all.py`。 |
 | `../../code_zh/` | 中文注释版，独立运行并与英文版比较数值输出。 |
-| `test_validation.py` | 检查完整隐式残差 Jacobian、解析解、收敛阶、谱、能量、自适应与秩亏情形。 |
+| `test_validation.py` | 检查完整隐式残差 Jacobian、解析解、收敛阶、谱、能量、自适应、秩亏、容差敏感性、大步长奇异值越界及 Newton 失败重试。 |
 | `test_bilingual_parity.py` | 分别运行两版模型与求解器，比较输出。 |
+| `VALIDATION_RUN_2026-09-28.md` | 独立干净环境复现记录：commit、依赖版本、命令、报告数字对照、新增边界测试及 PDF 目视检查结果。 |
 | `../figures/` | 报告实际使用的八张 PNG，由英文入口重建。 |
 | `../Section2Draft_v5.tex` | 数值结果、Newton 与自适应伪代码、有限差分检验的报告正文。 |
 
@@ -22,7 +23,7 @@ python code_zh/run_all.py
 python -B -m unittest discover -s report_v1/checklist -v
 ```
 
-本轮结果：**10/10 测试通过**；中英文入口均完成；三方法观测阶分别为 `1.010 / 3.927 / 1.014`；有限时间 SVD 与独立 Radau 的终点差为 `1.16×10⁻¹³`；报告八张图与英文入口重生的 PNG 逐个 SHA-256 一致。报告 PDF 为 29 页。
+本轮结果：**13/13 测试通过**；中英文入口均完成；三方法观测阶分别为 `1.010 / 3.927 / 1.014`。在新依赖环境中，有限时间 SVD 与独立 Radau 的终点差为 `1.168×10⁻¹³`，仍远低于测试阈值 `5×10⁻¹²`。中英文新生成的 15 个产物逐文件一致；由于依赖未锁版本，新 Matplotlib 生成的 PNG 与原提交报告图不再具有相同 SHA-256，但数值结论保持一致。完整证据见 `VALIDATION_RUN_2026-09-28.md`。报告 PDF 为 29 页，全部页面已完成目视检查。
 
 ## Code-Review Checklist：A–E
 
@@ -39,17 +40,20 @@ python -B -m unittest discover -s report_v1/checklist -v
 | C4 残差 Jacobian 与差分 | 通过 | `J_F=I-hJ_f`；本目录 `test_validation.py` 对完整 `F` 做中心差分，误差 `3.68×10⁻¹⁰`，报告 Implementation 节记录设置。 |
 | C5 自适应没有固定步伪装 | 通过 | `initial_step` 只是首个试探值，后续由误差调整。 |
 | C6 误差估计实际控制步长 | 通过 | 归一化估计决定接受/拒绝及下一步缩放。 |
+| C7 Newton 失败不污染已接受状态 | 通过 | 自动测试令首次隐式步不收敛；自适应控制器拒绝后从原状态以半步重试，并与独立固定网格结果一致。 |
 | D1 解析/高精度参考 | 通过 | 完整有限时间 SVD 解与独立 Radau 交叉核对。 |
 | D2 观测阶支持声称 | 通过 | `convergence.csv` 和三条 log-log 曲线。 |
 | D3 能量/几何诊断 | 通过 | `trajectory.csv` 检查耗散、奇异值和正交性。 |
 | D4 稳定性主张有实证 | 通过 | 稳定域、冻结谱与非线性步长扫描共同支撑，并标明局部界限。 |
+| D5 容差敏感性 | 通过 | RK4 紧容差相对宽容差使用更多步，且对精确矩阵的全局误差降低超过 100 倍；两者接受的局部归一化误差均不超过 1。 |
+| D6 大步长边界情形 | 通过 | Euler `h=0.10` 出现奇异值越过 1 且终点误差增大；`h=0.05` 不出现越界。 |
 | E1 函数分工清楚 | 通过 | 模型、单步、固定/自适应驱动及实验分别命名。 |
 | E2 求解器可替换 RHS | 通过 | `solve_fixed`、`solve_adaptive` 将 `f` 与 `jac` 作为参数。 |
 | E3 常数有名称或注释 | 通过 | 自适应安全因子、步长缩放界及 Newton 回溯下限已命名。 |
 | E4 注释解释原因 | 通过 | 列优先状态、有限时间参考及拒绝步重试的原因有说明。 |
 | E5 无明显死代码 | 通过 | 人工检查四个核心模块，没有注释掉的旧实现或明显未用 import。 |
 
-F. 本轮无未解决的 blocker/major/minor。此前 C4 报告缺差分证据与 E3 未命名常数已修复。G. 提交前优先项中的 C4、E3 和 `.gitignore` 构建产物规则均已完成。
+F. 本轮无未解决的 blocker/major。独立复现记录到一项可维护性 finding：`requirements.txt` 未锁版本，因此不同 NumPy/SciPy/Matplotlib 组合会造成末位数值和 PNG 二进制哈希变化；核心数值结论仍通过声明的误差标准。此前 C4 报告缺差分证据与 E3 未命名常数已修复。G. 提交前优先项中的 C4、E3 和 `.gitignore` 构建产物规则均已完成；建议后续增加版本锁文件。
 
 ## 题目及代码提交项
 

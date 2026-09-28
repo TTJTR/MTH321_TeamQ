@@ -52,9 +52,10 @@ one of the three methods being compared.
 | `code_zh/solvers.py` | Chinese-commented counterpart of `code/solvers.py` with the same numerical behavior. |
 | `code_zh/experiments.py` | Chinese-commented counterpart of `code/experiments.py`; writes to `code_zh/figures/`. |
 | `code_zh/run_all.py` | Chinese command-line entry point. |
-| `report_v1/checklist/test_validation.py` | Checks the analytic Jacobian against finite differences, both full spectra, the energy identity, the diagonal scalar sanity case, the SVD/Radau comparison, convergence orders, adaptive behavior and the rank-deficient case. |
+| `report_v1/checklist/test_validation.py` | Checks the analytic Jacobian against finite differences, both full spectra, the energy identity, the diagonal scalar sanity case, the SVD/Radau comparison, convergence orders, adaptive behavior, rank deficiency, tolerance sensitivity, large-step singular-value crossing, and Newton failure/retry. |
 | `report_v1/checklist/test_bilingual_parity.py` | Runs both source trees separately and compares their model, fixed-step and adaptive numerical outputs. |
 | `report_v1/checklist/README.md` | Code-only acceptance checklist, evidence, figure mapping and reproduction commands. |
+| `report_v1/checklist/VALIDATION_RUN_2026-09-28.md` | Independent clean-environment record with the validated commit, dependency versions, commands, report-number comparisons and 13-test result. |
 | `requirements.txt` | Lists NumPy, SciPy and Matplotlib. |
 | `CODE_HANDOFF.md` | Numbers and interpretation for integrating the code results into report Sections 3–4. |
 | `report_v1/Section2Draft_v5.tex` | Corrected v5 theory/report with pseudocode matched to the completed implementation; compiles directly against the eight committed images in `report_v1/figures/`. |

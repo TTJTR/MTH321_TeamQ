@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "code"))
 from model import (benchmark, energy, exact_matrix, frechet, jacobian,
                    matrix_rhs, orthogonality_defect, rhs, singular_values,
                    rotation, unvectorize, vectorize)
-from solvers import solve_adaptive, solve_fixed
+from solvers import StepFailure, solve_adaptive, solve_fixed
 
 
 class PolarFlowValidation(unittest.TestCase):
@@ -96,6 +96,58 @@ class PolarFlowValidation(unittest.TestCase):
         self.assertLessEqual(np.max(result.error_ratios), 1)
         self.assertLess(np.linalg.norm(unvectorize(result.y[-1]) -
                                        exact_matrix(2, self.x0)), 1e-5)
+
+    def test_tighter_adaptive_tolerance_reduces_global_error(self):
+        exact = exact_matrix(2, self.x0)
+        loose = solve_adaptive("rk4", rhs, jacobian, self.y0, (0, 2), 0.15,
+                               atol=1e-5, rtol=1e-3)
+        tight = solve_adaptive("rk4", rhs, jacobian, self.y0, (0, 2), 0.15,
+                               atol=1e-10, rtol=1e-8)
+        loose_error = np.linalg.norm(unvectorize(loose.y[-1]) - exact, "fro")
+        tight_error = np.linalg.norm(unvectorize(tight.y[-1]) - exact, "fro")
+
+        # The controller enforces a local normalized estimate, not a global
+        # error bound.  The exact matrix provides the independent global check.
+        self.assertEqual(loose.t[-1], 2)
+        self.assertEqual(tight.t[-1], 2)
+        self.assertLessEqual(np.max(loose.error_ratios), 1)
+        self.assertLessEqual(np.max(tight.error_ratios), 1)
+        self.assertGreater(len(tight.t), len(loose.t))
+        self.assertLess(tight_error, loose_error / 100)
+
+    def test_large_explicit_step_causes_singular_value_crossing(self):
+        resolved = solve_fixed("euler", rhs, jacobian, self.y0, (0, 2), 40)
+        coarse = solve_fixed("euler", rhs, jacobian, self.y0, (0, 2), 20)
+
+        def has_crossing(solution):
+            values = np.asarray([singular_values(unvectorize(row))
+                                 for row in solution.y])
+            return bool(np.any((values - 1) * (values[0] - 1) < -1e-9))
+
+        self.assertFalse(has_crossing(resolved))  # h = 0.05
+        self.assertTrue(has_crossing(coarse))     # h = 0.10
+        resolved_error = np.linalg.norm(unvectorize(resolved.y[-1]) -
+                                        exact_matrix(2, self.x0), "fro")
+        coarse_error = np.linalg.norm(unvectorize(coarse.y[-1]) -
+                                      exact_matrix(2, self.x0), "fro")
+        self.assertGreater(coarse_error, resolved_error)
+
+    def test_newton_failure_and_adaptive_retry_path(self):
+        with self.assertRaisesRegex(StepFailure, "Newton iteration did not converge"):
+            solve_fixed("implicit_euler", rhs, jacobian, self.y0, (0, 0.15), 1,
+                        newton_tol=1e-11, max_newton=4)
+
+        retried = solve_adaptive(
+            "implicit_euler", rhs, jacobian, self.y0, (0, 0.15), 0.15,
+            atol=1, rtol=0, newton_tol=1e-11, max_newton=4)
+        retry_reference = solve_fixed(
+            "implicit_euler", rhs, jacobian, self.y0, (0, 0.075), 2,
+            newton_tol=1e-11, max_newton=4)
+
+        self.assertEqual(retried.rejected, 1)
+        np.testing.assert_allclose(retried.t, [0, 0.075, 0.15], rtol=0, atol=1e-15)
+        np.testing.assert_allclose(retried.y[1], retry_reference.y[-1],
+                                   rtol=0, atol=1e-14)
 
     def test_adaptive_can_finish_on_last_allowed_attempt(self):
         equilibrium = vectorize(np.eye(3))

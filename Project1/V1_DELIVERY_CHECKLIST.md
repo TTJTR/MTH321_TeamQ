@@ -2,7 +2,7 @@
 
 **代码部分的最新、独立清单：** [`report_v1/checklist/README.md`](report_v1/checklist/README.md)。本文件保留全组提交情况；个人代码交付以新清单为准。
 
-复核日期：2026-09-27。这里的 **v1** 指新建的 `report_v1/` 交付目录；其中报告源码名为 `Section2Draft_v5.tex`，表示理论正文经过 v5 修订。核对基准是本机 `课件/Project1/` 中的 `submission_checklist.tex`、`code_review_checklist.tex` 和 `visualization_guide.tex`，以及 `problem_pack.pdf` 第 8–9 页的 Topic ⑤ 题目要求。**可维护性确实是 `code_review_checklist.tex` 第 E 部分的明文要求**；“只判断题目是否完成”的单独结论见 [`CODE_REVIEW_2026-09-27.md`](CODE_REVIEW_2026-09-27.md)。
+复核日期：2026-09-28。这里的 **v1** 指新建的 `report_v1/` 交付目录；其中报告源码名为 `Section2Draft_v5.tex`，表示理论正文经过 v5 修订。核对基准是本机 `课件/Project1/` 中的 `submission_checklist.tex`、`code_review_checklist.tex` 和 `visualization_guide.tex`，以及 `problem_pack.pdf` 第 8–9 页的 Topic ⑤ 题目要求。**可维护性确实是 `code_review_checklist.tex` 第 E 部分的明文要求**；“只判断题目是否完成”的单独结论见 [`CODE_REVIEW_2026-09-27.md`](CODE_REVIEW_2026-09-27.md)。
 
 状态说明：**通过**＝文件和运行证据已核对；**部分**＝已有内容但不能据此勾选完整提交；**待办**＝尚缺；**暂缓**＝此前明确交由小组处理或暂不打包；**不适用**＝本实验没有该因素。GitHub `main` 已有代码、`report_v1/`、八张报告图及本文档；`slides/` 演示初稿仍仅在本地。此前让团队补材料和暂缓 ZIP 的分工不改变课程清单的勾选标准。
 
@@ -14,7 +14,7 @@
 | 代码 | 英文版 [`code/`](code/) 与中文注释版 [`code_zh/`](code_zh/) 各四个 Python 文件，均可独立运行。实现显式 Euler、经典 RK4、隐式 Euler、阻尼 Newton、固定网格与步长加倍自适应控制。 |
 | 数值证据 | [`code/figures/summary.json`](code/figures/summary.json)、六份 CSV 和八张报告图。报告图保存在 [`report_v1/figures/`](report_v1/figures/)；中英文入口分别重建自己的 `figures/`。 |
 | 说明 | [`README_EN.md`](README_EN.md)、[`README_ZH.md`](README_ZH.md)、两版代码目录 README、[`report_v1/README.md`](report_v1/README.md) 说明安装、文件职责、重现命令及每张图的用途。 |
-| 验证 | [`report_v1/checklist/test_validation.py`](report_v1/checklist/test_validation.py) 与 [`report_v1/checklist/test_bilingual_parity.py`](report_v1/checklist/test_bilingual_parity.py)；2026-09-27 重跑中英文入口和 10 项测试，均成功。 |
+| 验证 | [`report_v1/checklist/test_validation.py`](report_v1/checklist/test_validation.py) 与 [`report_v1/checklist/test_bilingual_parity.py`](report_v1/checklist/test_bilingual_parity.py)；2026-09-28 在 GitHub 最新 `c4a3024` 上独立重跑中英文入口和 13 项测试，均成功。环境、命令、报告数字对照、边界测试及 PDF 检查证据见 [`report_v1/checklist/VALIDATION_RUN_2026-09-28.md`](report_v1/checklist/VALIDATION_RUN_2026-09-28.md)。 |
 | 幻灯片 | 本地有 [`slides/Topic5_presentation.tex`](slides/Topic5_presentation.tex) 和 11 页 PDF 初稿；未包含在上次确认的 GitHub 提交中，展示批次、讲者与实际计时仍待确认。 |
 
 ### 已修复的理论与实现瑕疵
@@ -37,17 +37,17 @@
 | 文件/位置 | 职责及对应关系 |
 |---|---|
 | [`code/model.py`](code/model.py)；中文对应 [`code_zh/model.py`](code_zh/model.py) | `benchmark` 构造指定初值；`vectorize`/`unvectorize` 使用列优先顺序；`rhs` 和 `jacobian` 给出模型与解析 Jacobian；`exact_matrix` 重建有限时间 SVD 精确解；其余函数计算能量、奇异值及正交性诊断。 |
-| [`code/solvers.py`](code/solvers.py) 第 53 行 `_one_step`；中文对应 [`code_zh/solvers.py`](code_zh/solvers.py) | 三种单步格式及隐式 Euler 的阻尼 Newton。Euler/RK4 阶段参数、隐式残差 `F` 和残差 Jacobian `I-hJ_f` 均在此处。 |
-| `code/solvers.py` 第 94 行 `solve_fixed`、第 114 行 `solve_adaptive` | 固定网格供收敛阶实验；自适应求解使用一个全步、两个半步及归一化误差控制，失败步从最后接受状态重试。 |
-| [`code/experiments.py`](code/experiments.py) 第 57–424 行 | `convergence`、`oracle`、`trajectory`、`stability_regions`、`cost_accuracy`、`stability_sweep`、`adaptivity`、`rank_deficient`；第 424 行 `run_all` 汇总结果并写出 `summary.json`。中文对应 [`code_zh/experiments.py`](code_zh/experiments.py)。 |
+| [`code/solvers.py`](code/solvers.py) 第 60 行 `_one_step`；中文对应 [`code_zh/solvers.py`](code_zh/solvers.py) | 三种单步格式及隐式 Euler 的阻尼 Newton。Euler/RK4 阶段参数、隐式残差 `F` 和残差 Jacobian `I-hJ_f` 均在此处。 |
+| `code/solvers.py` 第 101 行 `solve_fixed`、第 121 行 `solve_adaptive` | 固定网格供收敛阶实验；自适应求解使用一个全步、两个半步及归一化误差控制，失败步从最后接受状态重试。 |
+| [`code/experiments.py`](code/experiments.py) 第 60–449 行 | `convergence`、`oracle`、`trajectory`、`stability_regions`、`cost_accuracy`、`stability_sweep`、`adaptivity`、`rank_deficient`；第 449 行 `run_all` 汇总结果并写出 `summary.json`。中文对应 [`code_zh/experiments.py`](code_zh/experiments.py)。 |
 | [`code/run_all.py`](code/run_all.py)、[`code_zh/run_all.py`](code_zh/run_all.py) | 两版命令行入口。应从 `Project1/` 执行 `python code/run_all.py` 或 `python code_zh/run_all.py`。 |
 | 报告第 2.1 节，第 379–422 行，PDF 第 7 页 | **Algorithm 1：隐式 Euler 一步求解的阻尼 Newton 伪代码**，对应 `_one_step` 隐式分支；包括停止阈值、线搜索和失败信号。 |
-| 报告第 3.1 节，第 1035–1078 行，PDF 第 19 页 | **Algorithm 2：步长加倍自适应积分伪代码**，对应 `solve_adaptive`；包括局部误差、接受/拒绝、步长更新和隐式解失败重试。 |
+| 报告第 3.1 节，第 1042–1085 行，PDF 第 19 页 | **Algorithm 2：步长加倍自适应积分伪代码**，对应 `solve_adaptive`；包括局部误差、接受/拒绝、步长更新和隐式解失败重试。 |
 | 报告第 2.1 节、第 3.1 节 | 三种方法的单步公式与固定网格规则。报告没有再单独重复三份几乎等同于公式的伪代码，也没有独立伪代码 `.md` 文件。 |
 
 ## 3. 复现证据
 
-在 `Project1/` 运行 `python code/run_all.py` 和 `python code_zh/run_all.py` 均返回成功；`python -B -m unittest discover -s report_v1/checklist -v` 为 **10/10 通过**。英文运行后，将其八张 PNG 与 `report_v1/figures/` 逐个比较 SHA-256，**8/8 完全一致**，因此报告图并非旧运行残留。PDF 可读取，29 页，编译日志未见未定义引用、图片缺失或 overfull 警告。
+在 GitHub 最新 `c4a3024` 的独立工作树中，`python code/run_all.py` 和 `python code_zh/run_all.py` 均返回成功；加入容差敏感性、大步长奇异值越界和 Newton 失败重试后，`python -B -m unittest discover -s report_v1/checklist -v` 为 **13/13 通过**。中英文新生成的 15 个产物逐文件 SHA-256 一致，但因 `requirements.txt` 未锁版本，新 Matplotlib 生成的八张 PNG 与原提交报告图不再逐字节相同；核心数值在声明精度和误差标准内复现。PDF 可读取，29 页，全部页面目视检查未见缺图、裁切、重叠或不可读标签；本机内置 LaTeX 编译器因运行时目录错误未能完成独立重编译，细节见验证记录。
 
 `summary.json` 的关键结果：三方法拟合斜率为 `1.010 / 3.927 / 1.014`；有限时间 SVD 解与独立 Radau 终点差为 `1.16×10⁻¹³`；三种方法在约 `9×10⁻⁴` 的相近终点误差处使用 `160 / 68 / 862` 次 RHS 调用。这里的成本指标**不是运行时间**，Jacobian/牛顿次数另列。RK4 自适应接受 17 步、拒绝 2 步，最大接受归一化局部误差为 `0.754`。
 
@@ -83,12 +83,12 @@
 
 | 清单项 | 状态 | 依据/剩余动作 |
 |---|---|---|
-| `python code/run_all.py` 重生报告每张图 | **通过** | 2026-09-27 实际重跑；八张图与报告目录逐个 SHA-256 一致。 |
+| `python code/run_all.py` 重生报告每张图 | **通过** | 2026-09-28 在最新提交实际重跑并生成八张图；中英文输出逐文件一致。跨 Matplotlib 版本时 PNG 哈希不同，数值内容仍通过声明标准。 |
 | README 写依赖、运行和每图复现方法 | **通过** | `requirements.txt`、中英文 README 和报告 README 均覆盖。 |
 | 没有会在别的机器失效的绝对路径 | **通过** | 两版入口由 `Path(__file__).resolve().parent / "figures"` 确定输出；源码未发现硬编码盘符。 |
 | 求解器中的 `f(t,y)` 可替换 | **通过** | `solve_fixed`/`solve_adaptive` 接收函数参数 `f` 和可选 `jac`，与 Topic ⑤ 模型模块分离。 |
 | 随机/Monte Carlo 固定种子 | **不适用** | 当前实验确定性，没有随机抽样。 |
-| 图片可复现、无过期 PNG | **通过** | 八张重新生成图片与提交版报告图片哈希一致。 |
+| 图片可复现、无过期 PNG | **通过** | 八张图均可由入口重生且中英文结果一致；未锁定 Matplotlib 版本时不承诺与提交版 PNG 字节哈希相同。 |
 | `.gitignore` 排除虚拟环境、缓存及构建产物 | **通过** | `.venv/`、`__pycache__/` 已排除；另补 `.aux/.log/.out/.toc/.nav/.snm` 等 LaTeX 构建文件规则。 |
 
 ### Slides 项
@@ -106,7 +106,7 @@
 
 | 原清单条目 | 状态 | 证据或未完成处 |
 |---|---|---|
-| A1 `python code/run_all.py` 端到端运行 | **通过** | 2026-09-27 英文入口运行成功，重生全部八张报告图；中文入口亦成功。 |
+| A1 `python code/run_all.py` 端到端运行 | **通过** | 2026-09-28 在最新提交运行成功，重生全部八张图；中文入口亦成功。 |
 | A2 README 说明依赖安装和运行 | **通过** | `requirements.txt` 与中英文 README 有命令。 |
 | B1 RHS 与报告方程一致 | **通过** | `matrix_rhs(X)=X(I-XᵀX)`，列优先向量化与报告一致。 |
 | B2 参数可查找 | **通过** | `benchmark()` 和 `experiments.py` 中可找到初值、区间、容差、步数。 |
@@ -127,7 +127,7 @@
 | E4 注释解释“为什么” | **通过** | 列优先布局、精确解只作验证、离散残差含义与失败重试均有原因说明。 |
 | E5 无死代码、注释掉的代码块或无用 import | **通过（人工检查）** | 逐文件检查未发现明显此类内容；原清单不要求必须运行 linter。 |
 
-**F. Findings（按原清单记录）：** 无 blocker 或已证实导致当前结果错误的 major。前次两项 minor 已修复：C4 的完整残差差分检验已进报告，E3 的控制器常数已命名。可保留的做法是以完整有限时间 SVD 解和独立 Radau 交叉验证，再对中英文代码做数值一致性测试。
+**F. Findings（按原清单记录）：** 无 blocker 或已证实导致当前结果错误的 major。前次两项 minor 已修复：C4 的完整残差差分检验已进报告，E3 的控制器常数已命名。独立复现新增一项可维护性 finding：依赖未锁版本，跨版本运行会产生末位数值与 PNG 哈希差异；建议提交前增加版本锁或明确支持版本。可保留的做法是以完整有限时间 SVD 解和独立 Radau 交叉验证，再对中英文代码做数值一致性测试。
 
 **G. 提交前优先三项（本轮均已完成）：** (1) 报告补 C4 的差分检验设置与结果；(2) 为 E3 的控制器常数加名称和用途注释；(3) 按 Submission Checklist 给 `.gitignore` 补 LaTeX 构建文件规则。
 
@@ -137,13 +137,13 @@
 |---|---|---|
 | 误差—步长图采用 log-log | **通过** | `convergence.png` 三面板为双对数轴。 |
 | 坐标轴标明量与单位 | **通过** | 该模型与时间、步长均无量纲；收敛误差、稳定域 `Re(z)/Im(z)`、冻结谱等轴现均显式标明 dimensionless。 |
-| 图题写出结论 | **通过** | 稳定域总标题现说明隐式 Euler 覆盖左半平面、显式方法稳定域有界；其他图题概括观测结论。 |
+| 图题写出结论 | **通过** | 稳定域总标题明确指出 `h=0.08` 时初始 `-26` 模态离开 Euler 稳定域；其他图题概括观测结论。 |
 | 适用时叠加理论斜率/参考 | **通过** | 收敛图有 `h¹/h⁴` 线、拟合线；时间序列有解析参考。 |
 | 不用彩虹色图，区分颜色/线型 | **通过** | 使用分类调色与不同标记/线型。 |
 | 所有曲线有图例 | **通过** | 稳定域图现有共享图例说明阴影与边界线；各方法在面板标题标识，其他多曲线图均有图例。 |
 | 报告 caption 说明图示与意义 | **通过** | 八张报告图均有解释性 caption。 |
 | 成本图注明指标、匹配精度并同图比较 | **通过** | `cost_accuracy.png` 使用 RHS 次数，三方法误差相近且同图标星。 |
-| 固定文件名、从 `run_all.py` 重生 | **通过** | 八张报告图与英文入口重生 PNG 逐个 SHA-256 相同；实验无随机元素。 |
+| 固定文件名、从 `run_all.py` 重生 | **通过** | 固定文件名和确定性实验已核对；同一新环境的中英文 PNG 逐个 SHA-256 相同，跨 Matplotlib 版本的二进制哈希可能变化。 |
 | DPI 不低于 150 | **通过** | `experiments.py` 用 220 DPI 保存。 |
 
 指南正文还建议对舍入极限直接加图内注释。RK4 最细点已在报告文字解释，图中尚未单独标注；这属于作图指南的进一步对齐项。

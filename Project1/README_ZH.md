@@ -47,9 +47,10 @@ X(0)  = R(0.4) diag(0.2, 1.4, 3) R(-0.7)^T .
 | `code_zh/solvers.py` | `code/solvers.py` 的中文注释版本，数值行为一致。 |
 | `code_zh/experiments.py` | `code/experiments.py` 的中文注释版本，输出到 `code_zh/figures/`。 |
 | `code_zh/run_all.py` | 中文版命令行入口。 |
-| `report_v1/checklist/test_validation.py` | 核对解析 Jacobian 与有限差分、初始及平衡态完整谱、能量恒等式、对角初值标量 sanity check、SVD/Radau 结果、三方法收敛阶、自适应行为及秩亏情形。 |
+| `report_v1/checklist/test_validation.py` | 核对解析 Jacobian 与有限差分、初始及平衡态完整谱、能量恒等式、对角初值标量 sanity check、SVD/Radau 结果、三方法收敛阶、自适应行为、秩亏、容差敏感性、大步长奇异值越界及 Newton 失败重试。 |
 | `report_v1/checklist/test_bilingual_parity.py` | 分别运行中英文源码并比较模型、固定步和自适应输出。 |
 | `report_v1/checklist/README.md` | 仅针对代码的验收清单、证据、图片对应关系和复现命令。 |
+| `report_v1/checklist/VALIDATION_RUN_2026-09-28.md` | 独立干净环境复现记录，包含被验证 commit、依赖版本、命令、报告数字对照及 13 项测试结果。 |
 | `requirements.txt` | 列出 NumPy、SciPy、Matplotlib 三项依赖。 |
 | `CODE_HANDOFF.md` | 供报告第 3–4 节使用的具体数字和解释。 |
 | `report_v1/Section2Draft_v5.tex` | 已修正的 v5 理论/报告，伪代码与最终实现一致；直接引用 `report_v1/figures/` 中随报告提交的八张图片。 |
