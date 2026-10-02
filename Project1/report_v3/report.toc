@@ -1,0 +1,55 @@
+\contentsline {section}{\numberline {1}Background}{3}{section.1}%
+\contentsline {section}{\numberline {2}Discretisation and Analysis}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Discrete Schemes}{3}{subsection.2.1}%
+\contentsline {subsubsection}{\numberline {2.1.1}Explicit Euler Method}{4}{subsubsection.2.1.1}%
+\contentsline {subsubsection}{\numberline {2.1.2}Classical Fourth-Order Runge--Kutta Method (RK4)}{4}{subsubsection.2.1.2}%
+\contentsline {subsubsection}{\numberline {2.1.3}Implicit Euler Method with Damped Newton Iteration}{5}{subsubsection.2.1.3}%
+\contentsline {subsection}{\numberline {2.2}Consistency and Truncation Error}{6}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Theoretical Assumptions and Local Defect}{6}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2}Derivation of Local Truncation Errors for Implemented Solvers}{8}{subsubsection.2.2.2}%
+\contentsline {paragraph}{1. Explicit Euler Scheme ($p=1$):}{8}{section*.2}%
+\contentsline {paragraph}{2. Implicit Euler Scheme ($p=1$):}{8}{section*.3}%
+\contentsline {paragraph}{3. Classical Runge--Kutta Scheme (RK4, $p=4$):}{9}{section*.4}%
+\contentsline {subsubsection}{\numberline {2.2.3}Adaptive Step-Size Control via Step-Doubling Error Estimation}{9}{subsubsection.2.2.3}%
+\contentsline {subsubsection}{\numberline {2.2.4}Error Normalization and Step-Update Controller}{10}{subsubsection.2.2.4}%
+\contentsline {subsection}{\numberline {2.3}Stability Analysis}{11}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {2.3.1}Scalar Test Problem and Amplification Factors}{11}{subsubsection.2.3.1}%
+\contentsline {subsubsection}{\numberline {2.3.2}A-Stability and L-Stability Properties}{14}{subsubsection.2.3.2}%
+\contentsline {subsubsection}{\numberline {2.3.3}Problem-Specific Linearisation and Eigenvalue Spectrum (Topic 5)}{14}{subsubsection.2.3.3}%
+\contentsline {subsubsection}{\numberline {2.3.4}Theoretical Step-Size Limits vs. Empirical Disclaimers}{16}{subsubsection.2.3.4}%
+\contentsline {paragraph}{Mandatory Analytical Disclaimer:}{16}{section*.7}%
+\contentsline {subsection}{\numberline {2.4}Convergence}{16}{subsection.2.4}%
+\contentsline {subsubsection}{\numberline {2.4.1}Discrete Error Recurrence and the Discrete Gr\"onwall Lemma}{16}{subsubsection.2.4.1}%
+\contentsline {subsubsection}{\numberline {2.4.2}Global Convergence Order}{18}{subsubsection.2.4.2}%
+\contentsline {subsubsection}{\numberline {2.4.3}Implications for Empirical Log-Log Validation}{18}{subsubsection.2.4.3}%
+\contentsline {section}{\numberline {3}Implementation}{20}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Algorithm}{20}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Code Structure}{21}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Output Layout and Reproduction}{21}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Key Design Decisions}{21}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Numerical Experiments}{22}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Verification Against the Exact Matrix}{22}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Stability Experiments}{22}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Adaptivity}{22}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Main Results and Comparison of Methods}{22}{subsection.4.4}%
+\contentsline {paragraph}{Geometry and Lyapunov diagnostics.}{22}{section*.14}%
+\contentsline {paragraph}{Cost at comparable accuracy.}{25}{section*.16}%
+\contentsline {paragraph}{Rank-deficient initial state.}{25}{section*.19}%
+\contentsline {subsection}{\numberline {4.5}Verification Coverage}{27}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Limitations and Robustness}{27}{subsection.4.6}%
+\contentsline {section}{\numberline {5}Conclusions}{27}{section.5}%
+\contentsline {section}{References}{28}{section.5}%
+\contentsline {section}{Appendices}{29}{section*.22}%
+\contentsline {section}{\numberline {A}AI Transparency Log}{29}{appendix.A}%
+\contentsline {section}{\numberline {B}Individual Contribution Statements}{29}{appendix.B}%
+\contentsline {section}{\numberline {C}Supplementary Figures and Data}{29}{appendix.C}%
+\contentsline {subsection}{\numberline {C.1}Reproduction and Evidence Files}{29}{subsection.C.1}%
+\contentsline {subsection}{\numberline {C.2}Data-to-Figure Map}{30}{subsection.C.2}%
+\contentsline {subsection}{\numberline {C.3}CSV Field Definitions and Missing Values}{30}{subsection.C.3}%
+\contentsline {paragraph}{Convergence and cost.}{30}{section*.25}%
+\contentsline {paragraph}{Stability sweep.}{30}{section*.26}%
+\contentsline {paragraph}{Resolved trajectory.}{30}{section*.27}%
+\contentsline {paragraph}{Adaptive steps.}{31}{section*.28}%
+\contentsline {paragraph}{Rank-deficient trajectory.}{31}{section*.29}%
+\contentsline {subsection}{\numberline {C.4}Selected Numerical Evidence}{31}{subsection.C.4}%
+\contentsline {subsection}{\numberline {C.5}JSON Contents and Version Traceability}{32}{subsection.C.5}%

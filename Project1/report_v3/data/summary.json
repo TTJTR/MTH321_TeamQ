@@ -1,0 +1,243 @@
+{
+  "interval": [
+    0.0,
+    2.0
+  ],
+  "benchmark_singular_values": [
+    0.2,
+    1.4,
+    3.0
+  ],
+  "software": {
+    "python": "3.12.4",
+    "numpy": "1.26.4",
+    "scipy": "1.13.1",
+    "matplotlib": "3.8.4"
+  },
+  "newton_residual_tolerance": 1e-12,
+  "convergence": {
+    "euler": {
+      "asymptotic_fit_slope": 1.0101162413129645,
+      "slope_standard_error": 0.007591290711426584,
+      "theoretical_order": 1,
+      "fit_step_sizes": [
+        0.05,
+        0.025,
+        0.0125,
+        0.00625
+      ],
+      "finest_error": 0.0004614091664322836
+    },
+    "rk4": {
+      "asymptotic_fit_slope": 3.9274157241734113,
+      "slope_standard_error": 0.0042387123054135065,
+      "theoretical_order": 4,
+      "fit_step_sizes": [
+        0.003125,
+        0.0015625,
+        0.00078125
+      ],
+      "finest_error": 7.396822887264422e-14
+    },
+    "implicit_euler": {
+      "asymptotic_fit_slope": 1.0136814873423114,
+      "slope_standard_error": 0.0032043210651234223,
+      "theoretical_order": 1,
+      "fit_step_sizes": [
+        0.05,
+        0.025,
+        0.0125,
+        0.00625
+      ],
+      "finest_error": 0.00046428551891929034
+    }
+  },
+  "cost_accuracy": {
+    "selection": "fixed step counts chosen to match terminal error",
+    "cost_metric": "RHS evaluations; Jacobian and Newton counts reported separately",
+    "not_counted": [
+      "Jacobian assembly cost",
+      "linear factorization cost",
+      "Python overhead",
+      "plotting"
+    ],
+    "curve_steps": {
+      "euler": [
+        40,
+        80,
+        120,
+        160,
+        240,
+        320
+      ],
+      "rk4": [
+        12,
+        14,
+        17,
+        20,
+        24,
+        32,
+        40
+      ],
+      "implicit_euler": [
+        40,
+        80,
+        120,
+        160,
+        240,
+        320
+      ]
+    },
+    "rows": [
+      {
+        "method": "euler",
+        "n_steps": 160,
+        "h": 0.0125,
+        "terminal_frobenius_error": 0.000920659614059523,
+        "rhs_evaluations": 160,
+        "jacobian_evaluations": 0,
+        "newton_iterations": 0,
+        "matched_point": true
+      },
+      {
+        "method": "rk4",
+        "n_steps": 17,
+        "h": 0.11764705882352941,
+        "terminal_frobenius_error": 0.0008850170662666466,
+        "rhs_evaluations": 68,
+        "jacobian_evaluations": 0,
+        "newton_iterations": 0,
+        "matched_point": true
+      },
+      {
+        "method": "implicit_euler",
+        "n_steps": 160,
+        "h": 0.0125,
+        "terminal_frobenius_error": 0.0009319354146544473,
+        "rhs_evaluations": 862,
+        "jacobian_evaluations": 351,
+        "newton_iterations": 351,
+        "matched_point": true
+      }
+    ],
+    "max_to_min_error_ratio": 1.053014060605318
+  },
+  "independent_oracle": {
+    "method": "scipy.integrate.solve_ivp / Radau",
+    "rtol": 1e-12,
+    "atol": 1e-14,
+    "exact_svd_disagreement": 1.1613543125787002e-13,
+    "rhs_evaluations": 10734
+  },
+  "trajectory": {
+    "method": "rk4",
+    "h": 0.005,
+    "energy_monotone": true,
+    "singular_values_move_toward_one": true,
+    "singular_value_crossing": false,
+    "max_discrete_lyapunov_identity_residual": 0.2397920440589587,
+    "max_scaled_discrete_identity_residual": 0.00046935788566323345,
+    "final_orthogonality_defect": 0.3059328242256455,
+    "exact_final_orthogonality_defect": 0.3059328242096243
+  },
+  "stability_regions": {
+    "initial_jacobian_spectrum": [
+      -26.0,
+      -14.16,
+      -8.64,
+      -7.4399999999999995,
+      -5.7600000000000025,
+      -4.879999999999999,
+      -1.2800000000000005,
+      -0.7199999999999991,
+      0.88
+    ],
+    "stability_region_overlay_step": 0.08,
+    "orthogonal_equilibrium_spectrum": [
+      -2.0000000000000004,
+      -2.0,
+      -2.0,
+      -2.0,
+      -2.0,
+      -1.9999999999999998,
+      0.0,
+      1.1102230246251565e-16,
+      2.220446049250313e-16
+    ],
+    "euler_local_h_limit": 0.07692307692307693,
+    "rk4_local_h_limit": 0.1071266755
+  },
+  "stability_sweep": {
+    "tested_step_sizes": [
+      0.3333333333333333,
+      0.2857142857142857,
+      0.25,
+      0.2,
+      0.16666666666666666,
+      0.125,
+      0.1,
+      0.08333333333333333,
+      0.0625,
+      0.05,
+      0.04,
+      0.03125,
+      0.025
+    ],
+    "failed_runs": [
+      "euler h=0.333333",
+      "euler h=0.285714",
+      "rk4 h=0.333333"
+    ]
+  },
+  "adaptivity": {
+    "settings": {
+      "atol": 1e-08,
+      "rtol": 1e-06,
+      "initial_step": 0.15
+    },
+    "methods": {
+      "implicit_euler": {
+        "accepted_steps": 1678,
+        "rejected_attempts": 5,
+        "min_h": 4.8397408608957804e-05,
+        "max_h": 0.0043585385683870825,
+        "max_accepted_normalized_local_error": 0.8428424022119653,
+        "terminal_exact_error": 5.092110934623604e-05,
+        "rhs_evaluations": 25267
+      },
+      "euler": {
+        "accepted_steps": 1680,
+        "rejected_attempts": 5,
+        "min_h": 0.0001250478670018267,
+        "max_h": 0.00435606857214732,
+        "max_accepted_normalized_local_error": 0.8418635010916142,
+        "terminal_exact_error": 5.075208281770168e-05,
+        "rhs_evaluations": 5055
+      },
+      "rk4": {
+        "accepted_steps": 17,
+        "rejected_attempts": 2,
+        "min_h": 0.022315761011517814,
+        "max_h": 0.2442141381949241,
+        "max_accepted_normalized_local_error": 0.7544884501692224,
+        "terminal_exact_error": 6.888985101221324e-07,
+        "rhs_evaluations": 228
+      }
+    }
+  },
+  "rank_deficient": {
+    "initial_singular_values": [
+      3.0,
+      1.4,
+      1.0585751666320046e-17
+    ],
+    "final_singular_values": [
+      1.0000000500156374,
+      1.0000000275596364,
+      6.866625734145482e-15
+    ],
+    "smallest_singular_value_max": 7.089855575126829e-15,
+    "final_orthogonality_defect": 1.0000000000000064,
+    "exact_final_error": 3.86126645856509e-14
+  }
+}
