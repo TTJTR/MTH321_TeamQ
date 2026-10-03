@@ -53,9 +53,10 @@ one of the three methods being compared.
 | `code_zh/solvers.py` | Chinese-commented counterpart of `code/solvers.py` with the same numerical behavior. |
 | `code_zh/experiments.py` | Chinese-commented counterpart of `code/experiments.py`; takes separate figure and data destinations from the entry point. |
 | `code_zh/run_all.py` | Chinese command-line entry point. |
-| `test/test_validation.py` | Checks the analytic Jacobian against finite differences, both full spectra, the energy identity, the diagonal scalar sanity case, the SVD/Radau comparison, convergence orders, adaptive behavior and the rank-deficient case. |
+| `test/test_validation.py` | Checks the analytic Jacobian against finite differences, both full spectra, the energy identity, the diagonal scalar sanity case, the SVD/Radau comparison, convergence orders, adaptive behavior, the rank-deficient case, tolerance sensitivity, large-step singular-value crossing and Newton retry. |
 | `test/test_bilingual_parity.py` | Runs both source trees separately and compares their model, fixed-step and adaptive numerical outputs. |
 | `report_v3/checklist/README.md` | Acceptance checklist, evidence, figure mapping and reproduction commands. |
+| `report_v3/checklist/VALIDATION_RUN_2026-10-03.md` | Fresh-environment test and reproduction record for the current 14-test suite. |
 | `report_v3/sections/section1.tex` | Background and motivation for the polar-factor gradient flow. |
 | `report_v3/sections/section2.tex` | Theory and Newton pseudocode (Algorithm 1). |
 | `report_v3/sections/section3.tex` | Implementation and adaptive pseudocode (Algorithm 2). |
@@ -126,8 +127,9 @@ divides by `max(1, |rate|)` and is not a pure relative error.
 `report_v3/report.pdf` is the current integrated report. It contains the
 abstract, Sections 1--5, references, and Appendices A--C.
 
-All 11 validation tests passed, including adaptivity and bilingual parity
-for all three methods.
+All 14 validation tests passed, including the three edge-case checks,
+adaptivity and bilingual parity for all three methods. See the
+[2026-10-03 validation record](report_v3/checklist/VALIDATION_RUN_2026-10-03.md).
 
 The earlier `report_v1/` and `report_v2/` directories are preserved as
 historical snapshots. See the

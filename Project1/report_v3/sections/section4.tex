@@ -205,7 +205,7 @@ Values are in
 
 
 \subsection{Verification Coverage}
-The runnable checks in \path{test/} comprise eleven test functions.
+The runnable checks in \path{test/} comprise fourteen test functions.
 They check the model and full implicit-residual Jacobians by centred
 finite differences, both complete eigenvalue spectra, the exact matrix
 against tight-tolerance Radau, and a diagonal scalar sanity case.
@@ -213,9 +213,13 @@ All three methods are checked for fixed-grid order, genuinely varying
 adaptive steps and accepted normalized estimated local errors at most
 one. Their well-resolved trajectories are also checked for singular
 values approaching one without crossing and non-increasing Lyapunov
-energy. The rank-deficient check verifies the zero mode and convergence
-toward the rank-two partial isometry. Independent subprocesses compare
-both language versions for all three fixed and adaptive solvers.
+energy. Additional edge checks compare loose and tight adaptive tolerances
+against the exact global error, expose singular-value crossing for a large
+Explicit Euler step, and exercise Newton failure followed by adaptive
+step halving and retry. The rank-deficient check verifies the zero mode
+and convergence toward the rank-two partial isometry. Independent
+subprocesses compare both language versions for all three fixed and
+adaptive solvers.
 The checks pass on the recorded environment.
 
 The RK4 order test uses $N=640$ and $1280$, avoiding the finest

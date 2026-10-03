@@ -1,6 +1,6 @@
 # report_v3：完整报告与代码 Checklist
 
-复核日期：2026-10-02。依据：课程 code_review_checklist.tex 的 A–E 项、
+复核日期：2026-10-03。依据：课程 code_review_checklist.tex 的 A–E 项、
 submission_checklist.tex 的代码与运行环境项、Topic ⑤ 和 visualization_guide.tex。
 
 本清单验收当前 v3 完整报告与代码交付。
@@ -12,8 +12,9 @@ slides 与正式代码 ZIP 仍按小组最终提交安排处理。
 | 位置 | 用途 |
 |---|---|
 | `../../code/`、`../../code_zh/` | 英文/中文注释的独立源码。 |
-| [test_validation.py](../../test/test_validation.py) | 10 个模型、格式、谱、参考解、阶、几何和自适应检查。 |
+| [test_validation.py](../../test/test_validation.py) | 13 个模型、格式、谱、参考解、阶、几何、自适应和边界检查。 |
 | [test_bilingual_parity.py](../../test/test_bilingual_parity.py) | 1 个独立子进程双语数值一致性检查，覆盖三方法。 |
+| [VALIDATION_RUN_2026-10-03.md](VALIDATION_RUN_2026-10-03.md) | 当前 14 项测试、双语入口、环境版本和报告数值的独立复现记录。 |
 | `../report.tex` | 编译完整报告的入口，包含 Abstract、Sections 1--5、References 和 Appendices A--C。 |
 | `../figures/` | 本版八张 PNG。 |
 | `../data/` | 本版六份完整 CSV 与 summary.json。 |
@@ -28,9 +29,13 @@ python -B code_zh/run_all.py
 python -B -m unittest discover -s test -v
 ```
 
-本轮 **11/11 测试通过**；两版入口均完成。观测阶 1.010 / 3.927 / 1.014，
-SVD/Radau 终点差 1.16e-13。两版六 CSV、JSON、八 PNG 一致；
-本版图和数据与英文运行输出逐文件 SHA-256 相同。PDF 共 32 页。
+本轮 **14/14 测试通过**；两版入口均完成。观测阶 1.010 / 3.927 / 1.014
+在报告显示精度内复现。新环境 SVD/Radau 终点差为 1.1680372e-13
+（三位有效数字 1.17e-13），报告内置结果为 1.1613543e-13（三位有效数字
+1.16e-13）；两者相差约 0.575%，数值接近且同属 1e-13 量级，但三位有效
+数字并不相同。新环境中的两版六 CSV、JSON、八 PNG 一致；因依赖版本未锁定，
+重生输出与报告内置图/数据的原始哈希不同。现有 32 页 PDF 尚未按更新后的
+`section4.tex` 重编；最终报告整合时必须重新编译。详见本次独立复现记录。
 
 ## Code-Review Checklist：A–E
 
@@ -58,7 +63,8 @@ SVD/Radau 终点差 1.16e-13。两版六 CSV、JSON、八 PNG 一致；
 | E5 无明显死代码 | 通过 | 四模块无注释掉的旧实现、明显未用 import。 |
 
 E 类来自课程清单的可读性和结构要求；未增加生产系统维护、CI 或覆盖率门槛。
-本次授权范围内没有剩余 blocker/major/minor；团队最终提交项另列，不冒称完成。
+本次测试、哈希和数值表述修正后没有已知代码 blocker；正式 GitHub review 与
+最终 PDF 重编仍是合并/提交前置项，不冒称已经完成。
 
 ## 题目与章节交付
 
@@ -73,7 +79,7 @@ E 类来自课程清单的可读性和结构要求；未增加生产系统维护
 | 环境梯度流和切向投影区分 | 通过 | 理论 2.3.5。 |
 | 第 2 节与实现对应 | 通过 | section2.tex：残差/单步值区分、Newton、RK4 稳定证明、正则性。 |
 | 第 3 节算法与源码一致 | 通过 | section3.tex：输出路径、参数、失败处理、Algorithm 2。 |
-| 第 4 节数值内容完成 | 通过 | section4.tex：实际测量和十一项验证；不是占位。 |
+| 第 4 节数值内容完成 | 通过 | section4.tex：实际测量和十四项验证；不是占位。 |
 | 附录 C 完整纳入截图数据 | 通过 | appendix_c.tex；六 CSV + JSON 的字段、行数、图映射和摘录。 |
 | 双语说明、相对路径、可重生图片 | 通过 | 两版 README；每个源码和每张图都有解释。 |
 | source only 目录要求 | 通过 | 输出移到项目级 figures/data 和 outputs_zh；忽略缓存/工作 PNG。 |

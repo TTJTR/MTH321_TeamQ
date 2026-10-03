@@ -62,9 +62,10 @@ s_i(t)=s_i(0)/sqrt(s_i(0)^2+[1-s_i(0)^2]exp(-2t))
 | `code_zh/solvers.py` | `code/solvers.py` 的中文注释版本，数值行为一致。 |
 | `code_zh/experiments.py` | `code/experiments.py` 的中文注释版本，由入口分别传入图片和数据输出目录。 |
 | `code_zh/run_all.py` | 中文版命令行入口。 |
-| `test/test_validation.py` | 核对解析 Jacobian 与有限差分、初始及平衡态完整谱、能量恒等式、对角初值标量 sanity check、SVD/Radau 结果、三方法收敛阶、自适应行为及秩亏情形。 |
+| `test/test_validation.py` | 核对解析 Jacobian 与有限差分、初始及平衡态完整谱、能量恒等式、对角初值标量 sanity check、SVD/Radau 结果、三方法收敛阶、自适应行为、秩亏情形、容差敏感性、大步长奇异值越界及 Newton 缩步重试。 |
 | `test/test_bilingual_parity.py` | 分别运行中英文源码并比较模型、固定步和自适应输出。 |
 | `report_v3/checklist/README.md` | 验收清单、证据、图片对应关系和复现命令。 |
+| `report_v3/checklist/VALIDATION_RUN_2026-10-03.md` | 当前 14 项测试的干净环境运行与复现记录。 |
 | `report_v3/sections/section1.tex` | Background：项目背景、极分解梯度流与研究动机。 |
 | `report_v3/sections/section2.tex` | 理论和 Newton 伪代码（Algorithm 1）。 |
 | `report_v3/sections/section3.tex` | 实现和自适应伪代码（Algorithm 2）。 |
@@ -144,7 +145,9 @@ Lyapunov 残差图使用数值轨迹上的能量有限差分及中点处连续�
 - Appendix B: Individual Contribution Statements
 - Appendix C: Supplementary Figures and Data
 
-11 项验证测试全部通过，包括三种方法的自适应积分与中英文源码数值一致性检查。
+14 项验证测试全部通过，包括三项新增边界检查、三种方法的自适应积分与
+中英文源码数值一致性检查。详见
+[2026-10-03 复现记录](report_v3/checklist/VALIDATION_RUN_2026-10-03.md)。
 
 此前的 `report_v1/` 和 `report_v2/` 保留为历史报告快照。
 
