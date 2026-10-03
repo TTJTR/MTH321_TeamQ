@@ -62,7 +62,7 @@ python -B -m unittest discover -s test -v
 ```
 
 代码只重建工作输出，不覆盖本版快照。
-CSV、PNG 和 PDF 按原始字节校验；其他文本先统一换行到 LF，
+CSV、PNG、PDF 和 JSON 按原始字节校验；其他文本先统一换行到 LF，
 使 Windows 与 Linux 检出时都能核对同一份 manifest。
 整合正文时可以 input 各节，保留入口宏包与 graphicspath 图片路径。
 独立入口的 setcounter 用于当前编号；小组最终主文档应按自己的章节顺序设置。

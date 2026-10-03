@@ -97,25 +97,34 @@ residual convergence and time-discretisation error are different quantities.
 
 Both English and Chinese entry points completed successfully. They printed:
 
-| Quantity | Fresh value | Reported precision |
+| Quantity | Fresh run | Bundled report artifact |
 |---|---:|---:|
-| Explicit Euler fitted slope | 1.0101162413 | 1.010 |
-| RK4 fitted slope | 3.9274495745 | 3.927 |
-| Implicit Euler fitted slope | 1.0136814873 | 1.014 |
-| Exact SVD versus Radau | 1.1680372e-13 | 1.16e-13 |
+| Explicit Euler fitted slope | 1.0101162413 | 1.0101162413 (displayed as 1.010) |
+| RK4 fitted slope | 3.9274495745 | 3.9274157242 (displayed as 3.927) |
+| Implicit Euler fitted slope | 1.0136814873 | 1.0136814873 (displayed as 1.014) |
+| Exact SVD versus Radau | 1.1680372e-13 (1.17e-13 at 3 s.f.) | 1.1613543e-13 (1.16e-13 at 3 s.f.) |
 
 Within the fresh environment, the English and Chinese outputs had identical
 normalized CSV/JSON content and byte-identical PNG files. Compared with the
-bundled `report_v3` artifacts, all CSV shapes and status fields agreed and the
-scientific claims reproduced at their reported precision, but floating-point
+bundled `report_v3` artifacts, all CSV shapes and status fields agreed, and the
+three convergence slopes reproduced the report's displayed precision. The
+fresh Radau disagreement rounds to 1.17e-13 at three significant figures,
+whereas the bundled result rounds to 1.16e-13. Their absolute difference is
+6.68e-16 (about 0.575%), so they are close and support the same 1e-13-scale
+cross-check, but they do not agree at three significant figures. Floating-point
 last digits and all eight PNG hashes differed under the newer dependency
 versions. Regenerated working data were inspected and then excluded from the
 commit; the checked-in report artifacts were not overwritten.
 
 The verification-coverage wording in `sections/section4.tex` was updated from
 eleven to fourteen tests. The existing 32-page `report.pdf` was not rebuilt in
-this code-validation environment; the report integrator should compile the
-updated source before the final submission.
+this code-validation environment and is stale relative to the updated source;
+the report integrator must compile it before the final submission.
+
+After all documentation corrections were complete, every manifest entry was
+regenerated using the declared extension policy (raw bytes for CSV, PNG, PDF
+and JSON; CRLF/CR-to-LF normalization for other files). An independent pass
+then verified all 41 listed paths with 41/41 matches.
 
 ## 6. Evidence map
 
@@ -129,6 +138,8 @@ updated source before the final submission.
 
 The three edge cases are compatible with the current code and complement the
 existing tests without replacing them. The full 14-test suite and both
-reproduction entry points passed. Scientific values agree with the report at
-declared precision. Pin dependency versions if future submissions require
-byte-identical figures rather than numerical agreement.
+reproduction entry points passed. The convergence slopes agree with the report
+at its displayed precision; the Radau cross-check is close and on the same
+1e-13 scale but rounds differently at three significant figures. Pin dependency
+versions if future submissions require byte-identical figures rather than
+numerical agreement.
