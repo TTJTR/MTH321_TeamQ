@@ -27,7 +27,7 @@ python -B -m unittest discover -s test -v
 |---|---|
 | `code/` | 英文注释源码；English source only. |
 | `code_zh/` | 中文注释的独立源码；independent Chinese source. |
-| `test/` | 两份验证脚本，共 11 项测试。 |
+| `test/` | 两份验证脚本，共 14 项测试。 |
 | `data/` | 当前运行生成的六份 CSV 与 `summary.json`；含字段说明。 |
 | `figures/` | 当前运行生成的八张 PNG 工作图。 |
 | `outputs_zh/` | 中文入口独立输出。 |
@@ -42,3 +42,4 @@ python -B -m unittest discover -s test -v
 当前报告说明：[report_v3 README](report_v3/README.md)。  
 修改记录：[v3 CHANGELOG](report_v3/CHANGELOG.md)。  
 验收证据：[v3 checklist](report_v3/checklist/README.md)。
+最新独立复现记录：[2026-10-03 validation run](report_v3/checklist/VALIDATION_RUN_2026-10-03.md)。
