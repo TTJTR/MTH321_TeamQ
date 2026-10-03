@@ -1,0 +1,360 @@
+% ============================================================
+% ODE IVP Project — LaTeX Report Template
+% Compile: pdflatex report.tex  (twice for the TOC)
+% Structure follows the project brief: Background -> Model ->
+% Methods -> Stability -> Numerical experiments -> Conclusions.
+%
+% This is the MERGED template: it combines the project-specific
+% guidance for Project 1 (ODE IVPs) with the course-level report
+% skeleton (algorithm environment, theorem environments, MMS
+% convergence table, AI Transparency Log and ICS appendices).
+% ============================================================
+
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\geometry{a4paper, margin=2.5cm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{bm}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{mdframed}
+
+% --- colors ---
+\definecolor{lecture}{RGB}{70,130,180}
+\definecolor{seminar}{RGB}{205,92,92}
+\definecolor{formbg}{RGB}{250,250,245}
+\definecolor{formframe}{RGB}{180,170,140}
+
+% --- code listing style (Python) ---
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\scriptsize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!40!black},
+    stringstyle=\color{red!70!black},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    frame=single,
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=4,
+    captionpos=b,
+}
+
+% --- theorem-like environments (course-level set) ---
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% --- algorithm style ---
+\algrenewcommand{\algorithmicrequire}{\textbf{Input:}}
+\algrenewcommand{\algorithmicensure}{\textbf{Output:}}
+\algrenewcommand{\algorithmiccomment}[1]{\hfill\textcolor{gray}{\# #1}}
+
+% --- form box (for appendices) ---
+\newmdenv[
+    backgroundcolor=formbg,
+    linecolor=formframe,
+    linewidth=0.8pt,
+    roundcorner=3pt,
+    innermargin=5pt,
+    outermargin=5pt,
+    innertopmargin=8pt,
+    innerbottommargin=8pt
+]{formbox}
+
+\title{\textbf{Numerical Solution of \texttt{<YOUR PROBLEM>}}\\[2mm]
+\large Project 1 (ODE IVP) Report}
+\author{
+    Team \#\texttt{<N>} \\
+    \small \texttt{<name1>, <id1> (Project Manager)} \quad
+    \texttt{<name2>, <id2> (Mathematical Theory)} \\
+    \small \texttt{<name3>, <id3> (Algorithm Implementation)} \quad
+    \texttt{<name4>, <id4> (Visualization \& Report)} \\
+    \small \texttt{<name5>, <id5> (Testing \& Validation)} \\
+    \small Department of Applied Mathematics
+}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+[150--250 words answering: (1) what problem and why interesting; (2) what methods
+you implemented; (3) key findings (convergence rates, stability observations);
+(4) the main limitation or open question.]
+\end{abstract}
+
+\noindent\textbf{Keywords:} [e.g., Runge--Kutta methods, stiffness, von Neumann
+stability, absolute stability, adaptive stepping]
+
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{Introduction and Motivation}
+% ============================================================
+
+\subsection{Problem Background}
+[Describe the physical, biological, or financial context of your chosen ODE
+system. Why is this problem worth solving? Cite 2--3 references.]
+
+\subsection{Mathematical Model}
+[State the ODE system, initial conditions, and all parameter values. If the
+system is stiff, say so and give the stiffness ratio.]
+
+\begin{equation}
+    \frac{dy}{dt} = f(t, y), \qquad y(t_0) = y_0.
+    \label{eq:ivp}
+\end{equation}
+
+For the Robertson problem (example):
+\begin{equation}
+\begin{aligned}
+    \dot{y}_1 &= -0.04\, y_1 + 10^4\, y_2 y_3, \\
+    \dot{y}_2 &= \;\;0.04\, y_1 - 10^4\, y_2 y_3 - 3\times 10^7\, y_2^2, \\
+    \dot{y}_3 &= \;\;3\times 10^7\, y_2^2,
+\end{aligned}
+\qquad y(0) = (1, 0, 0).
+\label{eq:robertson}
+\end{equation}
+
+\subsection{Overview of the Report}
+[A roadmap: ``In Section 2 we derive the discrete scheme and analyse stability.
+In Section 3 we describe the implementation. Section 4 presents numerical
+experiments. Section 5 concludes.'']
+
+\newpage
+% ============================================================
+\section{Discretisation and Analysis}
+% ============================================================
+
+\subsection{Discrete Schemes}
+[Derive your three methods step by step: Explicit Euler, RK4 (show the Butcher
+tableau), and your implicit method with Newton. Number every equation.]
+
+\begin{example}[ODE IVP: RK4 derivation]
+For $\dot{y} = f(t,y)$, the classical Runge--Kutta method of order 4 is
+\begin{align}
+    k_1 &= f(t_n, y_n), \\
+    k_2 &= f\!\left(t_n + \frac{h}{2}, y_n + \frac{h}{2}k_1\right), \\
+    k_3 &= f\!\left(t_n + \frac{h}{2}, y_n + \frac{h}{2}k_2\right), \\
+    k_4 &= f(t_n + h, y_n + hk_3), \\
+    y_{n+1} &= y_n + \frac{h}{6}(k_1 + 2k_2 + 2k_3 + k_4).
+\end{align}
+\end{example}
+
+\subsection{Consistency and Truncation Error}
+[Show the Taylor expansion. State the order of accuracy of each method and under
+what assumptions it holds.]
+
+\subsection{Stability Analysis}
+[The most critical section. Do not quote a textbook result --- apply the analysis
+to \emph{your} problem. Derive the stability function $R(z)$ of each method, plot
+the absolute-stability region, and connect it to the eigenvalues of your
+linearised system.]
+
+\begin{equation}
+    R_{\text{Euler}}(z) = 1 + z, \qquad
+    R_{\text{RK4}}(z) = 1 + z + \frac{z^2}{2} + \frac{z^3}{6} + \frac{z^4}{24},
+    \qquad
+    R_{\text{impl.Euler}}(z) = \frac{1}{1 - z}.
+\end{equation}
+
+\subsection{Convergence}
+[Link consistency + stability to convergence (Lax equivalence or an energy
+argument). State the theorem and verify your problem satisfies its hypotheses.]
+
+\newpage
+% ============================================================
+\section{Implementation}
+% ============================================================
+
+\subsection{Algorithm}
+[Present the core algorithm in pseudocode using the \texttt{algorithmic}
+environment.]
+
+\begin{algorithm}[H]
+\caption{[Your method name]}
+\label{alg:main}
+\begin{algorithmic}[1]
+\Require [initial data $y_0$, step size $h$, final time $T$]
+\Ensure [approximate solution at $T$]
+\State [Step 1]
+\For{$n = 0, 1, \ldots, N-1$}
+    \State [Loop body]
+    \If{[condition]}
+        \State [Action]
+    \EndIf
+\EndFor
+\State \Return [result]
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Code Structure}
+[Briefly describe the organisation of your codebase. A table of files and their
+purposes is helpful.]
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{File} & \textbf{Purpose} \\
+\midrule
+\texttt{methods.py} & Core time-stepping: Euler, RK4, implicit Euler with Newton \\
+\texttt{model.py} & The right-hand side $f(t,y)$ and its Jacobian \\
+\texttt{adaptive.py} & Adaptive step-size controller \\
+\texttt{run\_all.py} & Reproduces all report figures \\
+\texttt{validation\_tests.py} & PASS/FAIL test suite \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Key Design Decisions}
+[Discuss non-obvious choices: why this implicit method, how Newton's initial
+guess is chosen, how the adaptive controller estimates local error.]
+
+\newpage
+% ============================================================
+\section{Numerical Experiments}
+% ============================================================
+
+\subsection{Verification: Method of Manufactured Solutions or Exact Solutions}
+[Present a test case with a known solution. Show the error table and the
+convergence plot.]
+
+\begin{table}[H]
+\centering
+\begin{tabular}{cccc}
+\toprule
+\textbf{Step size $h$} & \textbf{Error} & \textbf{Ratio} & \textbf{Order} \\
+\midrule
+$0.1$    & [value] & ---  & ---  \\
+$0.05$   & [value] & [ratio] & [order] \\
+$0.025$  & [value] & [ratio] & [order] \\
+\bottomrule
+\end{tabular}
+\caption{Convergence study for [test case].}
+\end{table}
+
+\subsection{Stability Experiments}
+[Show that your explicit methods blow up beyond their stability limit while the
+implicit method does not. Compare with the predicted threshold.]
+
+\subsection{Adaptivity}
+[Show the step size actually changes, the local error stays near the tolerance,
+and the $h(t)$ trajectory.]
+
+\subsection{Main Results and Comparison of Methods}
+[Present the experiments that answer the project's central question. Use
+high-quality figures with interpretive captions.]
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.8\textwidth}{\centering \vspace{3em} [Insert your figure here] \vspace{3em}}}
+\caption{[Caption that interprets, not merely describes. E.g., ``The log-log plot
+confirms second-order convergence (slope 1.98) on the smooth test case, and shows
+the round-off floor at $h \approx 10^{-6}$.'']}
+\label{fig:convergence}
+\end{figure}
+
+\subsection{Limitations and Robustness}
+[Discuss parameter regimes where your method struggles. This is not a weakness ---
+it is scientific honesty.]
+
+\newpage
+% ============================================================
+\section{Conclusions}
+% ============================================================
+
+[Summarise in 3--4 bullet points:]
+\begin{itemize}[leftmargin=2em]
+\item [What you achieved.]
+\item [The most surprising or instructive finding.]
+\item [The main limitation you identified.]
+\item [A concrete direction for future work.]
+\end{itemize}
+
+\newpage
+% ============================================================
+\section*{References}
+% ============================================================
+
+[Use BibTeX or list references manually. Include at least: (1) the textbook from
+which you learned the method; (2) a paper applying the method to a problem
+similar to yours; (3) a software reference (NumPy, SciPy, scikit-fem).]
+
+\begin{thebibliography}{9}
+\bibitem{ref1} Author, A. \emph{Title}. Journal, year.
+\bibitem{ref2} Author, B. \emph{Book title}. Publisher, year.
+\end{thebibliography}
+
+\newpage
+% ============================================================
+\appendix
+\section{AI Transparency Log}
+% ============================================================
+
+[Append the completed team AI Transparency Log here. See
+\texttt{06\_Templates/ICS} for the full form: tools used, significant claim audits,
+what you changed and why, and the intellectual ownership declarations.]
+
+\section{Individual Contribution Statements}
+% ============================================================
+
+Each team member must complete the following (repeat for all 5 members):
+
+\begin{formbox}
+\textbf{Name:} [Jingyan.Wei] \quad (\textbf{Student ID:} [2361411]) \hfill \textbf{Role:} Mathematical Theory (Schemes \& Stability Lead)
+
+\vspace{0.5em}
+\textbf{1. My specific contributions to this project:}
+
+I authored the discrete formulation and linear/nonlinear stability foundations in Section~2 (Sections~2.1 and~2.3) in \texttt{Project1/report/Section2Draft.tex} (integrated into \texttt{report.tex}) and \texttt{Project1/notes/section2\_stability\_notes.md}. Specifically, I derived the step-update relations for Explicit Euler (Eq.~6--7 in Section2Draft\_v5), classical RK4 with its strictly lower-triangular Butcher tableau (Eq.~12--19), and Implicit Euler (Eq.~20--21). For the implicit solver, I derived the non-commutative matrix Fr{\'e}chet derivative $\mathcal{D}f(X)[H] = H(I_n - X^TX) - X(H^TX + X^TH)$ (Eq.~25) and the residual Jacobian $J_F(w) = I_{n^2} - h J_f(w)$ (Eq.~24, 28), formalising the damped Newton iteration with Armijo-type backtracking line search (Algorithm~1). Furthermore, I proved the analytical stability boundaries for the scalar Dahlquist equation: showing that $R_{\text{RK4}}(-a) = -1$ has no real roots (Eq.~76) and solving the cubic equation $q(a) = a^3 - 4a^2 + 12a - 24 = 0$ to establish the negative real intercept $a^* \approx 2.78529$ (Eq.~77) and imaginary limit $[-2\sqrt{2}, 2\sqrt{2}]$ (Eq.~78). For Topic~5, I transformed the linearised operator into SVD coordinates (Eq.~91), rigorously separating contracting normal modes $\lambda_{ij}^{\text{sym}}$ from neutral tangent modes $\lambda_{ij}^{\text{skew}}$ (Eq.~92--95), determined the full initial spectrum $\{-26.0, \dots, +0.88\}$ (Eq.~96), calculated the theoretical explicit step limits $h_{\text{crit}}^{\text{EE}} \approx 0.0769$ and $h_{\text{crit}}^{\text{RK4}} \approx 0.1071$ (Eq.~97--98), and authored the Mandatory Analytical Disclaimer governing local frozen spectra.
+
+\vspace{0.5em}
+\textbf{2. The hardest conceptual obstacle I encountered:}
+
+The hardest mathematical challenge was deriving the problem-specific Fr{\'e}chet derivative and Jacobian spectrum for the matrix gradient flow. In standard scalar calculus, differentiating $x(1-x^2)$ yields $1-3x^2$, but for the matrix-valued flow $\dot{X} = X(I_n - X^TX)$, matrix multiplication is strictly non-commutative. When taking directional variations, the perturbation in the quadratic term expands as $\mathcal{D}(X^TX)[H] = H^TX + X^TH$ rather than $2X^TH$. Projecting this onto the tangent space of the SVD manifold required diagonalising a coupled $2 \times 2$ block system for every coordinate pair $(i < j)$, where I had to analytically demonstrate that symmetric perturbations induce contraction ($\lambda = -2$) while skew-symmetric variations align with the Lie algebra $\mathfrak{so}(n)$ of neutral tangent rotations ($\lambda = 0$).
+
+\vspace{0.5em}
+\textbf{3. One piece of AI-generated output my team used, and what I changed:}
+
+Cross-referenced to \textbf{Appendix A (AI Transparency Log)}: Appendix~A documents that generative AI was used to detail the RK4 negative-real-axis stability proof and analyze numerical stability. When querying AI to evaluate explicit stability on Topic~5, the raw output claimed that ensuring the scaled frozen eigenvalues satisfied $|1 + h\lambda_j| \le 1$ ($h < 2/26 \approx 0.0769$) provided a sufficient mathematical proof of global numerical stability over $t \in [0, 2]$. I audited this claim and identified that because the Jacobian $J_f(X(t))$ drifts continuously along the nonlinear trajectory, frozen eigenvalues only provide a necessary local linearised indicator rather than a global nonlinear certificate. I revised Section~2.3.4 to introduce the Mandatory Analytical Disclaimer and specified the step-sweep perturbation protocol to empirically test true nonlinear blow-up boundaries.
+
+\vspace{0.5em}
+\textbf{4. One thing I still do not fully understand:}
+
+I do not yet fully understand how the non-normality of the full $n^2 \times n^2$ vectorised Jacobian $J_f(X)$ affects transient perturbation growth before asymptotic decay sets in. While our spectrum analysis accurately tracks the eigenvalues of the symmetric transformed operator $\mathcal{L}_\Sigma$, the physical Kronecker-product Jacobian in column-major coordinates is generally non-normal ($J_f J_f^T \ne J_f^T J_f$), meaning that pseudospectral effects could theoretically induce transient growth even when all eigenvalues have negative real parts.
+
+\vspace{0.8em}
+\textbf{Signature:} \underline{\hspace{4.5cm}} \qquad \textbf{Date:} \underline{\hspace{2.5cm}}
+\end{formbox}
+
+\section{Supplementary Figures and Data}
+% ============================================================
+
+[Place any additional figures, tables, or code listings that would interrupt the
+main narrative but may be useful to a curious reader.]
+
+\end{document}
