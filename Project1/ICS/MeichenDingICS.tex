@@ -1,0 +1,360 @@
+% ============================================================
+% ODE IVP Project — LaTeX Report Template
+% Compile: pdflatex report.tex  (twice for the TOC)
+% Structure follows the project brief: Background -> Model ->
+% Methods -> Stability -> Numerical experiments -> Conclusions.
+%
+% This is the MERGED template: it combines the project-specific
+% guidance for Project 1 (ODE IVPs) with the course-level report
+% skeleton (algorithm environment, theorem environments, MMS
+% convergence table, AI Transparency Log and ICS appendices).
+% ============================================================
+
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\geometry{a4paper, margin=2.5cm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{bm}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{mdframed}
+
+% --- colors ---
+\definecolor{lecture}{RGB}{70,130,180}
+\definecolor{seminar}{RGB}{205,92,92}
+\definecolor{formbg}{RGB}{250,250,245}
+\definecolor{formframe}{RGB}{180,170,140}
+
+% --- code listing style (Python) ---
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\scriptsize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!40!black},
+    stringstyle=\color{red!70!black},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    frame=single,
+    breaklines=true,
+    showstringspaces=false,
+    tabsize=4,
+    captionpos=b,
+}
+
+% --- theorem-like environments (course-level set) ---
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% --- algorithm style ---
+\algrenewcommand{\algorithmicrequire}{\textbf{Input:}}
+\algrenewcommand{\algorithmicensure}{\textbf{Output:}}
+\algrenewcommand{\algorithmiccomment}[1]{\hfill\textcolor{gray}{\# #1}}
+
+% --- form box (for appendices) ---
+\newmdenv[
+    backgroundcolor=formbg,
+    linecolor=formframe,
+    linewidth=0.8pt,
+    roundcorner=3pt,
+    innermargin=5pt,
+    outermargin=5pt,
+    innertopmargin=8pt,
+    innerbottommargin=8pt
+]{formbox}
+
+\title{\textbf{Numerical Solution of \texttt{<YOUR PROBLEM>}}\\[2mm]
+\large Project 1 (ODE IVP) Report}
+\author{
+    Team \#\texttt{<N>} \\
+    \small \texttt{<name1>, <id1> (Project Manager)} \quad
+    \texttt{<Meichen.Ding>, <2362344> (Mathematical Theory)} \\
+    \small \texttt{<name3>, <id3> (Algorithm Implementation)} \quad
+    \texttt{<name4>, <id4> (Visualization \& Report)} \\
+    \small \texttt{<name5>, <id5> (Testing \& Validation)} \\
+    \small Department of Applied Mathematics
+}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+[150--250 words answering: (1) what problem and why interesting; (2) what methods
+you implemented; (3) key findings (convergence rates, stability observations);
+(4) the main limitation or open question.]
+\end{abstract}
+
+\noindent\textbf{Keywords:} [e.g., Runge--Kutta methods, stiffness, von Neumann
+stability, absolute stability, adaptive stepping]
+
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{Introduction and Motivation}
+% ============================================================
+
+\subsection{Problem Background}
+[Describe the physical, biological, or financial context of your chosen ODE
+system. Why is this problem worth solving? Cite 2--3 references.]
+
+\subsection{Mathematical Model}
+[State the ODE system, initial conditions, and all parameter values. If the
+system is stiff, say so and give the stiffness ratio.]
+
+\begin{equation}
+    \frac{dy}{dt} = f(t, y), \qquad y(t_0) = y_0.
+    \label{eq:ivp}
+\end{equation}
+
+For the Robertson problem (example):
+\begin{equation}
+\begin{aligned}
+    \dot{y}_1 &= -0.04\, y_1 + 10^4\, y_2 y_3, \\
+    \dot{y}_2 &= \;\;0.04\, y_1 - 10^4\, y_2 y_3 - 3\times 10^7\, y_2^2, \\
+    \dot{y}_3 &= \;\;3\times 10^7\, y_2^2,
+\end{aligned}
+\qquad y(0) = (1, 0, 0).
+\label{eq:robertson}
+\end{equation}
+
+\subsection{Overview of the Report}
+[A roadmap: ``In Section 2 we derive the discrete scheme and analyse stability.
+In Section 3 we describe the implementation. Section 4 presents numerical
+experiments. Section 5 concludes.'']
+
+\newpage
+% ============================================================
+\section{Discretisation and Analysis}
+% ============================================================
+
+\subsection{Discrete Schemes}
+[Derive your three methods step by step: Explicit Euler, RK4 (show the Butcher
+tableau), and your implicit method with Newton. Number every equation.]
+
+\begin{example}[ODE IVP: RK4 derivation]
+For $\dot{y} = f(t,y)$, the classical Runge--Kutta method of order 4 is
+\begin{align}
+    k_1 &= f(t_n, y_n), \\
+    k_2 &= f\!\left(t_n + \frac{h}{2}, y_n + \frac{h}{2}k_1\right), \\
+    k_3 &= f\!\left(t_n + \frac{h}{2}, y_n + \frac{h}{2}k_2\right), \\
+    k_4 &= f(t_n + h, y_n + hk_3), \\
+    y_{n+1} &= y_n + \frac{h}{6}(k_1 + 2k_2 + 2k_3 + k_4).
+\end{align}
+\end{example}
+
+\subsection{Consistency and Truncation Error}
+[Show the Taylor expansion. State the order of accuracy of each method and under
+what assumptions it holds.]
+
+\subsection{Stability Analysis}
+[The most critical section. Do not quote a textbook result --- apply the analysis
+to \emph{your} problem. Derive the stability function $R(z)$ of each method, plot
+the absolute-stability region, and connect it to the eigenvalues of your
+linearised system.]
+
+\begin{equation}
+    R_{\text{Euler}}(z) = 1 + z, \qquad
+    R_{\text{RK4}}(z) = 1 + z + \frac{z^2}{2} + \frac{z^3}{6} + \frac{z^4}{24},
+    \qquad
+    R_{\text{impl.Euler}}(z) = \frac{1}{1 - z}.
+\end{equation}
+
+\subsection{Convergence}
+[Link consistency + stability to convergence (Lax equivalence or an energy
+argument). State the theorem and verify your problem satisfies its hypotheses.]
+
+\newpage
+% ============================================================
+\section{Implementation}
+% ============================================================
+
+\subsection{Algorithm}
+[Present the core algorithm in pseudocode using the \texttt{algorithmic}
+environment.]
+
+\begin{algorithm}[H]
+\caption{[Your method name]}
+\label{alg:main}
+\begin{algorithmic}[1]
+\Require [initial data $y_0$, step size $h$, final time $T$]
+\Ensure [approximate solution at $T$]
+\State [Step 1]
+\For{$n = 0, 1, \ldots, N-1$}
+    \State [Loop body]
+    \If{[condition]}
+        \State [Action]
+    \EndIf
+\EndFor
+\State \Return [result]
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Code Structure}
+[Briefly describe the organisation of your codebase. A table of files and their
+purposes is helpful.]
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ll}
+\toprule
+\textbf{File} & \textbf{Purpose} \\
+\midrule
+\texttt{methods.py} & Core time-stepping: Euler, RK4, implicit Euler with Newton \\
+\texttt{model.py} & The right-hand side $f(t,y)$ and its Jacobian \\
+\texttt{adaptive.py} & Adaptive step-size controller \\
+\texttt{run\_all.py} & Reproduces all report figures \\
+\texttt{validation\_tests.py} & PASS/FAIL test suite \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Key Design Decisions}
+[Discuss non-obvious choices: why this implicit method, how Newton's initial
+guess is chosen, how the adaptive controller estimates local error.]
+
+\newpage
+% ============================================================
+\section{Numerical Experiments}
+% ============================================================
+
+\subsection{Verification: Method of Manufactured Solutions or Exact Solutions}
+[Present a test case with a known solution. Show the error table and the
+convergence plot.]
+
+\begin{table}[H]
+\centering
+\begin{tabular}{cccc}
+\toprule
+\textbf{Step size $h$} & \textbf{Error} & \textbf{Ratio} & \textbf{Order} \\
+\midrule
+$0.1$    & [value] & ---  & ---  \\
+$0.05$   & [value] & [ratio] & [order] \\
+$0.025$  & [value] & [ratio] & [order] \\
+\bottomrule
+\end{tabular}
+\caption{Convergence study for [test case].}
+\end{table}
+
+\subsection{Stability Experiments}
+[Show that your explicit methods blow up beyond their stability limit while the
+implicit method does not. Compare with the predicted threshold.]
+
+\subsection{Adaptivity}
+[Show the step size actually changes, the local error stays near the tolerance,
+and the $h(t)$ trajectory.]
+
+\subsection{Main Results and Comparison of Methods}
+[Present the experiments that answer the project's central question. Use
+high-quality figures with interpretive captions.]
+
+\begin{figure}[H]
+\centering
+\fbox{\parbox{0.8\textwidth}{\centering \vspace{3em} [Insert your figure here] \vspace{3em}}}
+\caption{[Caption that interprets, not merely describes. E.g., ``The log-log plot
+confirms second-order convergence (slope 1.98) on the smooth test case, and shows
+the round-off floor at $h \approx 10^{-6}$.'']}
+\label{fig:convergence}
+\end{figure}
+
+\subsection{Limitations and Robustness}
+[Discuss parameter regimes where your method struggles. This is not a weakness ---
+it is scientific honesty.]
+
+\newpage
+% ============================================================
+\section{Conclusions}
+% ============================================================
+
+[Summarise in 3--4 bullet points:]
+\begin{itemize}[leftmargin=2em]
+\item [What you achieved.]
+\item [The most surprising or instructive finding.]
+\item [The main limitation you identified.]
+\item [A concrete direction for future work.]
+\end{itemize}
+
+\newpage
+% ============================================================
+\section*{References}
+% ============================================================
+
+[Use BibTeX or list references manually. Include at least: (1) the textbook from
+which you learned the method; (2) a paper applying the method to a problem
+similar to yours; (3) a software reference (NumPy, SciPy, scikit-fem).]
+
+\begin{thebibliography}{9}
+\bibitem{ref1} Author, A. \emph{Title}. Journal, year.
+\bibitem{ref2} Author, B. \emph{Book title}. Publisher, year.
+\end{thebibliography}
+
+\newpage
+% ============================================================
+\appendix
+\section{AI Transparency Log}
+% ============================================================
+
+[Append the completed team AI Transparency Log here. See
+\texttt{06\_Templates/ICS} for the full form: tools used, significant claim audits,
+what you changed and why, and the intellectual ownership declarations.]
+
+\section{Individual Contribution Statements}
+% ============================================================
+
+Each team member must complete the following (repeat for all 5 members):
+
+\begin{formbox}
+\textbf{Name:} Meichen Ding \quad (\textbf{Student ID:} 2364393) \hfill \textbf{Role:} Mathematical Theory Lead
+
+\vspace{0.5em}
+\textbf{1. My specific contributions to this project:}
+
+I authored the analytical consistency, adaptivity, and convergence foundations in Section~2 (Sections~2.2 and~2.4) in \texttt{Project1/report/Section2Draft.tex} (integrated into \texttt{report.tex}) and \texttt{Project1/notes/section2\_derivation\_notes.md}. Specifically, I derived the local truncation errors and consistency orders for Explicit/Implicit Euler and RK4 (Eq.~37, 43, 45--52 in Section2Draft\_v5) under Picard--Lindel{\"o}f Lipschitz continuity and small-step contraction $hL < 1$ (Eq.~42). From first principles, I derived the step-doubling Richardson extrapolation error estimator, proving that the exact continuous state cancels out to yield the unnormalised defect denominator $2^p - 1$ (Eq.~57--58) and the scale-invariant step-size update controller with optimal exponent $-1/(p+1)$ (Eq.~62). Furthermore, I formulated the discrete error recurrence (Eq.~104--105) and proved the continuous-type discrete Gr{\"o}nwall global upper bound $\|e_n\| \le \frac{e^{\Lambda(T-t_0)}-1}{\Lambda}\tau_{\max}(h)$ (Eq.~109), establishing why local defects of order $\mathcal{O}(h^{p+1})$ accumulate over $N=\mathcal{O}(h^{-1})$ steps into $\mathcal{O}(h^p)$ global convergence (Eq.~110--111), while proving the zero-stability degeneracy ($\rho(\zeta)=\zeta-1=0$) of single-step methods and providing the theoretical derivation for empirical log-log slope regression (Eq.~114--115).
+
+\vspace{0.5em}
+\textbf{2. The hardest conceptual obstacle I encountered:}
+
+The hardest mathematical challenge was reconciling why accepting the fine sub-step solution $y_f$ in our step-doubling adaptive controller did not elevate the asymptotic global convergence order from $p$ to $p+1$ in empirical log-log regressions, despite the controller utilizing a local extrapolation error formula. I overcame this by writing out the full Taylor remainder expansions for both the coarse step $y_c$ and consecutive half-steps $y_f$, which mathematically proved that combining two half-steps merely attenuates the leading principal error coefficient by a factor of $2^{-p}$ without satisfying the underlying Butcher algebraic tree conditions required for order $p+1$, thereby clarifying that local error control must strictly follow the exponent $-1/(p+1)$.
+
+\vspace{0.5em}
+\textbf{3. One piece of AI-generated output my team used, and what I changed:}
+
+Cross-referenced to \textbf{Appendix A (AI Transparency Log)}: Appendix~A documents that generative AI was consulted to revise the Implicit Euler local-error argument and adaptive stepping. When querying AI for the adaptive step-size update rule, the raw output proposed a textbook formula $h_{\text{new}} = h \cdot E^{-1/p}$. I audited this claim and identified that it conflated accumulated global discretization error $\mathcal{O}(h^p)$ with single-step local truncation defect $\mathcal{O}(h^{p+1})$. I corrected the resizing exponent to $-1/(p+1)$ in Section~2.2.4 (Eq.~62), derived the rigorous step-doubling cancellation denominator $2^p - 1$ ($1$ for Euler, $15$ for RK4), and introduced the safety margin $S=0.9$ alongside limiter bounds $[r_{\min}, r_{\max}]$ to prevent step-chattering during the initial transient.
+
+\vspace{0.5em}
+\textbf{4. One thing I still do not fully understand:}
+
+I do not yet fully understand how to construct a rigorous non-autonomous matrix logarithmic norm (one-sided Lipschitz dissipative constant) for the nonlinear polar-factor gradient flow $\dot{X} = X(I_n - X^TX)$ over the entire finite-time trajectory $t \in [0, 2]$, which would provide a unified global nonlinear contraction bound to theoretically explain why the discrete Lyapunov residual exhibits localized pre-asymptotic spikes during the fast transient even when the continuous Lyapunov functional $\Phi(X)$ decreases monotonically.
+
+\vspace{0.8em}
+\textbf{Signature:} \underline{\hspace{4.5cm}} \qquad \textbf{Date:} \underline{\hspace{2.5cm}}
+\end{formbox}Meichen
+
+\section{Supplementary Figures and Data}
+% ============================================================
+
+[Place any additional figures, tables, or code listings that would interrupt the
+main narrative but may be useful to a curious reader.]
+
+\end{document}
