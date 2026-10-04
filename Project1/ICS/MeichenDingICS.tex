@@ -87,7 +87,7 @@
 \author{
     Team \#\texttt{<N>} \\
     \small \texttt{<name1>, <id1> (Project Manager)} \quad
-    \texttt{<Meichen.Ding>, <2362344> (Mathematical Theory)} \\
+    \texttt{Meichen Ding, 2362344 (Mathematical Theory)} \\
     \small \texttt{<name3>, <id3> (Algorithm Implementation)} \quad
     \texttt{<name4>, <id4> (Visualization \& Report)} \\
     \small \texttt{<name5>, <id5> (Testing \& Validation)} \\
@@ -325,12 +325,12 @@ what you changed and why, and the intellectual ownership declarations.]
 Each team member must complete the following (repeat for all 5 members):
 
 \begin{formbox}
-\textbf{Name:} Meichen Ding \quad (\textbf{Student ID:} 2364393) \hfill \textbf{Role:} Mathematical Theory Lead
+\textbf{Name:} Meichen Ding \quad (\textbf{Student ID:} 2362344) \hfill \textbf{Role:} Mathematical Theory Lead
 
 \vspace{0.5em}
 \textbf{1. My specific contributions to this project:}
 
-I authored the analytical consistency, adaptivity, and convergence foundations in Section~2 (Sections~2.2 and~2.4) in \texttt{Project1/report/Section2Draft.tex} (integrated into \texttt{report.tex}) and \texttt{Project1/notes/section2\_derivation\_notes.md}. Specifically, I derived the local truncation errors and consistency orders for Explicit/Implicit Euler and RK4 (Eq.~37, 43, 45--52 in Section2Draft\_v5) under Picard--Lindel{\"o}f Lipschitz continuity and small-step contraction $hL < 1$ (Eq.~42). From first principles, I derived the step-doubling Richardson extrapolation error estimator, proving that the exact continuous state cancels out to yield the unnormalised defect denominator $2^p - 1$ (Eq.~57--58) and the scale-invariant step-size update controller with optimal exponent $-1/(p+1)$ (Eq.~62). Furthermore, I formulated the discrete error recurrence (Eq.~104--105) and proved the continuous-type discrete Gr{\"o}nwall global upper bound $\|e_n\| \le \frac{e^{\Lambda(T-t_0)}-1}{\Lambda}\tau_{\max}(h)$ (Eq.~109), establishing why local defects of order $\mathcal{O}(h^{p+1})$ accumulate over $N=\mathcal{O}(h^{-1})$ steps into $\mathcal{O}(h^p)$ global convergence (Eq.~110--111), while proving the zero-stability degeneracy ($\rho(\zeta)=\zeta-1=0$) of single-step methods and providing the theoretical derivation for empirical log-log slope regression (Eq.~114--115).
+I authored the analytical consistency, adaptivity, and convergence foundations in Section~2 (Sections~2.2 and~2.4) now in \path{Project1/report_v3/sections/section2.tex}; an earlier draft is preserved as \path{Project1/report_v1/Section2Draft_v5.tex}. Specifically, I derived the local truncation errors and consistency orders for Explicit/Implicit Euler and RK4 (Eq.~37, 43, 45--52 in Section2Draft\_v5) under Picard--Lindel{\"o}f Lipschitz continuity and small-step contraction $hL < 1$ (Eq.~42). From first principles, I derived the step-doubling Richardson extrapolation error estimator, proving that the exact continuous state cancels out to yield the unnormalised defect denominator $2^p - 1$ (Eq.~57--58) and the scale-invariant step-size update controller with optimal exponent $-1/(p+1)$ (Eq.~62). Furthermore, I formulated the discrete error recurrence (Eq.~104--105) and proved the continuous-type discrete Gr{\"o}nwall global upper bound $\|e_n\| \le \frac{e^{\Lambda(T-t_0)}-1}{\Lambda}\tau_{\max}(h)$ (Eq.~109), establishing why local defects of order $\mathcal{O}(h^{p+1})$ accumulate over $N=\mathcal{O}(h^{-1})$ steps into $\mathcal{O}(h^p)$ global convergence (Eq.~110--111), while proving the zero-stability degeneracy ($\rho(\zeta)=\zeta-1=0$) of single-step methods and providing the theoretical derivation for empirical log-log slope regression (Eq.~114--115).
 
 \vspace{0.5em}
 \textbf{2. The hardest conceptual obstacle I encountered:}
@@ -340,7 +340,7 @@ The hardest mathematical challenge was reconciling why accepting the fine sub-st
 \vspace{0.5em}
 \textbf{3. One piece of AI-generated output my team used, and what I changed:}
 
-Cross-referenced to \textbf{Appendix A (AI Transparency Log)}: Appendix~A documents that generative AI was consulted to revise the Implicit Euler local-error argument and adaptive stepping. When querying AI for the adaptive step-size update rule, the raw output proposed a textbook formula $h_{\text{new}} = h \cdot E^{-1/p}$. I audited this claim and identified that it conflated accumulated global discretization error $\mathcal{O}(h^p)$ with single-step local truncation defect $\mathcal{O}(h^{p+1})$. I corrected the resizing exponent to $-1/(p+1)$ in Section~2.2.4 (Eq.~62), derived the rigorous step-doubling cancellation denominator $2^p - 1$ ($1$ for Euler, $15$ for RK4), and introduced the safety margin $S=0.9$ alongside limiter bounds $[r_{\min}, r_{\max}]$ to prevent step-chattering during the initial transient.
+Generative AI was consulted to revise the Implicit Euler local-error argument and adaptive stepping. When querying AI for the adaptive step-size update rule, the raw output proposed a textbook formula $h_{\text{new}} = h \cdot E^{-1/p}$. I audited this claim and identified that it conflated accumulated global discretization error $\mathcal{O}(h^p)$ with single-step local truncation defect $\mathcal{O}(h^{p+1})$. I corrected the resizing exponent to $-1/(p+1)$ in Section~2.2.4 (Eq.~62), derived the rigorous step-doubling cancellation denominator $2^p - 1$ ($1$ for Euler, $15$ for RK4), and introduced the safety margin $S=0.9$ alongside limiter bounds $[r_{\min}, r_{\max}]$ to prevent step-chattering during the initial transient.
 
 \vspace{0.5em}
 \textbf{4. One thing I still do not fully understand:}

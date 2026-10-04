@@ -19,7 +19,7 @@
     "report-v1",
     "report-v2"
   ],
-  "pdf_pages": 32,
+  "pdf_pages": 37,
   "hash_policy": {
     "csv_png_pdf_json": "SHA-256 of raw bytes",
     "other_files": "SHA-256 after CRLF/CR to LF normalization"
@@ -44,20 +44,20 @@
     "fresh_environment_note": "CSV shapes and statuses agree, and convergence slopes match the report's displayed precision. The fresh Radau disagreement is 1.1680372e-13 (1.17e-13 at three significant figures) versus the bundled report's 1.1613543e-13 (1.16e-13), an absolute difference of 6.68e-16 (about 0.575%); the values support the same 1e-13-scale cross-check but do not match at three significant figures. Last-bit values and PNG hashes differ across unpinned dependency versions."
   },
   "report_files_sha256": {
-    "README.md": "0c7835e7e5eeadf4852d27eec6c9cdb1228029a8c3f88ef65977b149967345cc",
-    "CHANGELOG.md": "7cd1e2ddb9f424035df0d76821b056538c4b0015eb21e6186b11270696080124",
-    "checklist/README.md": "592653a62fee7674771b0a9a43221388abaef4b8ad7aee9df6a18ddded2257dc",
+    "README.md": "28a0fcfb32d2140b419af052f6440695309b51728b31b15b4728b1e0ffb81658",
+    "CHANGELOG.md": "a7dd6995f523e89a5ebf7b649ae06f2aa78476fd56ca128e5db208025ce3e0f3",
+    "checklist/README.md": "ee998089a7c1d7020344823289c0a90e7126f301cea2994cba7219fd376bbeb9",
     "checklist/VALIDATION_RUN_2026-10-03.md": "9b3d83605e6c9c0b54a60133f2a02d0aba36997574ca711e8679cb9013a39dee",
     "references.tex": "ed37ee7d8dfce1fd07c99f9ab124bbb2cdb45dcb7e6a378e19729cdeecb2869a",
-    "report.tex": "e25b43213b429a09871afd2c5691efcf9f2cd9c470e7050bb957b167c39637f4",
-    "report.pdf": "e86b62fbfed747756eed3216701cbc71eb76112d202cdd2bf7745ff479e47079",
+    "report.tex": "44efe99a0c5e507042b8a7e0324978a3a3ca683e44659e6aec28d31e270ca902",
+    "report.pdf": "8cebc7b604b2678dc382cb6ab6739185707530427accd6488ab322701e8e5d3d",
     "sections/section1.tex": "851a5f766a4f66929f45af11bfc4889708411c325003d2ea428c123deaad2c2a",
     "sections/section2.tex": "dc45d2bc6dc6d7d90906d32cd8adb8b07a9fc4ba6bfc2d30571758ffa77a178a",
     "sections/section3.tex": "c7dbf8d3d25748ff54f149f1d7803028b9f12ac20aace143066c4d61a2aa14db",
     "sections/section4.tex": "c003df49f933b55ea2d6717bb5f7f0a9c197126257bd01a4fee8571abec0143f",
     "sections/section5.tex": "65ab833761a66012e14378618d323f8fcb99366f897bcb78ca4e7a8d749e1125",
     "appendices/appendix_a.tex": "690988d37e2691def5d61f61ff59c480019bb4b905f85ea430a675fff71f0821",
-    "appendices/appendix_b.tex": "0ac25aee2094940f66d00513c1cf6bc6bbd501a64073a8cb658951231e62e0ab",
+    "appendices/appendix_b.tex": "ef3c6b591fb44e9280fcc0fc91850ec4512765255a78ed560073c6b4998e5358",
     "appendices/appendix_c.tex": "0e6adeb01321a089cdc5c2a9bfb28c17e6d499775921ab15e718b23496098acd",
     "data/README.md": "ba661896cfe772803fcdfff5496baa7943d685cdc49826e1f7d9595fa3bae4f5",
     "data/adaptive_steps.csv": "ce79d91c06659984d29dc150ad00265d58e013b8c63e60ad38e7039f939cc17a",

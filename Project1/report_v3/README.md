@@ -70,5 +70,5 @@ Reproduction does not overwrite archived snapshots. The team can include
 the modular section files, carrying over required packages and figure paths.
 
 恢复方法见 [版本索引](../notes/REPORT_VERSIONS.md)。
-AI Transparency Log 已纳入当前版本；ICS 已建立并填写现有成员内容，
-其余成员需补充各自的贡献说明。演示文件与最终代码 ZIP 仍按小组最终提交安排处理。
+AI Transparency Log 已纳入当前版本；附录 B 收录五位成员各一页的 ICS，
+封面列出对应姓名和学号。演示文件与最终代码 ZIP 仍按小组最终提交安排处理。
