@@ -117,14 +117,19 @@ versions. Regenerated working data were inspected and then excluded from the
 commit; the checked-in report artifacts were not overwritten.
 
 The verification-coverage wording in `sections/section4.tex` was updated from
-eleven to fourteen tests. The existing 32-page `report.pdf` was not rebuilt in
-this code-validation environment and is stale relative to the updated source;
-the report integrator must compile it before the final submission.
+eleven to fourteen tests. On 2026-10-04, final report integration rebuilt
+`report.pdf` from the latest `main` commit `45f0a01`, which includes validation
+merge `b28fe39`, with Tectonic 0.17.0.
+The stable output remains 32 pages: the table of contents places Section 4 on
+page 22, Section 4.5 and Section 5 on page 27, References on page 28, and the
+appendices on page 29. Section 4.5 now states fourteen tests and records all
+three added edge checks. The final log has no undefined references, and all 32
+rendered pages were visually checked.
 
-After all documentation corrections were complete, every manifest entry was
-regenerated using the declared extension policy (raw bytes for CSV, PNG, PDF
-and JSON; CRLF/CR-to-LF normalization for other files). An independent pass
-then verified all 41 listed paths with 41/41 matches.
+After the final PDF and documentation corrections were complete, every manifest
+entry was regenerated using the declared extension policy (raw bytes for CSV,
+PNG, PDF and JSON; CRLF/CR-to-LF normalization for other files). Independent
+verification then confirmed all 41 listed paths with 41/41 matches.
 
 ## 6. Evidence map
 
