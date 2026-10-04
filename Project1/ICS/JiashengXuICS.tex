@@ -1,0 +1,74 @@
+\documentclass[10pt]{article}
+\usepackage[a4paper,margin=1.8cm]{geometry}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{url}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.35em}
+
+\begin{document}
+
+\begin{center}
+    {\Large\bfseries Individual Contribution Statement}\\[0.2em]
+    {\large Project 1 (ODE IVP)}
+\end{center}
+
+\textbf{Name:} JIasheng Xu \hfill \textbf{Student ID:} 2251640\\
+\textbf{Role this project:} Role 5 --- Testing and Validation.
+
+\textbf{1. My specific contributions to this project:}
+\begin{enumerate}[leftmargin=2em,itemsep=0.25em,topsep=0.15em]
+    \item I added and migrated three edge-case validation tests in
+    \texttt{Project1/test/test\_validation.py}: tighter adaptive tolerances must
+    reduce global error, an oversized explicit step exposes singular-value
+    crossing, and Newton failure triggers adaptive retry.  These changes are
+    traceable to commit \texttt{c4ca4ee} and merge commit \texttt{b28fe39}.
+
+    \item I independently ran both the English and Chinese entry points and the
+    complete test suite, obtaining 14/14 passing tests.  I recorded the clean
+    reproduction in
+    \path{Project1/report_v3/checklist/VALIDATION_RUN_2026-10-03.md}
+    (commit \texttt{06461a9}).  After review, I corrected the Radau comparison
+    to \(1.17\times10^{-13}\) at three significant figures and regenerated and
+    independently checked all 41 manifest hashes in the Windows submission
+    checkout using the documented procedure (commit \texttt{838d938}).
+
+    \item After the validation merge, I rebuilt the report PDF from
+    \texttt{Project1/report\_v3/report.tex}, checked all 32 pages, and confirmed
+    that Section~4 reports fourteen tests and that the contents, references,
+    and appendices are complete.  I also updated the change log, validation
+    checklist, and affected manifest hashes.  This report-integration work was
+    merged through PR~\#3 (merge commit \texttt{e6913e6}).
+\end{enumerate}
+
+\textbf{2. The hardest conceptual obstacle I encountered:} The main challenge
+was separating a local step-doubling error estimate from accumulated global
+error.  I addressed it by comparing against the exact solution and turning the
+expected global-error reduction into a deterministic regression test rather
+than treating one accepted local step as evidence of global accuracy.
+
+\textbf{What I would do differently:} I would begin validation from the agreed
+current \texttt{main} branch, pin dependency versions, and define rounding and
+manifest-hash rules before generating final evidence.  This would avoid the
+path migration and last-minute rehashing required here.
+
+\textbf{Anything I should have asked for help with earlier:} I should have asked
+the report integrator to confirm the authoritative report directory and the
+freeze point for final artefacts before preparing the original test PR.
+
+\textbf{3. One piece of AI-generated output my team used, and what I changed:}
+As recorded in Appendix~A, AI helped check deliverable completeness and
+organise a draft of the validation evidence.  I revised that draft after manual
+reproduction: I corrected the Radau rounding, distinguished close agreement
+from exact matching, ran the complete suite in a clean environment, and
+independently verified the documented SHA-256 results before submission.
+
+\textbf{4. One thing I still do not fully understand:} I do not yet have a
+rigorous global-error bound for this nonlinear matrix flow that starts from the
+local step-doubling estimator while also accounting for rejected Newton steps.
+
+\vfill
+\textbf{Signature:} JIasheng Xu \hfill \textbf{Date:} 4 October 2026
+
+\end{document}
