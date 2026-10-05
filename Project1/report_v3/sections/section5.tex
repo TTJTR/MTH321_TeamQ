@@ -1,0 +1,313 @@
+\section{Advanced Method --- Fourth-Order Gauss Implicit Runge--Kutta}
+% ============================================================
+
+\subsection{Method Formulation}
+
+As an additional advanced comparison, we consider the classical
+two-stage, fourth-order Gauss--Legendre implicit Runge--Kutta method
+described by Butcher~\cite{butcher2016}, referred to here as Gauss IRK4.
+The coefficients used below are the standard two-stage Gauss coefficients
+given in Chapter~3, Section~34.2 of Butcher's text.
+
+This is a classical Gauss collocation method rather than the four-stage
+classical explicit RK4 scheme. The method is included as an extension
+to the three baseline methods studied in Sections~2--4.
+
+Using the same column-wise vectorisation as in the main analysis, let
+\[
+y=\operatorname{vec}(X)\in\mathbb{R}^{9},
+\qquad
+f(y)=\operatorname{vec}\!\left[X(I-X^TX)\right].
+\]
+
+The two Gauss nodes are
+\[
+c_1=\frac12-\frac{\sqrt3}{6},
+\qquad
+c_2=\frac12+\frac{\sqrt3}{6},
+\]
+with weights
+\[
+b_1=b_2=\frac12,
+\]
+and coefficient matrix
+\[
+A=
+\begin{pmatrix}
+\frac14 & \frac14-\frac{\sqrt3}{6}\\[1mm]
+\frac14+\frac{\sqrt3}{6} & \frac14
+\end{pmatrix}.
+\]
+
+For one time step of size $h$, the stage values satisfy
+\begin{equation}
+\label{eq:gauss_stages}
+Y_i
+=
+y_n+h\sum_{j=1}^{2}a_{ij}f(Y_j),
+\qquad i=1,2,
+\end{equation}
+and the new solution is
+\begin{equation}
+\label{eq:gauss_update}
+y_{n+1}
+=
+y_n+\frac{h}{2}\left[f(Y_1)+f(Y_2)\right].
+\end{equation}
+
+Because the two stages depend on each other, they must be solved as one
+coupled nonlinear system rather than as two independent nine-dimensional
+problems.
+
+\subsection{Solution of the Implicit Stages}
+
+Define the coupled residuals
+\[
+F_i(Y_1,Y_2)
+=
+Y_i-y_n-h\sum_{j=1}^{2}a_{ij}f(Y_j),
+\qquad i=1,2.
+\]
+
+The $(i,j)$ block of the Newton Jacobian is
+\[
+\frac{\partial F_i}{\partial Y_j}
+=
+\delta_{ij}I_9-h\,a_{ij}J_f(Y_j).
+\]
+
+Therefore, each Newton iteration requires the solution of an
+$18\times18$ linear system. The implementation uses the predictors
+\[
+Y_i^{(0)}
+=
+y_n+c_i h f(y_n),
+\]
+followed by damped Newton iteration. A trial correction is accepted only
+when the full coupled stage residual remains finite and decreases.
+
+The stopping condition is
+\[
+\|F\|_{\infty}
+\le
+10^{-12}\left(1+\|Y\|_{\infty}\right).
+\]
+
+This tolerance controls the residual of the implicit stage equations. It
+should not be interpreted as a bound on the global error of the numerical
+solution.
+
+\subsection{Order and Convergence}
+
+The classical two-stage Gauss collocation method has order
+\[
+p=2s=4.
+\]
+
+For exactly solved stage equations, the one-step defect is
+$O(h^5)$, and the corresponding per-unit-step local truncation error is
+$O(h^4)$. Since the vector field
+\[
+f(X)=X(I-X^TX)
+\]
+is polynomial, it is smooth on bounded sets relevant to the finite-time
+integration considered here.
+
+To connect the method with the global error framework used in
+Section~2, suppose that $f$ is Lipschitz with constant $L$ on a bounded
+neighbourhood containing the relevant stage states. For sufficiently
+small $h$ satisfying
+\[
+h\|A\|_{\infty}L<1,
+\]
+the coupled stage equations have a locally unique solution in that
+neighbourhood, and the resulting one-step map has a uniform local
+Lipschitz bound. The discrete Gr\"onwall argument used previously then
+gives global fourth-order convergence over a fixed finite time interval,
+provided that the exact and numerical trajectories remain in the same
+bounded neighbourhood.
+
+In practice, the stage equations are solved only approximately. If the
+stage residual is $\varepsilon(h)$ and the local inverse bound remains
+valid, the induced stage error is $O(\varepsilon)$ and the accumulated
+global contribution is also $O(\varepsilon)$. Therefore, a strict
+asymptotic fourth-order statement as $h\to0$ requires the stage residual
+to decrease appropriately with $h$. The implementation uses the fixed
+threshold $10^{-12}$, so the numerical evidence below should be
+interpreted as a finite-grid verification rather than as an independent
+asymptotic theorem.
+
+\subsection{Absolute Stability}
+
+For the scalar test equation
+\[
+y'=\lambda y,
+\qquad
+z=h\lambda,
+\]
+the amplification factor of the two-stage Gauss method is
+\begin{equation}
+\label{eq:gauss_stability}
+R_G(z)
+=
+\frac{1+\frac{z}{2}+\frac{z^2}{12}}
+     {1-\frac{z}{2}+\frac{z^2}{12}}.
+\end{equation}
+
+Let
+\[
+N(z)=1+\frac{z}{2}+\frac{z^2}{12},
+\qquad
+D(z)=1-\frac{z}{2}+\frac{z^2}{12}.
+\]
+Then
+\[
+|D(z)|^2-|N(z)|^2
+=
+-2\operatorname{Re}(z)
+\left(1+\frac{|z|^2}{12}\right).
+\]
+
+Hence, when $\operatorname{Re}(z)\le0$,
+\[
+|R_G(z)|\le1,
+\]
+so the method is A-stable. This is the classical A-stability property of
+Gauss methods; see Butcher, Chapter~3, Section~35.3~\cite{butcher2016}.
+
+However,
+\[
+R_G(z)\to1
+\qquad
+\text{as }
+z\to-\infty
+\]
+along the negative real axis. Therefore, the Gauss method is not
+L-stable. In particular, very strongly damped modes are not necessarily
+suppressed as aggressively as they are under Implicit Euler.
+
+For the initial frozen Jacobian of the present problem, the fastest
+negative mode is approximately $\lambda=-26$. With $h=0.08$,
+\[
+z=-2.08,
+\]
+for which the Gauss amplification factor is approximately $0.1335$.
+This frozen-spectrum calculation is only a local diagnostic and should
+not be interpreted as a complete nonlinear stability proof.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.78\textwidth]
+    {advanced_irk4/stability_comparison.png}
+    \caption{Comparison of the scalar stability amplification factors
+    along the negative real axis. The dashed reference marks the initial
+    frozen mode $z=-26\times0.08=-2.08$. The Gauss IRK4 curve illustrates
+    its A-stability and its lack of L-stability.}
+    \label{fig:gauss_stability_comparison}
+\end{figure}
+
+\subsection{Numerical Comparison}
+
+The Gauss IRK4 implementation was tested on the same initial matrix and
+time interval $[0,2]$ used in the main experiments. The terminal
+Frobenius-norm error was again measured against the exact finite-time SVD
+solution.
+
+Using the refined grids
+\[
+N=64,\ 128,\ 256,
+\]
+the fitted convergence slope for Gauss IRK4 is approximately
+\[
+3.9674,
+\]
+which is consistent with the expected fourth-order behaviour on the
+tested finite grids.
+
+For comparison, the corresponding fitted slopes in the same comparison
+script are approximately
+\[
+1.0101,\quad
+3.9274,\quad
+1.0137
+\]
+for Explicit Euler, classical RK4, and Implicit Euler, respectively.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.78\textwidth]
+    {advanced_irk4/convergence_comparison.png}
+    \caption{Terminal Frobenius-norm error versus step size for the four
+    numerical methods. The fitted Gauss IRK4 slope on the refined grids
+    is approximately $3.9674$, consistent with fourth-order behaviour on
+    the tested finite grids.}
+    \label{fig:gauss_convergence_comparison}
+\end{figure}
+
+A matched-accuracy comparison was also carried out. Classical RK4 with
+$N=75$ gives terminal error
+\[
+5.09443\times10^{-8}
+\]
+using 300 right-hand-side evaluations. Gauss IRK4 with $N=64$ gives
+terminal error
+\[
+5.07898\times10^{-8},
+\]
+using 720 right-hand-side evaluations, 264 Jacobian evaluations, and
+132 Newton iterations. The two terminal errors differ by approximately
+$0.3\%$.
+
+Thus, for this $3\times3$ benchmark and this accuracy level, Gauss IRK4
+does not reduce the number of right-hand-side evaluations relative to
+classical RK4. In addition, the evaluation counts do not include the cost
+of Jacobian assembly, the $18\times18$ linear solves, or Python overhead,
+so they should not be interpreted as direct wall-clock timing results.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.78\textwidth]
+    {advanced_irk4/cost_comparison.png}
+    \caption{Terminal error versus counted right-hand-side evaluations.
+    The highlighted RK4 and Gauss IRK4 runs have terminal errors differing
+    by approximately $0.3\%$. The plotted work measure does not include
+    Jacobian assembly, linear solves, or Python overhead.}
+    \label{fig:gauss_cost_comparison}
+\end{figure}
+
+On the common grid $h=0.1$, the sampled Lyapunov energy decreases at each
+stored time for all four methods. This is an observation from the present
+experiment rather than a general proof that Gauss IRK4 preserves energy
+monotonicity for arbitrary step sizes.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.78\textwidth]
+    {advanced_irk4/energy_comparison.png}
+    \caption{Sampled Lyapunov energy trajectories for the four methods on
+    the common grid $h=0.1$. All sampled trajectories decrease in this
+    experiment; this is an empirical observation rather than a general
+    monotonicity theorem.}
+    \label{fig:gauss_energy_comparison}
+\end{figure}
+
+Finally, tightening the stage residual threshold from $10^{-12}$ to
+$10^{-14}$ changes the terminal solution by approximately
+\[
+4.44\times10^{-16},\qquad
+1.50\times10^{-13},\qquad
+3.47\times10^{-14}
+\]
+for $N=64,128,256$, respectively. These changes are much smaller than
+the corresponding time-discretisation errors, supporting the use of the
+fixed Newton tolerance over the tested grid range.
+
+The numerical values reported in this subsection are generated by the
+advanced-method comparison scripts. The convergence slopes,
+matched-accuracy errors, and work counts are recorded in
+\texttt{data/advanced\_irk4/convergence\_cost.csv} and
+\texttt{data/advanced\_irk4/summary.json}. The energy trajectories shown
+in Figure~\ref{fig:gauss_energy_comparison} are recorded in
+\texttt{data/advanced\_irk4/energy\_trajectories.csv}.
+
+% ============================================================

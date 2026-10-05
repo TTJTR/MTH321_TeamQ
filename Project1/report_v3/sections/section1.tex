@@ -1,0 +1,84 @@
+\section{Introduction and Motivation}
+% ============================================================
+
+\subsection{Problem Background}
+
+For a nonsingular matrix $\mathbf{X}_0$, the polar decomposition writes
+\[
+\mathbf{X}_0 = \mathbf{Q}\mathbf{H},
+\]
+where $\mathbf{Q}$ is orthogonal and $\mathbf{H}$ is symmetric positive
+definite. The computation of the polar decomposition and, in particular,
+its orthogonal factor is a classical problem in numerical linear
+algebra~\cite{higham1986}.
+
+In this project, we study a nonlinear matrix differential equation that
+continuously transforms a nonsingular matrix toward this orthogonal
+polar factor. The problem therefore combines a matrix-valued dynamical
+system with the numerical solution of an ordinary differential equation.
+Standard numerical methods for initial-value problems provide the
+general framework for approximating such continuous-time systems
+~\cite{hairer1993}.
+
+This problem is particularly suitable for numerical analysis because it
+has an exact finite-time solution obtained from the singular value
+decomposition of the initial matrix. The exact solution provides a
+reference against which numerical approximations can be checked.
+
+At the same time, the model exhibits nontrivial numerical behaviour.
+Large initial singular values can generate a rapid transient and impose
+restrictive step sizes on explicit schemes. It therefore provides a
+useful setting for studying accuracy, absolute stability, adaptive
+step-size control, and computational work.
+
+\subsection{Mathematical Model}
+
+The model considered in this report is the matrix differential equation
+\begin{equation}
+\label{eq:background_matrix_flow}
+\dot{\mathbf{X}}(t)
+=
+\mathbf{X}(t)
+\left(
+\mathbf{I}_n-\mathbf{X}(t)^T\mathbf{X}(t)
+\right),
+\qquad
+\mathbf{X}(0)=\mathbf{X}_0.
+\end{equation}
+
+For a nonsingular initial matrix, the flow preserves the singular
+vectors while driving the singular values toward one. As a result,
+$\mathbf{X}(t)$ approaches the orthogonal polar factor as
+$t\rightarrow\infty$.
+
+The system can also be interpreted as a gradient flow. Defining
+\begin{equation}
+\label{eq:background_lyapunov}
+\Phi(\mathbf{X})
+=
+\frac14
+\left\|
+\mathbf{X}^T\mathbf{X}-\mathbf{I}_n
+\right\|_F^2,
+\end{equation}
+the evolution satisfies
+\[
+\frac{d}{dt}\Phi(\mathbf{X}(t)) \leq 0.
+\]
+
+Therefore, the Lyapunov functional decreases along the exact trajectory.
+This provides a useful structural diagnostic in addition to ordinary
+solution error.
+
+\subsection{Overview of the Report}
+
+In Section~2, Explicit Euler, classical fourth-order Runge--Kutta
+(RK4), and Implicit Euler are derived, and their consistency, stability,
+and convergence properties are analysed. Section~3 describes the
+implementation and algorithmic design. Section~4 presents the numerical
+experiments, including convergence, stability, adaptive step-size
+control, computational work, geometric diagnostics, and rank-deficient
+behaviour. Section~5 summarises the main findings, limitations, and
+directions for future work.
+
+% ============================================================

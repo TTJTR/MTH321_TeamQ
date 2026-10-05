@@ -1,0 +1,227 @@
+\clearpage
+\section{Individual Contribution Statements}
+\label{app:ics}
+% Source: Project1/ICS/TianruiJiICS.tex
+\subsection*{Tianrui Ji (Student ID: 2361367)}
+\begingroup\small
+\setlength{\parskip}{0.2em}
+\textbf{Role this project:} Lead developer of the Python implementation and numerical experiments for Topic 5.
+
+\textbf{The specific things I did this project:}
+\begin{enumerate}[leftmargin=2em, itemsep=0.4em, topsep=0.2em]
+    \item I implemented, revised, and reviewed the matrix ODE model in
+    \texttt{Project1/code/model.py} and its Chinese counterpart. This includes
+    matrix vectorisation, the right-hand side, the Jacobian, the finite-time
+    exact solution, and diagnostic quantities used to check the numerical
+    solutions.
+
+    \item I implemented, revised, and reviewed the three numerical methods in
+    \texttt{Project1/code/solvers.py} and its Chinese counterpart: explicit
+    Euler, classical RK4, and implicit Euler with a Newton solver. I also
+    worked on the fixed-step and adaptive drivers, including the implicit-step
+    residual and the handling of failed nonlinear solves.
+
+    \item I implemented and revised the reproducible experiments in
+    \texttt{Project1/code/experiments.py} and \texttt{run\_all.py}, including
+    convergence, stability, trajectory, cost--accuracy, adaptive-step, and
+    rank-deficient diagnostics. I reviewed the generated data and figures
+    against the finite-time exact solution and documented the code and figures
+    in the English and Chinese README files.
+\end{enumerate}
+
+\textbf{What I would do differently:} I would agree on the definitions of the
+implicit-step residual and error measures with the theory and testing members
+before implementation. I would also record parameter choices and the mapping
+between data and figures when each experiment is created.
+
+\textbf{Anything I should have asked for help with earlier:} I should have
+requested an independent review of the Newton solver and of how the stability
+analysis supports the numerical conclusions earlier in the project.
+
+\textbf{AI use:} AI assisted with implementation and review, as disclosed in
+the team's AI Transparency Log. I reviewed and revised the submitted code and
+take responsibility for explaining its methods, verification evidence, and
+limitations.
+\par\endgroup
+\clearpage
+% Source: Project1/ICS/Jingyan.WeiCSi.tex
+\subsection*{Jingyan Wei (Student ID: 2361411)}
+\begingroup\footnotesize
+\setlength{\parskip}{0.2em}
+\textbf{Role:} Mathematical Theory (Schemes \& Stability Lead)
+
+\vspace{0.2em}
+\textbf{1. My specific contributions to this project:}
+
+I authored the discrete formulation and linear/nonlinear stability foundations in Section~2 (Sections~2.1 and~2.3) now in \path{Project1/report_v3/sections/section2.tex}; an earlier draft is preserved as \path{Project1/report_v1/Section2Draft_v5.tex}. Specifically, I derived the step-update relations for Explicit Euler (Eq.~6--7 in Section2Draft\_v5), classical RK4 with its strictly lower-triangular Butcher tableau (Eq.~12--19), and Implicit Euler (Eq.~20--21). For the implicit solver, I derived the non-commutative matrix Fr{\'e}chet derivative $\mathcal{D}f(X)[H] = H(I_n - X^TX) - X(H^TX + X^TH)$ (Eq.~25) and the residual Jacobian $J_F(w) = I_{n^2} - h J_f(w)$ (Eq.~24, 28), formalising the damped Newton iteration with residual-decreasing backtracking line search (Algorithm~1). Furthermore, I proved the analytical stability boundaries for the scalar Dahlquist equation: showing that $R_{\text{RK4}}(-a) = -1$ has no real roots (Eq.~76) and solving the cubic equation $q(a) = a^3 - 4a^2 + 12a - 24 = 0$ to establish the negative real intercept $a^* \approx 2.78529$ (Eq.~77) and imaginary limit $[-2\sqrt{2}, 2\sqrt{2}]$ (Eq.~78). For Topic~5, I transformed the linearised operator into SVD coordinates (Eq.~91), rigorously separating contracting normal modes $\lambda_{ij}^{\text{sym}}$ from neutral tangent modes $\lambda_{ij}^{\text{skew}}$ (Eq.~92--95), determined the full initial spectrum $\{-26.0, \dots, +0.88\}$ (Eq.~96), calculated the theoretical explicit step limits $h_{\text{crit}}^{\text{EE}} \approx 0.0769$ and $h_{\text{crit}}^{\text{RK4}} \approx 0.1071$ (Eq.~97--98), and authored the Mandatory Analytical Disclaimer governing local frozen spectra.
+
+\vspace{0.2em}
+\textbf{2. The hardest conceptual obstacle I encountered:}
+
+The hardest mathematical challenge was deriving the problem-specific Fr{\'e}chet derivative and Jacobian spectrum for the matrix gradient flow. In standard scalar calculus, differentiating $x(1-x^2)$ yields $1-3x^2$, but for the matrix-valued flow $\dot{X} = X(I_n - X^TX)$, matrix multiplication is strictly non-commutative. When taking directional variations, the perturbation in the quadratic term expands as $\mathcal{D}(X^TX)[H] = H^TX + X^TH$ rather than $2X^TH$. Projecting this onto the tangent space of the SVD manifold required diagonalising a coupled $2 \times 2$ block system for every coordinate pair $(i < j)$, where I had to analytically demonstrate that symmetric perturbations induce contraction ($\lambda = -2$) while skew-symmetric variations align with the Lie algebra $\mathfrak{so}(n)$ of neutral tangent rotations ($\lambda = 0$).
+
+\vspace{0.2em}
+\textbf{3. One piece of AI-generated output my team used, and what I changed:}
+
+Generative AI was used to detail the RK4 negative-real-axis stability proof and analyse numerical stability. When querying AI to evaluate explicit stability on Topic~5, the raw output claimed that ensuring the scaled frozen eigenvalues satisfied $|1 + h\lambda_j| \le 1$ ($h < 2/26 \approx 0.0769$) provided a sufficient mathematical proof of global numerical stability over $t \in [0, 2]$. I audited this claim and identified that because the Jacobian $J_f(X(t))$ drifts continuously along the nonlinear trajectory, frozen eigenvalues only provide a necessary local linearised indicator rather than a global nonlinear certificate. I revised Section~2.3.4 to introduce the Mandatory Analytical Disclaimer and specified the step-sweep perturbation protocol to empirically test true nonlinear blow-up boundaries.
+
+\vspace{0.2em}
+\textbf{4. One thing I still do not fully understand:}
+
+I do not yet have a sharp nonlinear perturbation bound along the entire trajectory. The vectorised Jacobian $J_f(X)$ is symmetric at each state, but its eigenvalues and eigendirections change as $X(t)$ evolves. Pointwise frozen spectra alone therefore do not provide the global time-dependent bound that would quantify perturbation growth over $[0,2]$.
+
+\vspace{0.3em}
+\textbf{Signature:} \underline{\hspace{4.5cm}} \qquad \textbf{Date:} \underline{\hspace{2.5cm}}
+\par\endgroup
+\clearpage
+% Source: Project1/ICS/MeichenDingICS.tex
+\subsection*{Meichen Ding (Student ID: 2362344)}
+\begingroup\footnotesize
+\setlength{\parskip}{0.2em}
+\textbf{Role:} Mathematical Theory Lead
+
+\vspace{0.2em}
+\textbf{1. My specific contributions to this project:}
+
+I authored the analytical consistency, adaptivity, and convergence foundations in Section~2 (Sections~2.2 and~2.4) now in \path{Project1/report_v3/sections/section2.tex}; an earlier draft is preserved as \path{Project1/report_v1/Section2Draft_v5.tex}. Specifically, I derived the local truncation errors and consistency orders for Explicit/Implicit Euler and RK4 (Eq.~37, 43, 45--52 in Section2Draft\_v5) under Picard--Lindel{\"o}f Lipschitz continuity and small-step contraction $hL < 1$ (Eq.~42). From first principles, I derived the step-doubling Richardson extrapolation error estimator, proving that the exact continuous state cancels out to yield the unnormalised defect denominator $2^p - 1$ (Eq.~57--58) and the scale-invariant step-size update controller with optimal exponent $-1/(p+1)$ (Eq.~62). Furthermore, I formulated the discrete error recurrence (Eq.~104--105) and proved the continuous-type discrete Gr{\"o}nwall global upper bound $\|e_n\| \le \frac{e^{\Lambda(T-t_0)}-1}{\Lambda}\tau_{\max}(h)$ (Eq.~109), establishing why local defects of order $\mathcal{O}(h^{p+1})$ accumulate over $N=\mathcal{O}(h^{-1})$ steps into $\mathcal{O}(h^p)$ global convergence (Eq.~110--111), while proving the zero-stability degeneracy ($\rho(\zeta)=\zeta-1=0$) of single-step methods and providing the theoretical derivation for empirical log-log slope regression (Eq.~114--115).
+
+\vspace{0.2em}
+\textbf{2. The hardest conceptual obstacle I encountered:}
+
+The hardest mathematical challenge was reconciling why accepting the fine sub-step solution $y_f$ in our step-doubling adaptive controller did not elevate the asymptotic global convergence order from $p$ to $p+1$ in empirical log-log regressions, despite the controller utilizing a local extrapolation error formula. I overcame this by writing out the full Taylor remainder expansions for both the coarse step $y_c$ and consecutive half-steps $y_f$, which mathematically proved that combining two half-steps merely attenuates the leading principal error coefficient by a factor of $2^{-p}$ without satisfying the underlying Butcher algebraic tree conditions required for order $p+1$, thereby clarifying that local error control must strictly follow the exponent $-1/(p+1)$.
+
+\vspace{0.2em}
+\textbf{3. One piece of AI-generated output my team used, and what I changed:}
+
+Generative AI was consulted to revise the Implicit Euler local-error argument and adaptive stepping. When querying AI for the adaptive step-size update rule, the raw output proposed a textbook formula $h_{\text{new}} = h \cdot E^{-1/p}$. I audited this claim and identified that it conflated accumulated global discretization error $\mathcal{O}(h^p)$ with single-step local truncation defect $\mathcal{O}(h^{p+1})$. I corrected the resizing exponent to $-1/(p+1)$ in Section~2.2.4 (Eq.~62), derived the rigorous step-doubling cancellation denominator $2^p - 1$ ($1$ for Euler, $15$ for RK4), and introduced the safety margin $S=0.9$ alongside limiter bounds $[r_{\min}, r_{\max}]$ to prevent step-chattering during the initial transient.
+
+\vspace{0.2em}
+\textbf{4. One thing I still do not fully understand:}
+
+I do not yet fully understand how to construct a rigorous non-autonomous matrix logarithmic norm (one-sided Lipschitz dissipative constant) for the nonlinear polar-factor gradient flow $\dot{X} = X(I_n - X^TX)$ over the entire finite-time trajectory $t \in [0, 2]$, which would provide a unified global nonlinear contraction bound to theoretically explain why the discrete Lyapunov residual exhibits localized pre-asymptotic spikes during the fast transient even when the continuous Lyapunov functional $\Phi(X)$ decreases monotonically.
+
+\vspace{0.3em}
+\textbf{Signature:} \underline{\hspace{4.5cm}} \qquad \textbf{Date:} \underline{\hspace{2.5cm}}
+\par\endgroup
+\clearpage
+% Source: Project1/ICS/JiashengXuICS.tex
+\subsection*{Jiasheng Xu (Student ID: 2251640)}
+\begingroup\small
+\setlength{\parskip}{0.2em}
+\textbf{Role this project:} Role 5 --- Testing and Validation.
+
+\textbf{1. My specific contributions to this project:}
+\begin{enumerate}[leftmargin=2em,itemsep=0.25em,topsep=0.15em]
+    \item I added and migrated three edge-case validation tests in
+    \texttt{Project1/test/test\_validation.py}: tighter adaptive tolerances must
+    reduce global error, an oversized explicit step exposes singular-value
+    crossing, and Newton failure triggers adaptive retry.  These changes are
+    traceable to commit \texttt{c4ca4ee} and merge commit \texttt{b28fe39}.
+
+    \item I independently ran both the English and Chinese entry points and the
+    complete test suite, obtaining 14/14 passing tests.  I recorded the clean
+    reproduction in
+    \path{Project1/report_v3/checklist/VALIDATION_RUN_2026-10-03.md}
+    (commit \texttt{06461a9}).  After review, I corrected the Radau comparison
+    to \(1.17\times10^{-13}\) at three significant figures and regenerated and
+    independently checked all 41 manifest hashes in the Windows submission
+    checkout using the documented procedure (commit \texttt{838d938}).
+
+    \item After the validation merge, I rebuilt the report PDF from
+    \path{Project1/report_v3/report.tex}, checked all 32 pages, and confirmed
+    that Section~4 reports fourteen tests and that the contents, references,
+    and appendices are complete.  I also updated the change log, validation
+    checklist, and affected manifest hashes.  This report-integration work was
+    merged through PR~\#3 (merge commit \texttt{e6913e6}).
+\end{enumerate}
+
+\textbf{2. The hardest conceptual obstacle I encountered:} The main challenge
+was separating a local step-doubling error estimate from accumulated global
+error.  I addressed it by comparing against the exact solution and turning the
+expected global-error reduction into a deterministic regression test rather
+than treating one accepted local step as evidence of global accuracy.
+
+\textbf{What I would do differently:} I would begin validation from the agreed
+current \texttt{main} branch, pin dependency versions, and define rounding and
+manifest-hash rules before generating final evidence.  This would avoid the
+path migration and last-minute rehashing required here.
+
+\textbf{Anything I should have asked for help with earlier:} I should have asked
+the report integrator to confirm the authoritative report directory and the
+freeze point for final artefacts before preparing the original test PR.
+
+\textbf{3. One piece of AI-generated output my team used, and what I changed:}
+As recorded in Appendix~A, AI helped check deliverable completeness and
+organise a draft of the validation evidence.  I revised that draft after manual
+reproduction: I corrected the Radau rounding, distinguished close agreement
+from exact matching, ran the complete suite in a clean environment, and
+independently verified the documented SHA-256 results before submission.
+
+\textbf{4. One thing I still do not fully understand:} I do not yet have a
+rigorous global-error bound for this nonlinear matrix flow that starts from the
+local step-doubling estimator while also accounting for rejected Newton steps.
+
+\vspace{0.3em}
+\textbf{Signature:} Jiasheng Xu \hfill \textbf{Date:} 4 October 2026
+\par\endgroup
+\clearpage
+% Source: earlier report_v3 Appendix B statement supplied by Han Liu.
+% Source: earlier report_v3 Appendix B statement supplied by Han Liu.
+\subsection*{Han Liu (Student ID: 2364393)}
+\begingroup\small
+\setlength{\parskip}{0.2em}
+
+\textbf{1. My specific contributions to this project:}
+
+I was mainly responsible for the final-stage writing and integration of the
+report. I completed and refined Section~1 (Background) and Section~5
+(Conclusions), including the project motivation, overall context, and the
+synthesis of the main numerical findings. I also checked the completeness and
+consistency of the final report files, updated the appendices and version
+documentation, and helped integrate the existing Sections~2--4, figures, data,
+and references into the complete report. In the final checking stage, I also
+reviewed several wording and notation issues in Section~2 and clarified the
+discussion of the Implicit Euler Newton tolerance and local error terminology.
+
+\vspace{0.2em}
+\textbf{2. The hardest conceptual obstacle I encountered:}
+
+The most difficult part for me was understanding how the theoretical error
+statements in Section~2 should be connected to the actual numerical
+implementation. In particular, I had to distinguish the per-unit-step local
+truncation error from the unnormalised local one-step defect, and understand
+why the convergence proof for Implicit Euler assumes a sufficiently accurate
+nonlinear solve. I addressed this by comparing the mathematical definitions,
+the Newton stopping criterion used in the code, and the numerical convergence
+results before revising the wording in the report.
+
+\vspace{0.2em}
+\textbf{3. One piece of AI-generated output my team used, and what I changed:}
+
+As recorded in Appendix~A, AI was used to help review the report structure and
+identify wording and completeness issues in the final document. One example was
+the suggested clarification of the Implicit Euler convergence discussion in
+Section~2. I checked the AI-assisted explanation against the existing
+derivation and numerical results, and revised the wording so that the report
+explicitly states that a fixed Newton tolerance is adequate for the tested
+finite range of step sizes but is not itself an asymptotic assumption as
+$h\to0$. The final wording and its inclusion in the report were decided after
+this checking process.
+
+\vspace{0.2em}
+\textbf{4. One thing I still do not fully understand:}
+
+I still do not fully understand the more general theory describing how the
+accuracy of an inexact nonlinear solve affects the convergence order of an
+implicit time-stepping method beyond this specific Implicit Euler example. I
+understand the practical requirement that the nonlinear-solver error should be
+smaller than the time-discretisation error, but I would like to understand a
+more general rigorous analysis of this interaction.
+
+\vspace{0.3em}
+\textbf{Signature:} \underline{\hspace{4.5cm}}
+\qquad
+\textbf{Date:} \underline{\hspace{2.5cm}}
+
+\par\endgroup
+\clearpage

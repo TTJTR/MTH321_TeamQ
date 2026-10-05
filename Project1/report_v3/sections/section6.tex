@@ -1,0 +1,102 @@
+\section{Conclusions}
+% ============================================================
+
+This project investigated the numerical solution of the polar-factor
+matrix gradient flow
+\[
+\dot{\mathbf{X}}
+=
+\mathbf{X}
+\left(
+\mathbf{I}_n-\mathbf{X}^T\mathbf{X}
+\right)
+\]
+using Explicit Euler, classical fourth-order Runge--Kutta, and Implicit
+Euler with damped Newton iteration. The study combined convergence
+analysis, local stability diagnostics, adaptive step-size control,
+geometric checks, and matched-accuracy work comparisons.
+
+The fixed-grid experiments reproduce the expected convergence orders.
+Explicit Euler and Implicit Euler give fitted slopes of approximately
+$1.010$ and $1.014$, respectively, while RK4 gives a fitted slope of
+approximately $3.927$ on the refined grids. These measurements are
+consistent with first-order global convergence for the Euler methods
+and fourth-order convergence for RK4. The exact finite-time SVD solution
+is independently supported by a tight-tolerance Radau computation,
+whose terminal Frobenius-norm difference from the analytic matrix is
+$1.16\times10^{-13}$.
+
+The stability experiments also support the theoretical analysis while
+illustrating its limitations. The initial frozen-Jacobian estimates are
+approximately
+\[
+h_{\rm crit}^{\rm EE}\approx0.0769,
+\qquad
+h_{\rm crit}^{\rm RK4}\approx0.1071.
+\]
+Direct perturbation and step-size experiments show increased
+amplification and eventual failure when sufficiently large explicit
+steps are used. However, the experiments also demonstrate that these
+values should be interpreted as local frozen-Jacobian warnings rather
+than exact nonlinear global stability thresholds. Implicit Euler is
+more robust on the tested coarse grids, although this additional
+stability does not by itself guarantee comparable accuracy.
+
+The step-doubling adaptive controller operates as intended for all three
+base methods. Accepted step sizes vary during the integration and become
+smaller during the rapid initial transient. With the common tolerance
+settings used in the experiments, the maximum accepted normalized local
+error remains below one for each solver. These local estimates are not
+treated as bounds on the terminal global error, which is measured
+separately against the exact SVD solution.
+
+The geometric experiments are consistent with the structure of the
+continuous matrix flow. On a resolved RK4 trajectory, all sampled
+singular values move toward one without crossing, and the Lyapunov
+functional decreases at every stored step. At $t=2$, the numerical
+orthogonality defect is
+$0.305932824226$, compared with the exact finite-time value
+$0.305932824210$. This agreement confirms that the nonzero defect at
+finite time is a property of the exact trajectory rather than a
+numerical failure.
+
+The matched-accuracy comparison provides a further distinction between
+the three methods. For terminal errors close to $9\times10^{-4}$, RK4
+requires 68 right-hand-side evaluations, compared with 160 for Explicit
+Euler and 862 for Implicit Euler. The implicit run additionally requires
+351 Jacobian evaluations and Newton updates. Under the chosen
+algorithmic work measure, RK4 therefore reaches the selected accuracy
+with the fewest right-hand-side evaluations. These counts exclude matrix
+factorisation, Python overhead, and plotting, so they should not be
+interpreted as direct wall-clock timing measurements.
+
+The rank-deficient experiment confirms another structural property of
+the model. When the first initial singular value is replaced by zero,
+the smallest numerical singular value remains at round-off scale while
+the other two approach one. The resulting state therefore approaches a
+rank-two partial isometry rather than an orthogonal matrix, in agreement
+with the exact finite-time solution.
+
+Overall, the numerical evidence is consistent with the theoretical
+analysis developed in Section~2. RK4 provides the most favourable
+accuracy--work balance among the tested configurations, while Implicit
+Euler provides greater robustness for large steps at the additional
+cost of nonlinear solves. Explicit Euler remains a useful first-order
+baseline but is more strongly restricted by accuracy and stability.
+
+Several limitations should be retained when interpreting these results.
+The frozen-Jacobian stability analysis is local rather than a complete
+nonlinear stability proof, and the adaptive error estimator controls a
+local quantity rather than the global solution error. In addition, the
+cost study uses algorithmic evaluation counts rather than measured
+runtime on a fixed machine. Nevertheless, agreement among the analytic
+SVD solution, the independent Radau reference, the geometric
+diagnostics, and the automated validation tests provides a consistent
+basis for confidence in the reported numerical results.
+
+A natural direction for future work is to extend the comparison to
+higher-order implicit or stiff solvers, larger matrix dimensions, and
+measured wall-clock performance. A more complete nonlinear stability
+analysis beyond the frozen-Jacobian approximation would also be useful.
+
+% ============================================================
