@@ -1,0 +1,44 @@
+{
+  "method": "two-stage Gauss-Legendre implicit RK, order 4",
+  "interval": [
+    0.0,
+    2.0
+  ],
+  "newton_residual_tolerance": 1e-12,
+  "fit_slopes": {
+    "euler": 1.0101162413129645,
+    "rk4": 3.9274157241734113,
+    "implicit_euler": 1.0136814873423114,
+    "gauss_irk4": 3.967392231486374
+  },
+  "stability_function": "(1+z/2+z^2/12)/(1-z/2+z^2/12)",
+  "fast_mode_h008_amplification": {
+    "euler": 1.08,
+    "rk4": 0.3632877105183528,
+    "implicit_euler": 0.32467536739185976,
+    "gauss_irk4": 0.13352596949806553
+  },
+  "matched_pair": [
+    {
+      "method": "rk4",
+      "n_steps": 75,
+      "h": 0.02666666666666667,
+      "terminal_frobenius_error": 5.0944288433417014e-08,
+      "rhs_evaluations": 300,
+      "jacobian_evaluations": 0,
+      "newton_iterations": 0,
+      "matched_pair": true
+    },
+    {
+      "method": "gauss_irk4",
+      "n_steps": 64,
+      "h": 0.03125,
+      "terminal_frobenius_error": 5.078980013258162e-08,
+      "rhs_evaluations": 720,
+      "jacobian_evaluations": 264,
+      "newton_iterations": 132,
+      "matched_pair": true
+    }
+  ],
+  "cost_caveat": "RHS evaluations exclude Jacobian assembly, dense linear solves and Python overhead"
+}
