@@ -56,7 +56,6 @@ Thus stability at large negative `z` does not imply strong fast-mode damping.
 | `gauss_irk4.py` | Gauss tableau, coupled-stage damped Newton solver, stability function, and RHS/Jacobian/Newton counts / 系数、耦合阶段 Newton 求解、稳定函数与成本计数 |
 | `run_comparison.py` | Runs the four-method comparison against the same finite-time SVD solution and generates the new data and figures / 四方法比较与作图 |
 | `test_gauss_irk4.py` | Checks fourth-order conditions, scalar stability, matrix convergence, Newton failure, tolerance sensitivity, energy and rank deficiency / 核对四阶条件、稳定性、矩阵收敛、求根失败、容差、能量与秩亏情形 |
-| `SECTION5_ADVANCED_METHOD_PATCH.md` | Readable theory notes, code and figure evidence map, and handoff rules for a new Section 5 / 新 Section 5 的理论、代码与图片交接补丁 |
 
 ## Run / 运行
 
