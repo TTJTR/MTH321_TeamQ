@@ -12,5 +12,5 @@ to `data/`. This directory contains source only.
 | `run_all.py` | Selects output paths and runs every experiment. |
 
 Details: [English README](../README_EN.md).
-Current chapters: [report_v2](../report_v2/README.md).
+Current report: [report_v3](../report_v3/README.md).
 Running the code does not overwrite report snapshots.

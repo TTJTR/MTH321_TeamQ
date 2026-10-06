@@ -14,13 +14,10 @@ From the \path{Project1/} directory, run:
 \begin{lstlisting}
 python -m pip install -r requirements.txt
 python -B code/run_all.py
-python -B code_zh/run_all.py
 python -B -m unittest discover -s test -v
 \end{lstlisting}
-The English run rebuilds project-level \path{figures/} and \path{data/};
-the Chinese run uses \path{outputs_zh/}. In the recorded run, the two
-languages give identical CSV/JSON contents and identical eight PNGs.
-The regenerated English files also match this version's submitted
+The run rebuilds project-level \path{figures/} and \path{data/}.
+The regenerated files also match this version's submitted
 snapshots. PNGs are exported at 220 DPI.
 
 All model quantities, time, and step lengths are dimensionless.

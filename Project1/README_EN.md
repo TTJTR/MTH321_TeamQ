@@ -10,17 +10,13 @@ SciPy 1.13.1 and Matplotlib 3.8.4.
 python -m venv .venv
 .venv\Scripts\python -m pip install -r requirements.txt
 .venv\Scripts\python -B code/run_all.py
-.venv\Scripts\python -B code_zh/run_all.py
 .venv\Scripts\python -B -m unittest discover -s test -v
 ```
 
 
-The English entry writes eight PNGs to project-level `figures/` and six
-CSVs plus `summary.json` to `data/`. The Chinese entry writes matching
-files to `outputs_zh/figures/` and `outputs_zh/data/`.
-Both source directories contain code only; running either entry does not
-overwrite archived reports. Function names, data columns and plot labels
-are shared for comparison. The JSON records actual software versions.
+The entry point writes eight PNGs to project-level `figures/` and six
+CSVs plus `summary.json` to `data/`. It does not overwrite archived reports.
+The JSON records actual software versions.
 
 ## Model and verification
 
@@ -49,31 +45,27 @@ one of the three methods being compared.
 | `code/solvers.py` | Implements the three one-step methods, the damped Newton solve for Implicit Euler, uniform-grid integration and step-doubling adaptivity. Counts RHS evaluations, Jacobian evaluations, Newton iterations and rejected trials. |
 | `code/experiments.py` | Runs all numerical studies, plots eight figures, exports six CSV files and writes the machine-readable summary. |
 | `code/run_all.py` | English command-line entry point; calls every experiment and prints the fitted orders and reference disagreement. |
-| `code_zh/model.py` | Chinese-commented, independently runnable counterpart of `code/model.py`. |
-| `code_zh/solvers.py` | Chinese-commented counterpart of `code/solvers.py` with the same numerical behavior. |
-| `code_zh/experiments.py` | Chinese-commented counterpart of `code/experiments.py`; takes separate figure and data destinations from the entry point. |
-| `code_zh/run_all.py` | Chinese command-line entry point. |
 | `test/test_validation.py` | Checks the analytic Jacobian against finite differences, both full spectra, the energy identity, the diagonal scalar sanity case, the SVD/Radau comparison, convergence orders, adaptive behavior, the rank-deficient case, tolerance sensitivity, large-step singular-value crossing and Newton retry. |
-| `test/test_bilingual_parity.py` | Runs both source trees separately and compares their model, fixed-step and adaptive numerical outputs. |
 | `report_v3/checklist/README.md` | Acceptance checklist, evidence, figure mapping and reproduction commands. |
-| `report_v3/checklist/VALIDATION_RUN_2026-10-03.md` | Fresh-environment test and reproduction record for the current 14-test suite. |
+| `report_v3/checklist/VALIDATION_RUN_2026-10-03.md` | Historical bilingual reproduction record, retained for provenance. |
 | `report_v3/sections/section1.tex` | Background and motivation for the polar-factor gradient flow. |
 | `report_v3/sections/section2.tex` | Theory and Newton pseudocode (Algorithm 1). |
 | `report_v3/sections/section3.tex` | Implementation and adaptive pseudocode (Algorithm 2). |
 | `report_v3/sections/section4.tex` | Experiments, results and verification coverage. |
-| `report_v3/sections/section5.tex` | Conclusions and synthesis of the main numerical findings. |
+| `report_v3/sections/section5.tex` | Advanced two-stage Gauss implicit Runge--Kutta method and comparison. |
+| `report_v3/sections/section6.tex` | Conclusions and synthesis of the main numerical findings. |
 | `report_v3/appendices/appendix_a.tex` | AI Transparency Log. |
 | `report_v3/appendices/appendix_b.tex` | Individual Contribution Statements. |
 | `report_v3/appendices/appendix_c.tex` | Data/figure map, field dictionary and numerical extracts. |
 | `requirements.txt` | Lists NumPy, SciPy and Matplotlib. |
 | `CODE_HANDOFF.md` | Numbers and interpretation for integrating the code results into report Sections 3–4. |
-| `report_v3/report.tex` | Complete report containing the abstract, Sections 1--5, references and Appendices A--C. |
+| `report_v3/report.tex` | Complete report containing the abstract, Sections 1--6, references and Appendices A--C. |
 | `slides/Topic5_presentation.tex` | Source for the 11-slide presentation draft; `slides/Topic5_presentation.pdf` is the compiled deck. |
 |`report_v3/CHANGELOG.md` | Records v3 integration, updates and verification. |
 ## What each figure shows
 
 
-The current report bundles eight PNGs in `report_v3/figures/` and six
+The current report bundles eight baseline PNGs and four advanced-method PNGs in `report_v3/figures/`, and six baseline
 CSVs plus JSON in `report_v3/data/`, so compilation does not require
 running Python first. Appendix C provides their mapping, field definitions
 and numerical extracts. `report_v1/` and `report_v2/` remain preserved as
@@ -120,16 +112,15 @@ nonzero residual reflects discretization. The reported *scaled* residual
 divides by `max(1, |rate|)` and is not a pure relative error.
 
 
-## Current chapter delivery
-
 ## Current report delivery
 
 `report_v3/report.pdf` is the current integrated report. It contains the
-abstract, Sections 1--5, references, and Appendices A--C.
+abstract, Sections 1--6, references, and Appendices A--C.
 
-All 14 validation tests passed, including the three edge-case checks,
-adaptivity and bilingual parity for all three methods. See the
-[2026-10-03 validation record](report_v3/checklist/VALIDATION_RUN_2026-10-03.md).
+The current core suite has 13 tests, covering model derivatives, convergence,
+geometry, adaptivity and edge cases. The earlier 14-test bilingual run is a
+[historical validation record](report_v3/checklist/VALIDATION_RUN_2026-10-03.md).
+The advanced Gauss IRK4 checks live in `code_advanced/test_gauss_irk4.py`.
 
 The earlier `report_v1/` and `report_v2/` directories are preserved as
 historical snapshots. See the

@@ -1,45 +1,31 @@
-# MTH321 Project 1 — Topic ⑤
+# MTH321 Project 1: polar-factor gradient flow
 
-当前完整报告为 [report_v3](report_v3/README.md)，包含 Abstract、Sections 1--5、References 和 Appendices A--C。
+The current integrated submission is [report_v3](report_v3/README.md). It contains the abstract, Sections 1–6, references, and Appendices A–C. Earlier [v1](report_v1/README.md) and [v2](report_v2/README.md) directories are historical snapshots.
 
-[report_v1](report_v1/README.md) 和 [report_v2](report_v2/README.md) 原样保留，作为历史版本。
+## Reproduce
 
-版本、Git 标签和恢复方法见 [版本索引](notes/REPORT_VERSIONS.md)。
-
-Current complete report: [report_v3](report_v3/README.md), containing the Abstract, Sections 1--5, References, and Appendices A--C.
-
-The previous `report_v1/` and `report_v2/` directories are preserved as historical snapshots. See the version index for recovery information.
-
-## 运行 / Run
-
-在本目录运行 / Run from this directory:
+From `Project1/`, with Python 3.10 or newer:
 
 ```powershell
 python -m pip install -r requirements.txt
 python -B code/run_all.py
-python -B code_zh/run_all.py
 python -B -m unittest discover -s test -v
+python -B code_advanced/test_gauss_irk4.py
+python -B code_advanced/run_comparison.py
 ```
 
-## 目录 / Layout
+The baseline command writes eight figures to `figures/`, six CSV files and `summary.json` to `data/`. The advanced command writes four comparison figures and two CSV files plus a JSON summary in their `advanced_irk4/` subdirectories. The report bundles its own snapshots, so these commands do not overwrite the submitted evidence.
 
-| 目录 | 用途 / Purpose |
+## Layout
+
+| Path | Purpose |
 |---|---|
-| `code/` | 英文注释源码；English source only. |
-| `code_zh/` | 中文注释的独立源码；independent Chinese source. |
-| `test/` | 两份验证脚本，共 14 项测试。 |
-| `data/` | 当前运行生成的六份 CSV 与 `summary.json`；含字段说明。 |
-| `figures/` | 当前运行生成的八张 PNG 工作图。 |
-| `outputs_zh/` | 中文入口独立输出。 |
-| `report_v1/` | 保留的早期报告快照。 |
-| `report_v2/` | 保留的 Sections 2--4 与 Appendix C 章节交付版本。 |
-| `report_v3/` | 当前完整报告，包含 Sections 1--5、Appendices A--C、图、数据、checklist 与 manifest。 |
-| `notes/` | 版本索引与历史材料。 |
-| `slides/` | 小组演示文件。 |
+| `code/` | Baseline model, explicit Euler, classical RK4, implicit Euler and experiments. |
+| `code_advanced/` | Two-stage Gauss implicit RK4, advanced comparison and its dedicated checks. |
+| `test/` | Core numerical validation (13 tests). |
+| `data/`, `figures/` | Regenerated working results. |
+| `report_v3/` | Current LaTeX source, PDF, submitted figures/data, checklist and manifest. |
+| `report_v1/`, `report_v2/` | Preserved historical report snapshots. |
+| `notes/REPORT_VERSIONS.md` | Version and Git recovery notes. |
 
-完整说明：[中文 README](README_ZH.md)、[English README](README_EN.md)。
-
-当前报告说明：[report_v3 README](report_v3/README.md)。  
-修改记录：[v3 CHANGELOG](report_v3/CHANGELOG.md)。  
-验收证据：[v3 checklist](report_v3/checklist/README.md)。
-最新独立复现记录：[2026-10-03 validation run](report_v3/checklist/VALIDATION_RUN_2026-10-03.md)。
+For each code file, figure, numerical setting and output field, see the [detailed implementation guide](README_EN.md) and the [advanced method guide](code_advanced/README.md). The 2026-10-03 bilingual reproduction record remains in Git history and the report checklist as a historical record; the current delivery has one English source tree.
