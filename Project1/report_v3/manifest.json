@@ -1,6 +1,6 @@
 {
   "report_version": "v3",
-  "updated_date": "2026-10-06",
+  "updated_date": "2026-10-11",
   "scope": [
     "Abstract",
     "Section 1",
@@ -36,7 +36,7 @@
     "appendices/appendix_b.tex": "ef26f62064c6749570a39fd1f68e953126b17c1ca328406eb9701d738fedc5f3",
     "appendices/appendix_c.tex": "02ad6a0acc789f22bb4c79913c7a4ba3d504d3a1686fcbdae42cd99182f47ed4",
     "CHANGELOG.md": "b083cc3741e94fe523f3844ea6595d2210f246d434da4aa4d2f772f19bde8609",
-    "checklist/README.md": "9e338c2af4e618373a4e69ecd08f3b742b70e783f87863186b3deaf76e8c60d1",
+    "checklist/README.md": "9ac6fbda27999e50754b73a8b49f772bd6399a74b5a8233a4e8c33f6b5c2cb3f",
     "checklist/VALIDATION_RUN_2026-10-03.md": "9b3d83605e6c9c0b54a60133f2a02d0aba36997574ca711e8679cb9013a39dee",
     "data/adaptive_steps.csv": "ce79d91c06659984d29dc150ad00265d58e013b8c63e60ad38e7039f939cc17a",
     "data/convergence.csv": "9053f63fffa11fa499ed5f14a9a15b757e5dd9fc63d65a5df94c1b617d2b1893",
@@ -72,11 +72,11 @@
   "code_and_tests_sha256": {
     "code/experiments.py": "155e9996f99e2ad91c6760b111b06c166f18c3aecb226f53ceb1da1bd1812e7e",
     "code/model.py": "36ca7767db7f2a8e297289d8b6d94ed6cb3ec3fcc85ab83fd44a3c124c522448",
-    "code/README.md": "b6d451f9f19ecfbdd6cc43ff5f990848936163daf2c390c52c01b8c503c00bc5",
-    "code/run_all.py": "3fd6e12cbcf5d9635c2b89e8314ade290d558de7df8c516483c05bf06cf1231c",
+    "code/README.md": "d67e99934272bff1a56bbc95dbd1d3e0d94f835bffa96afd73b4b940ba063030",
+    "code/run_all.py": "7a7838181662075851174196bcf27c62fc70c31aac51d0f166d1f83e79468503",
     "code/solvers.py": "b8fbc60c0ad3ffcd3801b6e7e753a0d4941d3d74a4902edb78b7f98196c28fe6",
     "code_advanced/gauss_irk4.py": "2c867c27f4f8f428120d388043e35a14ea230e022f5f517b5e654a63913d7036",
-    "code_advanced/README.md": "fcda03404478856a9b4bf032b158f412d3f8b55684d8a9a5f00dea7c0089b221",
+    "code_advanced/README.md": "4e21814761ac5ddc1e1788eecc1815da48faab2ec7158b35acd5197e735fadab",
     "code_advanced/run_comparison.py": "f31a1b2e866aac2bebe6912c8f8e0ebef71ac2e153078f8bda7dd61787792955",
     "code_advanced/test_gauss_irk4.py": "c53260f3d7221b1f9a2ed4ed59c8889ba9bd8f3c97e00c385301eb3ef808ddd4",
     "code_advanced/VALIDATION_RUN_2026-10-05.md": "bcd288b9d79f2e30fbb0d446cb427ac78d9b0332283f255eb3bf0edaa7eb9d22",

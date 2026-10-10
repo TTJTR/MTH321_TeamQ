@@ -1,5 +1,7 @@
-"""Run all Topic 5 experiments and write reproducible plots, CSVs, and summary."""
+"""Regenerate all baseline and advanced Topic 5 report figures and data."""
 
+import subprocess
+import sys
 from pathlib import Path
 
 from experiments import run_all
@@ -16,3 +18,12 @@ if __name__ == "__main__":
     for method, info in result["convergence"].items():
         print(f"  {method}: {info['asymptotic_fit_slope']:.3f}")
     print(f"Exact SVD vs Radau: {result['independent_oracle']['exact_svd_disagreement']:.3e}")
+    sys.stdout.flush()
+
+    # Keep the advanced experiment independent while giving the report one
+    # reproducible entry point. A failed comparison fails this command too.
+    subprocess.run(
+        [sys.executable, "-B", str(project_root / "code_advanced" / "run_comparison.py")],
+        cwd=project_root,
+        check=True,
+    )

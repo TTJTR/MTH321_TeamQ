@@ -14,8 +14,11 @@ python -m venv .venv
 ```
 
 
-The entry point writes eight PNGs to project-level `figures/` and six
-CSVs plus `summary.json` to `data/`. It does not overwrite archived reports.
+The entry point writes all twelve report PNGs: eight baseline figures to
+project-level `figures/` and four advanced comparison figures to
+`figures/advanced_irk4/`. It also writes six baseline CSVs plus
+`summary.json` to `data/`, and two advanced CSVs plus `summary.json` to
+`data/advanced_irk4/`. It does not overwrite archived reports.
 The JSON records actual software versions.
 
 ## Model and verification
@@ -44,7 +47,7 @@ one of the three methods being compared.
 | `code/model.py` | Constructs the prescribed and rank-deficient initial matrices; converts matrices to/from column-major states; evaluates the matrix RHS, Fréchet derivative and analytic Jacobian; computes the finite-time SVD solution, singular values, Lyapunov energy/rate and orthogonality defect. |
 | `code/solvers.py` | Implements the three one-step methods, the damped Newton solve for Implicit Euler, uniform-grid integration and step-doubling adaptivity. Counts RHS evaluations, Jacobian evaluations, Newton iterations and rejected trials. |
 | `code/experiments.py` | Runs all numerical studies, plots eight figures, exports six CSV files and writes the machine-readable summary. |
-| `code/run_all.py` | English command-line entry point; calls every experiment and prints the fitted orders and reference disagreement. |
+| `code/run_all.py` | Single command-line entry point; runs the baseline experiments and the separate advanced comparison, then prints the fitted baseline orders and reference disagreement. |
 | `test/test_validation.py` | Checks the analytic Jacobian against finite differences, both full spectra, the energy identity, the diagonal scalar sanity case, the SVD/Radau comparison, convergence orders, adaptive behavior, the rank-deficient case, tolerance sensitivity, large-step singular-value crossing and Newton retry. |
 | `report_v3/checklist/README.md` | Acceptance checklist, evidence, figure mapping and reproduction commands. |
 | `report_v3/checklist/VALIDATION_RUN_2026-10-03.md` | Historical bilingual reproduction record, retained for provenance. |

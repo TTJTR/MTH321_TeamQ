@@ -13,7 +13,7 @@ The method and tableau follow J. C. Butcher, *Numerical Methods for Ordinary Dif
 | `test_gauss_irk4.py` | Six checks of order, stability, nonlinear solve behavior and flow diagnostics. |
 | `VALIDATION_RUN_2026-10-05.md` | Historical validation record for the extension at the time it was added. |
 
-From `Project1/`:
+From `Project1/`, `python -B code/run_all.py` generates both the baseline and advanced outputs. To run only this advanced comparison and its tests:
 
 ```powershell
 python -B code_advanced/test_gauss_irk4.py

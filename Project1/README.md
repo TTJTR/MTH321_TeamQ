@@ -11,10 +11,9 @@ python -m pip install -r requirements.txt
 python -B code/run_all.py
 python -B -m unittest discover -s test -v
 python -B code_advanced/test_gauss_irk4.py
-python -B code_advanced/run_comparison.py
 ```
 
-The baseline command writes eight figures to `figures/`, six CSV files and `summary.json` to `data/`. The advanced command writes four comparison figures and two CSV files plus a JSON summary in their `advanced_irk4/` subdirectories. The report bundles its own snapshots, so these commands do not overwrite the submitted evidence.
+The single `code/run_all.py` command writes eight baseline figures to `figures/`, four comparison figures to `figures/advanced_irk4/`, six baseline CSV files and `summary.json` to `data/`, and two comparison CSV files plus a JSON summary to `data/advanced_irk4/`. The advanced comparison can also be run on its own with `python -B code_advanced/run_comparison.py`. The report bundles its own snapshots, so these commands do not overwrite the submitted evidence.
 
 ## Layout
 

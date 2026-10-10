@@ -9,7 +9,7 @@ to `data/`. This directory contains source only.
 | `model.py` | Benchmark, matrix/vector conversion, RHS, analytic Jacobian, finite-time SVD solution and diagnostics. |
 | `solvers.py` | Three methods, damped Newton, fixed/adaptive drivers and work counts. |
 | `experiments.py` | All experiments, eight figures, six CSVs and the JSON summary. |
-| `run_all.py` | Selects output paths and runs every experiment. |
+| `run_all.py` | Runs the eight baseline figures and the separate four-figure advanced comparison from one command. |
 
 Details: [English README](../README_EN.md).
 Current report: [report_v3](../report_v3/README.md).
