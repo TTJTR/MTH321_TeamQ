@@ -1,9 +1,10 @@
-\documentclass[11pt]{article}
-\usepackage[margin=2.3cm]{geometry}
-\usepackage{enumitem}
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{url}
 \pagestyle{empty}
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{0.55em}
+\setlength{\parskip}{0.4em}
 
 \begin{document}
 
@@ -12,44 +13,52 @@
     {\large Project 1 (ODE IVP)}
 \end{center}
 
-\textbf{Name:} Tianrui Ji\\
-\textbf{Student ID:} 2361367\\
-\textbf{Role this project:} Lead developer of the Python implementation and numerical experiments for Topic 5.
+\textbf{Name:} Tianrui Ji \hfill \textbf{Student ID:} 2361367\\
+\textbf{Role:} Algorithms, numerical experiments and visualisation.
 
-\textbf{The specific things I did this project:}
-\begin{enumerate}[leftmargin=2em, itemsep=0.4em, topsep=0.2em]
-    \item I implemented, revised, and reviewed the matrix ODE model in
-    \texttt{Project1/code/model.py} and its Chinese counterpart. This includes
-    matrix vectorisation, the right-hand side, the Jacobian, the finite-time
-    exact solution, and diagnostic quantities used to check the numerical
-    solutions.
+\textbf{1. My specific contributions to this project:}
 
-    \item I implemented, revised, and reviewed the three numerical methods in
-    \texttt{Project1/code/solvers.py} and its Chinese counterpart: explicit
-    Euler, classical RK4, and implicit Euler with a Newton solver. I also
-    worked on the fixed-step and adaptive drivers, including the implicit-step
-    residual and the handling of failed nonlinear solves.
+I implemented the matrix ODE model, analytic Jacobian, finite-time exact
+solution and numerical diagnostics in \path{Project1/code/model.py}. In
+\path{Project1/code/solvers.py}, I implemented Explicit Euler, classical RK4
+and Implicit Euler with damped Newton iteration, together with fixed-step
+and adaptive integration. I developed the experiments and plotting code in
+\path{Project1/code/experiments.py} and \path{Project1/code/run_all.py},
+producing the convergence, stability, trajectory, adaptivity, cost and
+rank-deficiency results used in the report. For the advanced comparison in
+Section 5, I implemented the two-stage Gauss implicit RK4 solver and
+four-method comparison in \path{Project1/code_advanced/}, including its four
+figures and supporting data. I checked that the numerical claims and figures
+used in Sections 3--5 matched the generated results and the theoretical
+finite-time solution.
 
-    \item I implemented and revised the reproducible experiments in
-    \texttt{Project1/code/experiments.py} and \texttt{run\_all.py}, including
-    convergence, stability, trajectory, cost--accuracy, adaptive-step, and
-    rank-deficient diagnostics. I reviewed the generated data and figures
-    against the finite-time exact solution and documented the code and figures
-    in the English and Chinese README files.
-\end{enumerate}
+\textbf{2. The hardest conceptual obstacle I encountered:}
 
-\textbf{What I would do differently:} I would agree on the definitions of the
-implicit-step residual and error measures with the theory and testing members
-before implementation. I would also record parameter choices and the mapping
-between data and figures when each experiment is created.
+The main challenge was keeping the algorithm, theoretical definitions and
+reported errors consistent. In particular, a small Newton residual means
+that an implicit step equation has been solved closely; it does not imply
+an equally small error in the final trajectory. I checked the implemented
+residual and Jacobian against the equations, then used the finite-time exact
+solution to assess the time-stepping error separately.
 
-\textbf{Anything I should have asked for help with earlier:} I should have
-requested an independent review of the Newton solver and of how the stability
-analysis supports the numerical conclusions earlier in the project.
+\textbf{3. One piece of AI-generated output my team used, and what I changed:}
 
-\textbf{AI use:} AI assisted with implementation and review, as disclosed in
-the team's AI Transparency Log. I reviewed and revised the submitted code and
-take responsibility for explaining its methods, verification evidence, and
-limitations.
+Appendix A, item AI-2, records AI assistance with numerical-results summaries
+and Section 2 wording. I revised an AI-assisted explanation of the $10^{-12}$
+Newton tolerance to make clear that it controls the algebraic residual within
+each implicit step, not the number of correct digits in the final result.
+I checked the revised explanation against the solver and the measured error
+relative to the exact solution.
+
+\textbf{4. One thing I still do not fully understand:}
+
+I cannot yet derive a rigorous global nonlinear step-size guarantee from the
+frozen Jacobian spectrum. The explicit step-size thresholds in our report
+describe local linearised behaviour; extending them to a guarantee for the
+full nonlinear trajectory would require further analysis.
+
+\vspace{0.5em}
+\textbf{Signature:} \underline{\hspace{4.5cm}} \hfill
+\textbf{Date:} \underline{\hspace{2.5cm}}
 
 \end{document}
