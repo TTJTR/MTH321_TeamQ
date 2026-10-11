@@ -109,7 +109,7 @@ gradient flow
 \right),
 \]
 which drives a nonsingular matrix toward the orthogonal factor of its
-polar decomposition. Three numerical methods are investigated:
+polar decomposition. Three baseline numerical methods are investigated:
 Explicit Euler, classical fourth-order Runge--Kutta (RK4), and Implicit
 Euler solved by a damped Newton iteration.
 
@@ -132,6 +132,10 @@ the fewest right-hand-side evaluations among the tested configurations.
 The rank-deficient experiment also confirms that a zero singular mode is
 preserved and the solution approaches a partial isometry rather than an
 orthogonal matrix.
+As an advanced comparison, a two-stage Gauss implicit Runge--Kutta
+method shows fourth-order behaviour and A-stability, but requires more
+right-hand-side evaluations than classical RK4 at the matched accuracy
+tested here.
 
 \end{abstract}
 \noindent\textbf{Keywords:}

@@ -18,7 +18,7 @@
     "report-v1",
     "report-v2"
   ],
-  "pdf_pages": 42,
+  "pdf_pages": 43,
   "hash_policy": {
     "csv_png_pdf_json": "SHA-256 of raw bytes",
     "other_files": "SHA-256 after CRLF/CR to LF normalization"
@@ -58,16 +58,16 @@
     "figures/stability_regions.png": "92adb7db9b0583690005a625016d999fcbd5775f89d7eee06e3e6c28da7c61fa",
     "figures/stability_sweep.png": "d91ae1dae3e56d5a99d7299a0d3e897b008ce41e272cd9a78033da6b7b5c99ec",
     "figures/trajectory_diagnostics.png": "88f4db60a1d7ab24635a913f3a808f39746bcd0522fe53c9cb361d095f932e5a",
-    "README.md": "7f2d7c96e237d2001c5dc3a47137f640f30e139554e39227c334259b2cb2428c",
+    "README.md": "eafe48c2d62dea1f8b8aa8817b6b0fed37b37efc1b16d5f1095f8bf971661e00",
     "references.tex": "e1baa3659c6e045c84dd735daca873b35b3c4c8480c6ef8583d5bc07cdce7556",
-    "report.pdf": "534c5f23771e60fdc5f399973f9994fe178721a8732ffe546d0a43c86b3c2836",
-    "report.tex": "cad8c73cbf1c1a0431f72cf929ac08b3338c02a88ca2c20d8be7d7d8f94ed428",
-    "sections/section1.tex": "fc7775464ab3f235ddde04b9a1894839d01f0905ddfe0dfbd589c0472e0d9069",
-    "sections/section2.tex": "dc45d2bc6dc6d7d90906d32cd8adb8b07a9fc4ba6bfc2d30571758ffa77a178a",
-    "sections/section3.tex": "a05ecfd454e16c2113836d831a26b2f34780ca4cf2fc8503d56a65ec7c5b7ab2",
-    "sections/section4.tex": "361a9a4012fc13b6fcf0e7e6d645dbefd45342b553db20a170e32dc7c2c9e74c",
-    "sections/section5.tex": "5d9b709fb28f036d62a86633a98304a4142d8884ca681bdef43b1abe4932d979",
-    "sections/section6.tex": "575ba1c17cafddde57a70a44198e45bc7cf8f9bf7a807df8996e202df1e757d7"
+    "report.pdf": "ff79200a672c7bd108d1a5b9e90a4ff8607246748cb1849f75c9def732769a3d",
+    "report.tex": "0252004b15d4e2bd1e236fee851f7b53d1fcfe4652b0e93d86ec7b574e171fd1",
+    "sections/section1.tex": "20077c5c0a72adb5b5d6339c24168a77eb601f8e770cd454bd004b4e3cdaae9b",
+    "sections/section2.tex": "ba782eb0deb887dccdd3612ffb044754921f4e3e8d68a59d7d970f041605cec8",
+    "sections/section3.tex": "405d8483f2a61c72df5067773b38354701668440f0671287183fd7bfbd2ffcc2",
+    "sections/section4.tex": "70bb77e2b889d90de83a70cf2f48c376fb4669e44f0545977edd279258753451",
+    "sections/section5.tex": "23c0c70772c1af875e762d10e6caba9542cdee9a4000518ec2ef12b0870c183a",
+    "sections/section6.tex": "5d0edd1148840f2652ec773c7c63d72b4edbac49276aaf21a018689ef4c2cf55"
   },
   "code_and_tests_sha256": {
     "code/experiments.py": "155e9996f99e2ad91c6760b111b06c166f18c3aecb226f53ceb1da1bd1812e7e",

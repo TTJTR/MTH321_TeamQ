@@ -60,6 +60,7 @@ treatment of these one-step methods appears in \cite{hairer1993}.
 \subsection{Code Structure}
 \begin{table}[H]
 \centering
+\small
 \begin{tabular}{lp{0.68\textwidth}}
 \toprule
 \textbf{File} & \textbf{Purpose} \\
@@ -71,9 +72,11 @@ treatment of these one-step methods appears in \cite{hairer1993}.
 \texttt{code/experiments.py} & Convergence, reference, stability,
   trajectory, adaptivity, cost, and rank-deficient experiments;
   exports PNGs to \path{figures/}, and CSV/JSON to \path{data/}. \\
+\path{code_advanced/} & Gauss IRK4 solver, four-method comparison,
+  four additional figures, advanced data, and dedicated checks. \\
 \texttt{code/run\_all.py} & One command regenerates every report figure. \\
 \texttt{test/} & Model, order, geometry, and adaptivity checks for all three methods. \\
-\texttt{report\_v3/data/} & Frozen CSV/JSON evidence documented in Appendix~\ref{sec:appendix_c}. \\
+\path{report_v3/data/} & Submitted baseline CSV/JSON evidence documented in Appendix~\ref{sec:appendix_c}. \\
 \bottomrule
 \end{tabular}
 \caption{Files used to reproduce the numerical results.}
@@ -84,18 +87,22 @@ treatment of these one-step methods appears in \cite{hairer1993}.
 \subsection{Output Layout and Reproduction}
 Run \texttt{python code/run\_all.py} from \path{Project1/}.
 The source directory contains only source and documentation.
-Eight regenerated images are written to the sibling \path{figures/}
-directory, while six CSV files and \path{summary.json} are written
-to \path{data/}.
+The command regenerates eight baseline images in \path{figures/} and
+four advanced comparison images in \path{figures/advanced_irk4/}.
+It writes six baseline CSV files and \path{summary.json} to \path{data/},
+and two advanced CSV files and a separate \path{summary.json} to
+\path{data/advanced_irk4/}.
 All paths are resolved from the entry-point file rather than a
 machine-specific drive or the shell's current directory.
 
-This report version bundles its own \path{figures/} and \path{data/}
-snapshots. Appendix~\ref{sec:appendix_c} maps every evidence file to
-its figures, fields, and claims. Reproduction writes to the project-level
+This report version bundles all twelve figure snapshots and the baseline
+data snapshots. Appendix~\ref{sec:appendix_c} maps the baseline evidence
+files to their figures, fields, and claims; Section~5 identifies the
+project-level advanced data files. Reproduction writes to the project-level
 output directories; it does not overwrite archived report versions.
 \texttt{python -B -m unittest discover -s test -v} runs the numerical
-checks. The version index in
+checks for the three baseline methods. The six advanced-method checks
+are run from \path{code_advanced/test_gauss_irk4.py}. The version index in
 \path{notes/REPORT_VERSIONS.md} identifies the current report and
 the Git tags used to recover earlier complete project states.
 

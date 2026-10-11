@@ -12,7 +12,8 @@ matrix gradient flow
 \right)
 \]
 using Explicit Euler, classical fourth-order Runge--Kutta, and Implicit
-Euler with damped Newton iteration. The study combined convergence
+Euler with damped Newton iteration as baseline methods, followed by a
+two-stage Gauss implicit Runge--Kutta extension. The study combined convergence
 analysis, local stability diagnostics, adaptive step-size control,
 geometric checks, and matched-accuracy work comparisons.
 
@@ -70,6 +71,14 @@ with the fewest right-hand-side evaluations. These counts exclude matrix
 factorisation, Python overhead, and plotting, so they should not be
 interpreted as direct wall-clock timing measurements.
 
+The advanced comparison in Section~5 adds a fourth-order Gauss implicit
+Runge--Kutta method. Its measured refined-grid slope is approximately
+$3.9674$. The method is A-stable but not L-stable; at a matched terminal
+error near $5.1\times10^{-8}$, it uses 720 right-hand-side evaluations
+compared with 300 for classical RK4. Thus this extension does not improve
+the counted RHS work for the tested benchmark and accuracy, although its
+stability properties differ from those of explicit RK4.
+
 The rank-deficient experiment confirms another structural property of
 the model. When the first initial singular value is replaced by zero,
 the smallest numerical singular value remains at round-off scale while
@@ -78,7 +87,7 @@ rank-two partial isometry rather than an orthogonal matrix, in agreement
 with the exact finite-time solution.
 
 Overall, the numerical evidence is consistent with the theoretical
-analysis developed in Section~2. RK4 provides the most favourable
+analysis developed in Sections~2 and~5. RK4 provides the most favourable
 accuracy--work balance among the tested configurations, while Implicit
 Euler provides greater robustness for large steps at the additional
 cost of nonlinear solves. Explicit Euler remains a useful first-order
@@ -95,7 +104,8 @@ diagnostics, and the automated validation tests provides a consistent
 basis for confidence in the reported numerical results.
 
 A natural direction for future work is to extend the comparison to
-higher-order implicit or stiff solvers, larger matrix dimensions, and
+other higher-order implicit methods, especially L-stable stiff solvers,
+larger matrix dimensions, and
 measured wall-clock performance. A more complete nonlinear stability
 analysis beyond the frozen-Jacobian approximation would also be useful.
 
