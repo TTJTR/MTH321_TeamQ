@@ -2,53 +2,84 @@
 \label{app:ai_log}
 
 \subsection*{Tools Used}
-
-\begin{itemize}
-    \item \textbf{ChatGPT (OpenAI):}
-    Used to clarify project tasks, review report structure, improve wording,
-    and assist with final consistency checks.
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
+    \item \textbf{ChatGPT (OpenAI) and Gemini (Google):} Used as interactive
+    thought partners for document structuring, LaTeX troubleshooting, phrasing
+    refinement, and initial consistency audits across sections.
 \end{itemize}
 
-\subsection*{AI-Assisted Work and Claim Checking}
+\subsection*{AI-Assisted Work and Deep Claim Audits}
+Generative AI suggestions were treated as preliminary drafts and independently
+audited. Four representative audits that materially affected mathematical or
+numerical claims are recorded below.
 
-\begin{description}
+\paragraph{Audit 1: Step-doubling controller resizing exponent
+(Section~2.2.4 and Meichen Ding ICS).}
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
+    \item \textbf{Task/query:} Formulate the step-size update based on the
+    step-doubling Richardson error estimate $E$.
+    \item \textbf{Raw AI output:} $h_{\mathrm{new}}=hE^{-1/p}$, where $p$ is
+    the global order of the base integrator.
+    \item \textbf{Risk audited:} This conflates global error
+    $\mathcal{O}(h^p)$ with a local defect of order $\mathcal{O}(h^{p+1})$.
+    \item \textbf{Verification and action:} The controller was re-derived with
+    exponent $-1/(p+1)$, safety factor $0.9$, and limiter $[0.2,2.0]$.
+\end{itemize}
 
-    \item[\textbf{AI-1: Report structure and completeness.}]
-    AI was used to help identify missing or incomplete final-delivery items,
-    including appendices, ICS, version documentation, and report consistency.
+\paragraph{Audit 2: Frozen-Jacobian stability interpretation
+(Section~2.3.4 and Jingyan Wei ICS).}
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
+    \item \textbf{Task/query:} Assess explicit stability constraints for
+    $\dot X=X(I_n-X^TX)$.
+    \item \textbf{Raw AI output:} The condition
+    $|1+h\lambda_j|\leq1$, giving $h<2/26\approx0.0769$, was presented as a
+    sufficient certificate of stability over $[0,2]$.
+    \item \textbf{Risk audited:} $J_f(X(t))$ changes with the nonlinear
+    trajectory, so the initial frozen spectrum is only a local diagnostic.
+    \item \textbf{Verification and action:} Section~2.3.4 was revised to state
+    this limitation, and Section~4 uses empirical step-size sweeps to test the
+    nonlinear behaviour.
+\end{itemize}
 
-    \textbf{Action taken:}
-    These suggestions were checked against the project brief and report
-    template before being applied.
+\paragraph{Audit 3: Newton tolerance versus time-discretisation error
+(Section~2.4.2 and Tianrui Ji ICS).}
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
+    \item \textbf{Task/query:} Determine whether a fixed Newton residual
+    tolerance $10^{-12}$ guarantees the theoretical order of Implicit Euler.
+    \item \textbf{Raw AI output:} A sufficiently small fixed tolerance was
+    claimed to guarantee convergence without affecting global order.
+    \item \textbf{Risk audited:} Algebraic and time-discretisation errors are
+    different; asymptotically, a fixed residual can eventually dominate.
+    \item \textbf{Verification and action:} The report restricts the claim to
+    the tested finite grids. Tightening the tolerance to $10^{-14}$ changes the
+    terminal state by about $1.14\times10^{-8}$, below the tested Implicit
+    Euler discretisation error.
+\end{itemize}
 
-    \item[\textbf{AI-2: Numerical results and Section 2 wording.}]
-    AI was used to help summarise existing numerical results and clarify
-    several wording issues in Section~2, including local error terminology
-    and the role of the Newton tolerance in Implicit Euler.
-
-    \textbf{Claim checking:}
-    Numerical values, including the reported convergence slopes and the
-    SVD/Radau terminal difference, were checked against the team's existing
-    outputs. The Section~2 clarification was also checked against the existing
-    derivation and numerical experiments before being added.
-
-    \textbf{Action taken:}
-    AI-generated wording was revised so that it matched the mathematical
-    notation, numerical evidence, and actual scope of the project.
-
-\end{description}
+\paragraph{Audit 4: Stiff damping of Gauss IRK4
+(Section~5.4 and the Jingyan Wei and Meichen Ding ICSs).}
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
+    \item \textbf{Task/query:} Analyse the two-stage fourth-order
+    Gauss--Legendre method on stiff modes.
+    \item \textbf{Raw AI output:} A-stability was incorrectly treated as
+    implying L-stability.
+    \item \textbf{Risk audited:} The stability function satisfies
+    $R_G(z)\to1$ as $z\to-\infty$, so infinitely stiff modes are not strongly
+    damped.
+    \item \textbf{Verification and action:} The report derives
+    $R_G(z)=(1+z/2+z^2/12)/(1-z/2+z^2/12)$, proves A-stability, and explicitly
+    records that Gauss IRK4 is not L-stable.
+\end{itemize}
 
 \subsection*{Changes Made to AI Output}
-
-AI-generated text was reviewed and edited before inclusion in the report.
-No new numerical results were introduced by AI, and numerical claims were kept
-only when they could be checked against the team's existing code outputs,
-figures, data, or derivations.
+No numerical values were accepted from AI without reproduction. Numerical
+claims were checked against the submitted scripts and data; analytical claims
+were re-derived for the matrix problem; and generic wording was rewritten to
+match the non-commutative matrix algebra and Lyapunov diagnostics used here.
 
 \subsection*{Intellectual Ownership Declaration}
-
-The mathematical model, numerical methods, implementation, experiments,
-validation data, figures, and project results are the team's own work.
-Generative AI was used only as a supporting tool for clarification, checking,
-organisation, and drafting assistance. Responsibility for the final content
-remains with the team.
+The mathematical formulations, numerical implementations, experiments,
+validation evidence, figures, and final conclusions are the team's work.
+Generative AI was used for drafting, clarification, and preliminary checking.
+The authors take responsibility for the final mathematical and numerical
+claims.

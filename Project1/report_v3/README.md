@@ -1,6 +1,6 @@
 # Current integrated report (v3)
 
-The 43-page report comprises an abstract, Sections 1–4 on the model, theory, implementation and baseline experiments, Section 5 on two-stage Gauss implicit RK4, Section 6 with conclusions, references, and Appendices A–C. Build `report.tex` from this directory with `pdflatex -interaction=nonstopmode -halt-on-error report.tex`, repeating until cross-reference warnings disappear (three passes from a clean directory).
+The 44-page report comprises an abstract, Sections 1–4 on the model, theory, implementation and baseline experiments, Section 5 on two-stage Gauss implicit RK4, Section 6 with conclusions, references, and Appendices A–C. Build `report.tex` from this directory with `pdflatex -interaction=nonstopmode -halt-on-error report.tex`, repeating until cross-reference warnings disappear (three passes from a clean directory).
 
 | File or directory | Purpose |
 |---|---|

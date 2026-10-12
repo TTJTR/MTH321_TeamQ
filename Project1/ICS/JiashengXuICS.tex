@@ -2,10 +2,17 @@
 \usepackage[a4paper,margin=1.8cm]{geometry}
 \usepackage{enumitem}
 \usepackage[T1]{fontenc}
-\usepackage{url}
+\usepackage{xurl}
+\usepackage{xcolor}
+\usepackage{mdframed}
 \pagestyle{empty}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.35em}
+\definecolor{formbg}{RGB}{250,250,245}
+\definecolor{formframe}{RGB}{180,170,140}
+\newmdenv[backgroundcolor=formbg,linecolor=formframe,linewidth=0.8pt,
+roundcorner=3pt,innermargin=5pt,outermargin=5pt,innertopmargin=6pt,
+innerbottommargin=6pt]{formbox}
 
 \begin{document}
 
@@ -14,13 +21,14 @@
     {\large Project 1 (ODE IVP)}
 \end{center}
 
+\begin{formbox}
 \textbf{Name:} Jiasheng Xu \hfill \textbf{Student ID:} 2251640\\
 \textbf{Role:} Testing and validation.
 
 \textbf{1. My specific contributions to this project:}
 \begin{enumerate}[leftmargin=2em,itemsep=0.25em,topsep=0.15em]
     \item I added and migrated three edge-case validation tests in
-    \texttt{Project1/test/test\_validation.py}: tighter adaptive tolerances must
+    \path{Project1/test/test_validation.py}: tighter adaptive tolerances must
     reduce global error, an oversized explicit step exposes singular-value
     crossing, and Newton failure triggers adaptive retry.  These changes are
     traceable to commit \texttt{c4ca4ee} and merge commit \texttt{b28fe39}.
@@ -63,5 +71,6 @@ local step-doubling estimator while also accounting for rejected Newton steps.
 \vfill
 \textbf{Signature:} \underline{\hspace{4.5cm}} \hfill
 \textbf{Date:} \underline{\hspace{2.5cm}}
+\end{formbox}
 
 \end{document}

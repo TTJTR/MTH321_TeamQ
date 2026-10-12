@@ -1,6 +1,6 @@
 {
   "report_version": "v3",
-  "updated_date": "2026-10-11",
+  "updated_date": "2026-10-12",
   "scope": [
     "Abstract",
     "Section 1",
@@ -18,7 +18,7 @@
     "report-v1",
     "report-v2"
   ],
-  "pdf_pages": 43,
+  "pdf_pages": 44,
   "hash_policy": {
     "csv_png_pdf_json": "SHA-256 of raw bytes",
     "other_files": "SHA-256 after CRLF/CR to LF normalization"
@@ -32,8 +32,8 @@
     "historical_validation_record": "checklist/VALIDATION_RUN_2026-10-03.md"
   },
   "report_files_sha256": {
-    "appendices/appendix_a.tex": "f6ac4f7fc74812bf7a0d9a06e8b5f2d094864828b8704d6dc411503e3f4d8a5e",
-    "appendices/appendix_b.tex": "2e53c3720ad98ac7cfc1fed1a5a0fcc0671da243f1447399fdfb077a5c726f31",
+    "appendices/appendix_a.tex": "0c9761e9de1efb88a7dd55dba9581f340d163caf69c754f4a06fffc03e079fb2",
+    "appendices/appendix_b.tex": "dc3457550bba930548915a650db43881a284584781bbd9dcf34847748a79212c",
     "appendices/appendix_c.tex": "02ad6a0acc789f22bb4c79913c7a4ba3d504d3a1686fcbdae42cd99182f47ed4",
     "CHANGELOG.md": "b083cc3741e94fe523f3844ea6595d2210f246d434da4aa4d2f772f19bde8609",
     "checklist/README.md": "9ac6fbda27999e50754b73a8b49f772bd6399a74b5a8233a4e8c33f6b5c2cb3f",
@@ -58,9 +58,9 @@
     "figures/stability_regions.png": "92adb7db9b0583690005a625016d999fcbd5775f89d7eee06e3e6c28da7c61fa",
     "figures/stability_sweep.png": "d91ae1dae3e56d5a99d7299a0d3e897b008ce41e272cd9a78033da6b7b5c99ec",
     "figures/trajectory_diagnostics.png": "88f4db60a1d7ab24635a913f3a808f39746bcd0522fe53c9cb361d095f932e5a",
-    "README.md": "eafe48c2d62dea1f8b8aa8817b6b0fed37b37efc1b16d5f1095f8bf971661e00",
+    "README.md": "45b56a9d45264fa2e706944d83553b8609a1434f5b42a8981f92d2af077e59a1",
     "references.tex": "e1baa3659c6e045c84dd735daca873b35b3c4c8480c6ef8583d5bc07cdce7556",
-    "report.pdf": "debc1f3e1e9d7aadda005934f845365ff188d8262ce61ef1986afc9700de536d",
+    "report.pdf": "6b197c17d6b4dc4b716f56aa64d4b75b88ad192c28ed94242c31b5e34872d9db",
     "report.tex": "0252004b15d4e2bd1e236fee851f7b53d1fcfe4652b0e93d86ec7b574e171fd1",
     "sections/section1.tex": "20077c5c0a72adb5b5d6339c24168a77eb601f8e770cd454bd004b4e3cdaae9b",
     "sections/section2.tex": "ba782eb0deb887dccdd3612ffb044754921f4e3e8d68a59d7d970f041605cec8",
