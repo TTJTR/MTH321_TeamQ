@@ -2,9 +2,24 @@
 \usepackage[T1]{fontenc}
 \usepackage[a4paper,margin=2.5cm]{geometry}
 \usepackage{url}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{mdframed}
 \pagestyle{empty}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.4em}
+\definecolor{formbg}{RGB}{250,250,245}
+\definecolor{formframe}{RGB}{180,170,140}
+\newmdenv[
+    backgroundcolor=formbg,
+    linecolor=formframe,
+    linewidth=0.8pt,
+    roundcorner=3pt,
+    innermargin=5pt,
+    outermargin=5pt,
+    innertopmargin=8pt,
+    innerbottommargin=8pt
+]{formbox}
 
 \begin{document}
 
@@ -13,52 +28,69 @@
     {\large Project 1 (ODE IVP)}
 \end{center}
 
+\begin{formbox}
+\small
 \textbf{Name:} Tianrui Ji \hfill \textbf{Student ID:} 2361367\\
-\textbf{Role:} Algorithms, numerical experiments and visualisation.
+\textbf{Role this project:} Algorithms, numerical experiments and visualisation.
 
 \textbf{1. My specific contributions to this project:}
 
-I implemented the matrix ODE model, analytic Jacobian, finite-time exact
-solution and numerical diagnostics in \path{Project1/code/model.py}. In
-\path{Project1/code/solvers.py}, I implemented Explicit Euler, classical RK4
-and Implicit Euler with damped Newton iteration, together with fixed-step
-and adaptive integration. I developed the experiments and plotting code in
-\path{Project1/code/experiments.py} and \path{Project1/code/run_all.py},
-producing the convergence, stability, trajectory, adaptivity, cost and
-rank-deficiency results used in the report. For the advanced comparison in
-Section 5, I implemented the two-stage Gauss implicit RK4 solver and
-four-method comparison in \path{Project1/code_advanced/}, including its four
-figures and supporting data. I checked that the numerical claims and figures
-used in Sections 3--5 matched the generated results and the theoretical
-finite-time solution.
+\begin{itemize}[leftmargin=1.4em,itemsep=1pt,topsep=2pt]
+    \item In \path{Project1/code/model.py}, I implemented column-wise matrix
+    vectorisation, the right-hand side, analytic Jacobian, finite-time SVD
+    solution, energy, singular values, and orthogonality diagnostics. The
+    finite-time matrix, rather than only the limiting polar factor, is the
+    reference for numerical errors.
+    \item In \path{Project1/code/solvers.py}, I implemented Explicit Euler,
+    classical RK4, and Implicit Euler with damped Newton iteration. I also
+    implemented fixed-grid and step-doubling adaptive drivers, failed-step
+    handling, and work counters, then checked that the implicit residual and
+    Jacobian matched the equations in Section~2.
+    \item In \path{Project1/code/experiments.py} and
+    \path{Project1/code/run_all.py}, I developed the reproducible experiments
+    and eight baseline figures used in Sections~3--4, including convergence,
+    stability, trajectories, cost--accuracy, adaptivity, and rank-deficient
+    behaviour. I checked the associated CSV/JSON evidence against the exact
+    solution and numerical claims.
+    \item For Section~5, I implemented the separate two-stage Gauss IRK4
+    method in \path{Project1/code_advanced/gauss_irk4.py}, including a coupled
+    $18\times18$ damped Newton solve. I wrote the four-method comparison and
+    four additional figures in \path{code_advanced/run_comparison.py}; its
+    refined-grid slope is about $3.9674$, and the matched-error comparison
+    records 720 versus 300 RHS evaluations for Gauss IRK4 and classical RK4.
+    These counts are numerical work measures, not wall-clock timings.
+\end{itemize}
 
 \textbf{2. The hardest conceptual obstacle I encountered:}
 
-The main challenge was keeping the algorithm, theoretical definitions and
-reported errors consistent. In particular, a small Newton residual means
-that an implicit step equation has been solved closely; it does not imply
-an equally small error in the final trajectory. I checked the implemented
-residual and Jacobian against the equations, then used the finite-time exact
-solution to assess the time-stepping error separately.
+The hardest implementation issue was solving both Gauss stages as one coupled
+18-dimensional nonlinear system rather than as two independent stages. I
+constructed its block residual Jacobian, used damped Newton steps that reduce
+the full residual, and checked the resulting trajectory against the exact
+finite-time matrix. This also forced me to distinguish a small stage residual
+from a small global time-discretisation error.
 
 \textbf{3. One piece of AI-generated output my team used, and what I changed:}
 
-Appendix A, item AI-2, records AI assistance with numerical-results summaries
-and Section 2 wording. I revised an AI-assisted explanation of the $10^{-12}$
-Newton tolerance to make clear that it controls the algebraic residual within
-each implicit step, not the number of correct digits in the final result.
-I checked the revised explanation against the solver and the measured error
-relative to the exact solution.
+During the AI-assisted review of Newton tolerance described in Appendix~A,
+a proposed explanation treated a fixed $10^{-12}$ residual as sufficient to
+guarantee time-stepping accuracy or asymptotic order. I corrected the
+numerical interpretation: the threshold controls the
+implicit algebraic solve, whereas the final error also contains time
+discretisation error. I checked the implemented residual and compared terminal
+states with the exact matrix; the fixed threshold is supported over the
+tested finite grids, not as an unrestricted $h\to0$ guarantee.
 
 \textbf{4. One thing I still do not fully understand:}
 
-I cannot yet derive a rigorous global nonlinear step-size guarantee from the
-frozen Jacobian spectrum. The explicit step-size thresholds in our report
-describe local linearised behaviour; extending them to a guarantee for the
-full nonlinear trajectory would require further analysis.
+I cannot yet derive a sharp global nonlinear step-size guarantee for the full
+matrix trajectory from the frozen Jacobian spectrum. In particular, the
+negative-real-axis amplification plot and Gauss IRK4's A-stability do not by
+themselves certify nonlinear behaviour at arbitrary step sizes.
 
 \vspace{0.5em}
 \textbf{Signature:} \underline{\hspace{4.5cm}} \hfill
 \textbf{Date:} \underline{\hspace{2.5cm}}
+\end{formbox}
 
 \end{document}
