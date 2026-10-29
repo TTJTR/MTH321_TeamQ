@@ -1,0 +1,5 @@
+FDM c=1 arithmetic N=31 Linf=8.530e-04
+FDM c=1 arithmetic N=63 Linf=2.066e-04
+FDM c=1 arithmetic N=127 Linf=5.086e-05
+FDM c=1 arithmetic N=255 Linf=1.262e-05
+Outputs: /root/autodl-tmp/mth321_20261029/interface_pinn/runs/server_smooth_fdm

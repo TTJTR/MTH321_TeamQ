@@ -1,0 +1,56 @@
+{
+  "author": "AI-generated predictions; team must independently audit before coursework use",
+  "smooth": "Arithmetic shared-face FDM should approach order 2 in interior h-weighted L2 and nodal Linf.",
+  "layered": "For odd N, harmonic faces should reproduce piecewise-linear exact nodal values up to solver error, with constant -2c/(1+c) interface flux. Arithmetic faces should be less accurate for c>1.",
+  "matrix": "After Dirichlet elimination, shared positive faces imply SPD; numerical symmetry and a small-grid eigenvalue estimate corroborate this.",
+  "pinn": "Two subdomain networks can represent the derivative jump. A globally smooth single network cannot exactly reproduce nonzero continuous flux at a coefficient jump. No PINN accuracy or superiority is guaranteed.",
+  "acceptance": {
+    "relative_l2": 0.01,
+    "interface_value_max": 0.01,
+    "interface_flux_relative_max": 0.05
+  },
+  "runs": [
+    {
+      "contrast": 1.0,
+      "seeds": [
+        11,
+        22,
+        33
+      ],
+      "meshes": [
+        31,
+        63,
+        127,
+        255
+      ]
+    },
+    {
+      "contrast": 10.0,
+      "seeds": [
+        11,
+        22,
+        33
+      ],
+      "meshes": [
+        31,
+        63,
+        127,
+        255
+      ]
+    },
+    {
+      "contrast": 100.0,
+      "seeds": [
+        11,
+        22,
+        33
+      ],
+      "meshes": [
+        31,
+        63,
+        127,
+        255
+      ]
+    }
+  ]
+}

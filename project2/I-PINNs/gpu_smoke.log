@@ -1,0 +1,21 @@
+FDM c=10 arithmetic N=15 Linf=3.948e-02
+FDM c=10 arithmetic N=31 Linf=1.938e-02
+FDM c=10 arithmetic N=63 Linf=9.600e-03
+FDM c=10 arithmetic N=127 Linf=4.777e-03
+FDM c=10 harmonic N=15 Linf=1.221e-15
+FDM c=10 harmonic N=31 Linf=3.775e-15
+FDM c=10 harmonic N=63 Linf=8.882e-15
+FDM c=10 harmonic N=127 Linf=2.509e-14
+/root/miniconda3/lib/python3.12/site-packages/torch/autograd/graph.py:829: UserWarning: Attempting to run cuBLAS, but there was no current CUDA context! Attempting to set the primary context... (Triggered internally at /pytorch/aten/src/ATen/cuda/CublasHandlePool.cpp:179.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+seed=42 contrast=10 step=1 loss=7.644e+00
+seed=42 contrast=10 step=100 loss=2.582e-01
+seed=42 contrast=10 step=200 loss=8.838e-02
+seed=42 contrast=10 step=300 loss=3.466e-02
+seed=42 contrast=10 step=400 loss=1.498e-02
+seed=42 contrast=10 step=500 loss=4.777e-03
+seed=42 contrast=10 step=600 loss=2.348e-03
+seed=42 contrast=10 step=700 loss=2.287e-03
+seed=42 contrast=10 step=800 loss=1.485e-03
+PINN accepted=True relative_L2=7.606e-04 flux_jump_rel=3.035e-03
+Outputs: /root/autodl-tmp/mth321_20261029/interface_pinn/runs/gpu_smoke

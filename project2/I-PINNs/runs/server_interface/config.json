@@ -1,0 +1,44 @@
+{
+  "case": "layered",
+  "method": "interface",
+  "contrasts": [
+    1.0,
+    10.0,
+    100.0
+  ],
+  "seeds": [
+    11,
+    22,
+    33
+  ],
+  "device": "cuda",
+  "dtype": "float64",
+  "threads": 4,
+  "width": 64,
+  "depth": 3,
+  "adam_steps": 10000,
+  "lbfgs_steps": 500,
+  "lr": 0.001,
+  "interior_points": 2048,
+  "boundary_points": 256,
+  "interface_points": 512,
+  "log_every": 200,
+  "eval_intervals": 200,
+  "fdm_intervals": [
+    31,
+    63,
+    127,
+    255
+  ],
+  "weights": {
+    "pde": 1.0,
+    "boundary": 10.0,
+    "continuity": 10.0,
+    "flux": 10.0
+  },
+  "acceptance": {
+    "relative_l2": 0.01,
+    "interface_value_max": 0.01,
+    "interface_flux_relative_max": 0.05
+  }
+}

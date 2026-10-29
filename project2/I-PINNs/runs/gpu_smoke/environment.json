@@ -1,0 +1,20 @@
+{
+  "python": "3.12.3 | packaged by Anaconda, Inc. | (main, May  6 2024, 19:46:43) [GCC 11.2.0]",
+  "platform": "Linux-5.15.0-86-generic-x86_64-with-glibc2.35",
+  "torch": "2.8.0+cu128",
+  "numpy": "2.3.2",
+  "scipy": "1.18.1",
+  "cuda_available": true,
+  "torch_cuda": "12.8",
+  "gpu": "NVIDIA A100-PCIE-40GB",
+  "created_utc": "20261029T111701_827655Z",
+  "source_sha256": {
+    "run_experiment.py": "bd50ba5dbc2171a040f63ddfd8da0047f02b4fa100d9e9978ae461de19c304c5",
+    "server_pipeline.py": "79f6884f45a6cc28e81cc13f73bacd7a16515dfcc6b63473ca830a57a8b61dc1",
+    "src/__init__.py": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "src/fdm.py": "a15570332acd968d6fd84fdab42f61bfdbf771a0e18a7c3981c6314114337a0e",
+    "src/pinn.py": "e22559d068f0043b685cb306b7dbdca6baa8d3eb45bb260e0bf3c5e40932e663",
+    "src/problem.py": "0e709d0b8efd2f8f0a951a963f06f53fc2c262a21271023ab19edac29002e17e",
+    "tests/test_numerics.py": "1c0a88f60011ec70889055736737f0bb92f0b8cdc08ef4d2b1ab8c86a0c371fd"
+  }
+}

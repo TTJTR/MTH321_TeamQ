@@ -1,0 +1,19 @@
+{
+  "python": "3.10.18 | packaged by Anaconda, Inc. | (main, Jun  5 2025, 13:08:55) [MSC v.1929 64 bit (AMD64)]",
+  "platform": "Windows-10-10.0.26300-SP0",
+  "torch": "2.7.1+cpu",
+  "numpy": "2.2.6",
+  "scipy": "1.15.3",
+  "cuda_available": false,
+  "torch_cuda": null,
+  "gpu": null,
+  "created_utc": "20261029T105358_914872Z",
+  "source_sha256": {
+    "run_experiment.py": "bd50ba5dbc2171a040f63ddfd8da0047f02b4fa100d9e9978ae461de19c304c5",
+    "src\\__init__.py": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "src\\fdm.py": "a15570332acd968d6fd84fdab42f61bfdbf771a0e18a7c3981c6314114337a0e",
+    "src\\pinn.py": "e22559d068f0043b685cb306b7dbdca6baa8d3eb45bb260e0bf3c5e40932e663",
+    "src\\problem.py": "0e709d0b8efd2f8f0a951a963f06f53fc2c262a21271023ab19edac29002e17e",
+    "tests\\test_numerics.py": "1c0a88f60011ec70889055736737f0bb92f0b8cdc08ef4d2b1ab8c86a0c371fd"
+  }
+}

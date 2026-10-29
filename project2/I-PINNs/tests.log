@@ -1,0 +1,11 @@
+test_interface_sign_and_loss (test_numerics.Numerics.test_interface_sign_and_loss) ... ok
+test_layered_resistance_flux_and_matrix (test_numerics.Numerics.test_layered_resistance_flux_and_matrix) ... ok
+test_manufactured_forcing_via_autograd (test_numerics.Numerics.test_manufactured_forcing_via_autograd) ... ok
+test_nonstandard_interface_row (test_numerics.Numerics.test_nonstandard_interface_row) ... ok
+test_smooth_second_order_and_independent_cg (test_numerics.Numerics.test_smooth_second_order_and_independent_cg) ... ok
+test_training_gradient_against_finite_difference (test_numerics.Numerics.test_training_gradient_against_finite_difference) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 1.350s
+
+OK

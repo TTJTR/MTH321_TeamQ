@@ -1,0 +1,35 @@
+{
+  "seed": 42,
+  "contrast": 10.0,
+  "device": "cuda",
+  "train_seconds": 17.407327187247574,
+  "parameters": 1394,
+  "adam_steps": 800,
+  "lbfgs_closure_calls": 103,
+  "stopping_reason": "configured optimizer budget exhausted or L-BFGS internal stop; see validation",
+  "final_training_losses": {
+    "stage": "lbfgs",
+    "step": 103,
+    "total": 4.121936773666035e-05,
+    "pde": 3.1307640807132784e-05,
+    "boundary": 8.826637947486009e-07,
+    "continuity": 4.8059544004168416e-08,
+    "flux": 6.044935419998755e-08
+  },
+  "l2": 0.0005860932107582431,
+  "relative_l2": 0.0007605587509294694,
+  "linf": 0.0021969667405631055,
+  "boundary_linf": 0.0021969667405631055,
+  "interface_value_max": 0.0004421967208195765,
+  "interface_flux_jump_max": 0.0055178891450597956,
+  "interface_flux_relative_max": 0.0030348390297828876,
+  "interface_flux_error_max": 0.0144383507384922,
+  "heldout_pde_rms_left": 0.00662613492054364,
+  "heldout_pde_rms_right": 0.042275218932450016,
+  "acceptance_checks": {
+    "relative_l2": true,
+    "interface_value_max": true,
+    "interface_flux_relative_max": true
+  },
+  "accepted": true
+}

@@ -1,0 +1,40 @@
+{
+  "case": "layered",
+  "method": "single",
+  "contrasts": [
+    10.0
+  ],
+  "seeds": [
+    42
+  ],
+  "device": "cpu",
+  "dtype": "float64",
+  "threads": 2,
+  "width": 24,
+  "depth": 2,
+  "adam_steps": 800,
+  "lbfgs_steps": 100,
+  "lr": 0.001,
+  "interior_points": 128,
+  "boundary_points": 48,
+  "interface_points": 64,
+  "log_every": 100,
+  "eval_intervals": 40,
+  "fdm_intervals": [
+    15,
+    31,
+    63,
+    127
+  ],
+  "weights": {
+    "pde": 1.0,
+    "boundary": 10.0,
+    "continuity": 10.0,
+    "flux": 10.0
+  },
+  "acceptance": {
+    "relative_l2": 0.05,
+    "interface_value_max": 0.05,
+    "interface_flux_relative_max": 0.1
+  }
+}
