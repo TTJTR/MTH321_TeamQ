@@ -1,0 +1,43 @@
+test_arithmetic_comparison_and_parity (test_numerics.Numerics.test_arithmetic_comparison_and_parity) ... ok
+test_explicit_cg_residual_and_direct_agreement (test_numerics.Numerics.test_explicit_cg_residual_and_direct_agreement) ... ok
+test_fem_linear_patch (test_numerics.Numerics.test_fem_linear_patch) ... ok
+test_hand_matrix_and_interface_row (test_numerics.Numerics.test_hand_matrix_and_interface_row) ... ok
+test_independent_manufactured_forcing (test_numerics.Numerics.test_independent_manufactured_forcing) ... ok
+test_layered_exactness_and_matrix (test_numerics.Numerics.test_layered_exactness_and_matrix) ... ok
+test_smooth_convergence_and_quadrature (test_numerics.Numerics.test_smooth_convergence_and_quadrature) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.315s
+
+OK
+smooth FDM N=16 L2=2.7900e-03
+smooth FDM N=32 L2=6.9762e-04
+smooth FDM N=64 L2=1.7441e-04
+smooth FDM N=128 L2=4.3604e-05
+layered FDM arithmetic N=31 Linf=1.938e-02
+layered FDM harmonic N=31 Linf=1.554e-15
+layered FDM arithmetic N=63 Linf=9.600e-03
+layered FDM harmonic N=63 Linf=7.327e-15
+layered FDM arithmetic N=127 Linf=4.777e-03
+layered FDM harmonic N=127 Linf=1.399e-14
+layered FDM arithmetic N=255 Linf=2.383e-03
+layered FDM harmonic N=255 Linf=2.182e-13
+smooth FEM N=16 L2=5.3535e-03
+smooth FEM N=32 L2=1.3444e-03
+smooth FEM N=64 L2=3.3649e-04
+smooth FEM N=128 L2=8.4145e-05
+layered FEM element_integral N=32 Linf=8.438e-15
+layered FEM element_integral N=64 Linf=2.687e-14
+layered FEM element_integral N=128 Linf=1.632e-13
+layered FEM element_integral N=256 Linf=6.835e-13
+conditioning c=1 N=15 kappa=8.904e+01
+conditioning c=1 N=31 kappa=3.873e+02
+conditioning c=1 N=63 kappa=1.606e+03
+conditioning c=10 N=15 kappa=3.996e+02
+conditioning c=10 N=31 kappa=1.726e+03
+conditioning c=10 N=63 kappa=7.149e+03
+conditioning c=100 N=15 kappa=3.628e+03
+conditioning c=100 N=31 kappa=1.567e+04
+conditioning c=100 N=63 kappa=6.490e+04
+Matplotlib is building the font cache; this may take a moment.
+Generated 6 figures (PDF/PNG) and 4 LaTeX tables.

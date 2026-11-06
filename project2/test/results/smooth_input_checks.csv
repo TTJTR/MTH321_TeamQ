@@ -1,0 +1,28 @@
+method,probe,status,actual
+FDM,unknown case,PASS,ValueError: Unsupported case or nonpositive contrast
+FDM,N=2,PASS,ValueError: N must be an integer >= 3
+FDM,noninteger N,PASS,ValueError: N must be an integer >= 3
+FDM,wrong layered parity,PASS,ValueError: Layered FDM requires odd N
+FDM,c=0,PASS,ValueError: Unsupported case or nonpositive contrast
+FDM,c=-1,PASS,ValueError: Unsupported case or nonpositive contrast
+FDM,c=-inf,PASS,ValueError: Unsupported case or nonpositive contrast
+FDM,c=nan,FAIL,returned; nonfinite matrix entries=90; nonfinite rhs=20; nonfinite boundary array=64
+FDM,c=+inf,FAIL,returned; nonfinite matrix entries=90; nonfinite rhs=20; nonfinite boundary array=64
+FDM,unknown average,PASS,ValueError: Unsupported face average
+FEM,unknown case,PASS,ValueError: Unsupported case or nonpositive contrast
+FEM,N=2,PASS,ValueError: N must be an integer >= 3
+FEM,noninteger N,PASS,ValueError: N must be an integer >= 3
+FEM,wrong layered parity,PASS,ValueError: Layered FEM requires even N for interface alignment
+FEM,c=0,PASS,ValueError: Unsupported case or nonpositive contrast
+FEM,c=-1,PASS,ValueError: Unsupported case or nonpositive contrast
+FEM,c=-inf,PASS,ValueError: Unsupported case or nonpositive contrast
+FEM,c=nan,FAIL,returned; nonfinite matrix entries=154; nonfinite rhs=24; nonfinite boundary array=81
+FEM,c=+inf,FAIL,returned; nonfinite matrix entries=154; nonfinite rhs=24; nonfinite boundary array=81
+FEM,quadrature_order=0,PASS,ValueError: deg must be a positive integer
+FDM arithmetic,c=1e-200,PASS,pure-right conductance 9.9999999999999998e-201; nonfinite matrix entries=0; zero diagonals=0
+FDM arithmetic,c=1e+200,PASS,pure-right conductance 9.9999999999999997e+199; nonfinite matrix entries=0; zero diagonals=0
+FDM harmonic,c=1e-200,FAIL,pure-right conductance 0; nonfinite matrix entries=0; zero diagonals=12
+FDM harmonic,c=1e+200,FAIL,pure-right conductance inf; nonfinite matrix entries=72; zero diagonals=0
+FEM,c=1e-200,PASS,pure-right conductance 9.9999999999999955e-201; nonfinite matrix entries=0; zero diagonals=0
+FEM,c=1e+200,PASS,pure-right conductance 9.999999999999998e+199; nonfinite matrix entries=0; zero diagonals=0
+structure,diagonal SPD [[4]],FAIL,ValueError: zero-size array to reduction operation maximum which has no identity

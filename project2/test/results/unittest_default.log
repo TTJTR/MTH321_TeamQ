@@ -1,0 +1,16 @@
+test_applies_four_course_bank_problems_to_both_assemblers (test_validation.CourseBankValidation.test_applies_four_course_bank_problems_to_both_assemblers) ... skipped 'Set MTH321_TEST_BANK to the course test_problem_bank.py'
+test_arithmetic_conserves_but_misses_physical_flux (test_validation.Direction3Validation.test_arithmetic_conserves_but_misses_physical_flux) ... ok
+test_cg_algebraic_error_and_explicit_residual (test_validation.Direction3Validation.test_cg_algebraic_error_and_explicit_residual) ... ok
+test_harmonic_and_fitted_fem_recover_layered_solution (test_validation.Direction3Validation.test_harmonic_and_fitted_fem_recover_layered_solution) ... ok
+test_independent_conditioning_increases_with_mesh_and_contrast (test_validation.Direction3Validation.test_independent_conditioning_increases_with_mesh_and_contrast) ... ok
+test_nonzero_dirichlet_indexing_and_spd (test_validation.Direction3Validation.test_nonzero_dirichlet_indexing_and_spd) ... ok
+test_rejects_invalid_grid_parity_and_degenerate_coefficient (test_validation.Direction3Validation.test_rejects_invalid_grid_parity_and_degenerate_coefficient) ... ok
+test_smooth_forcing_and_four_mesh_orders (test_validation.Direction3Validation.test_smooth_forcing_and_four_mesh_orders) ... ok
+test_uniform_material_control (test_validation.Direction3Validation.test_uniform_material_control) ... ok
+test_input_contract_and_extreme_face_coefficients (test_validation.KnownDefectRegression.test_input_contract_and_extreme_face_coefficients) ... skipped 'Set MTH321_STRICT_VALIDATION=1 to run the defect regression checks'
+test_uniform_spectrum_matches_closed_form (test_validation.KnownDefectRegression.test_uniform_spectrum_matches_closed_form) ... skipped 'Set MTH321_STRICT_VALIDATION=1 to run the defect regression checks'
+
+----------------------------------------------------------------------
+Ran 11 tests in 2.704s
+
+OK (skipped=3)
