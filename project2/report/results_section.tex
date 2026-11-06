@@ -1,0 +1,146 @@
+\section{Verification and Numerical Experiments}
+\label{sec:results}
+
+This section interprets the saved measurements from the pinned Project 2
+repository. The core method is the conservative FDM; the conforming
+$\mathcal P_1$ FEM supplies the required depth comparison. All reported
+errors use the exact benchmark solutions specified in the problem pack
+\cite{problempack}. The input data, assembly, solver, and post-processing
+definitions are given in Sections~2--3.
+
+\subsection{Checks before interpreting error tables}
+The smooth forcing was derived analytically from
+$u_*=\sin(\pi x)\sin(\pi y)$ and $a=1+x$. An independent derivative check in
+the validation suite found a maximum absolute source defect of
+$7.11\times10^{-15}$ in its complex-step comparison. An affine patch with
+asymmetric nonzero values on all four sides gave a maximum difference of
+$4.89\times10^{-15}$ between the production boundary elimination and an
+independently assembled dense reference. These checks probe the source sign,
+index ordering, and Dirichlet right-hand side rather than merely reproducing
+the same code path.
+
+For the smooth $N=32$ FDM and FEM systems, the tolerance sweep in
+Table~\ref{tab:alg_tol} uses the same assembled matrix and right-hand side at
+each solver tolerance. Tightening the requested CG relative residual from
+$10^{-6}$ to $10^{-12}$ changed the CG--LU maximum solution difference from
+$5.81\times10^{-10}$ to $5.33\times10^{-15}$ for FDM and from
+$4.00\times10^{-8}$ to $1.01\times10^{-14}$ for FEM. Both values at the
+tightest setting lie far below the approximately $8\times10^{-4}$ nodal
+discretisation error. Across all four smooth levels, the recorded
+algebraic-to-discretisation error ratio remained below $10^{-3}$.
+
+The assembled FDM matrices have zero measured relative symmetry defect in
+the saved runs, positive diagonals, non-positive off-diagonals, and positive
+smallest eigenvalues in the independently checked small and medium systems.
+The energy identity in Theorem~\ref{thm:spd_mmatrix} is the proof of positive
+definiteness; an eigensolver estimate is corroboration. The layered solutions
+stay within the prescribed boundary range $[0,1]$. This supports the
+discrete maximum-principle prediction, although it says nothing about the
+accuracy of the interface resistance.
+
+\subsection{Smooth coefficient: convergence and method comparison}
+Table~\ref{tab:alg_smooth} reports four refinements for both discretisations,
+with $N=16,32,64,128$ and $225$ to $16\,129$ unknowns. At the finest level,
+FDM gives $E_{2,h}=2.491\times10^{-5}$ and
+$E_\infty=5.007\times10^{-5}$; FEM gives
+$2.527\times10^{-5}$ and $5.053\times10^{-5}$ in the same nodal norms.
+The independent validation fit over $N=32,64,128$ is $2.00034$ for FDM and
+$1.99964$ for FEM in $E_{2,h}$. For the common reconstructed continuous
+$L^2$ norm, the corresponding fits are $1.99996$ and $1.99898$. The observed
+orders therefore match the second-order prediction on this smooth problem.
+The $a=1+x$ coefficient is affine, so arithmetic averaging equals exact
+midpoint sampling; this benchmark does not test the distinct arithmetic
+averaging error for a curved smooth coefficient.
+
+The matched comparison uses the same square mesh, nodal data, number of
+interior unknowns, CG stopping rule, and common reconstruction for continuous
+$L^2$. At $N=128$, the latter error is $4.360\times10^{-5}$ for FDM and
+$8.415\times10^{-5}$ for FEM. The two methods are both second order, but
+their constants differ under this particular reconstruction and triangular
+quadrature. The FEM's mathematical $L^2$ convergence rate and this measured
+constant should not be conflated with its nodal error, which is much closer
+to FDM's on this example.
+
+The cost table in Section~3 reports local medians over three serial runs.
+At $N=128$, FDM assembly took $2.74\times10^{-3}$ seconds and FEM assembly
+$1.03\times10^{-1}$ seconds; the respective Jacobi-CG solves took
+$1.53\times10^{-2}$ and $3.47\times10^{-2}$ seconds, with $192$ and $443$
+iterations. The sparse LU solves were about $3.06\times10^{-2}$ and
+$3.08\times10^{-2}$ seconds, respectively. Both matrices had $80\,137$
+stored nonzeros after explicit zero removal. These timings are measurements
+for the supplied implementations and hardware, not general speed constants
+for FDM or FEM. The implemented FEM assembly performs element quadrature and
+therefore has more work per unknown than this vectorised FDM assembly.
+
+\subsection{Layered interface: accuracy, flux, and maximum principle}
+For $a_L=1$ and $a_R=10$, the exact flux is $J_*=-20/11$. Odd FDM meshes
+place the interface halfway between columns; even FEM meshes align it with
+element edges. Table~\ref{tab:interface_refinement} extends the single-mesh
+comparison of Table~\ref{tab:alg_interface} to all four odd FDM meshes.
+
+\begin{table}[H]
+\centering\small
+\input{tables/interface_refinement}
+\caption{Independent layered FDM validation at contrast $c=10$.
+$E_q^{\max}$ is the maximum error of the shared interface-face flux over the
+interior face samples; $E_q^{\mathrm{mid}}$ is the error at the sample nearest
+$y=1/2$. The harmonic method's nodal errors are at round-off.}
+\label{tab:interface_refinement}
+\end{table}
+
+Harmonic FDM reproduces the nodal exact solution to a maximum error below
+$2.2\times10^{-13}$ at all listed meshes. On $N=63$ the interface flux error
+is $1.08\times10^{-13}$. The fitted FEM at $N=64$ likewise has a nodal
+maximum error of $3.31\times10^{-14}$ and interface flux error
+$5.17\times10^{-13}$. The P1 result is exact in this benchmark because the
+piecewise-linear exact solution belongs to the fitted finite-element space;
+general P1 solutions need not have pointwise continuous element flux.
+
+Arithmetic FDM gives $E_\infty=9.600\times10^{-3}$ at $N=63$, falling to
+$2.383\times10^{-3}$ at $N=255$. Its successive measured nodal orders are
+$0.991$, $0.995$, and $0.998$, consistent with first-order convergence in
+this test. The maximum shared interface-flux error, however, is approximately
+$0.662$ on each mesh. The midline error decreases from $4.70\times10^{-2}$
+at $N=31$ to $5.64\times10^{-3}$ at $N=255$. The maximum persists because
+the top and bottom boundaries retain the prescribed exact trace while the
+arithmetic interface resistance perturbs nearby interior nodes. Thus the
+one-dimensional resistance calculation in Section~2 predicts the wrong
+conductance but does not describe the maximum face-flux error on the
+two-dimensional Dirichlet square.
+
+The arithmetic matrix is still symmetric and conserves one shared face flux
+between adjacent cells. At $N=63$, the two-sided reconstructed flux
+difference at the nearest pure-material edges is only
+$3.85\times10^{-13}$, while the interface flux is wrong by $0.662$ at its
+worst sample. This illustrates why a small reconstructed jump or a matrix
+symmetry check cannot by itself validate physical interface accuracy. Both
+arithmetic and harmonic solutions remain in $[0,1]$, as predicted by their
+common positive-face M-matrix structure.
+
+\subsection{Mesh size, contrast, and iterative work}
+Table~\ref{tab:conditioning_corrected} uses the independent spectral
+validation record. The original condition-number diagnostic used a fixed
+structured Lanczos start that missed the largest eigenvalue when $c=1$;
+the independent calculation used an alternative start and checked the
+constant-coefficient formula. The $c=10$ and $c=100$ entries agreed with
+the repository's estimates to reported precision.
+
+\begin{table}[H]
+\centering\small
+\input{tables/conditioning_corrected}
+\caption{Condition number and CG iterations for harmonic FDM under mesh
+refinement and contrast. Residual tolerance is $10^{-12}$; the spectral
+estimates use the independently checked largest eigenvalue.}
+\label{tab:conditioning_corrected}
+\end{table}
+
+At $N=63$, raising contrast from $1$ to $10$ to $100$ raises the measured
+condition number from about $1.61\times10^3$ to $7.15\times10^3$ to
+$6.49\times10^4$. Unpreconditioned CG iterations rise from $216$ to $521$
+to $1354$. With Jacobi scaling the corresponding counts are $216$, $224$,
+and $226$. At fixed contrast, refinement also increases the condition
+number, consistent with the $O(h^{-2})$ upper bound. These results support
+the solver choice and show the practical value of preconditioning for this
+layered geometry; they do not claim contrast-independent performance for
+arbitrary heterogeneous media.
+
