@@ -1,0 +1,77 @@
+{
+  "created_utc": "2026-11-05T05:15:57.248993+00:00",
+  "python": "3.10.18 | packaged by Anaconda, Inc. | (main, Jun  5 2025, 13:08:55) [MSC v.1929 64 bit (AMD64)]",
+  "platform": "Windows-10-10.0.26300-SP0",
+  "processor": "",
+  "numpy": "2.2.6",
+  "scipy": "1.15.3",
+  "numerical_threads": 1,
+  "threadpools": [
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 1,
+      "prefix": "libscipy_openblas",
+      "filepath": "G:\\Anaconda3\\envs\\dl\\Lib\\site-packages\\numpy.libs\\libscipy_openblas64_-13e2df515630b4a41f92893938845698.dll",
+      "version": "0.3.29",
+      "threading_layer": "pthreads",
+      "architecture": "Haswell"
+    },
+    {
+      "user_api": "blas",
+      "internal_api": "openblas",
+      "num_threads": 1,
+      "prefix": "libscipy_openblas",
+      "filepath": "G:\\Anaconda3\\envs\\dl\\Lib\\site-packages\\scipy.libs\\libscipy_openblas-f07f5a5d207a3a47104dca54d6d0c86a.dll",
+      "version": "0.3.28",
+      "threading_layer": "pthreads",
+      "architecture": "Haswell"
+    }
+  ],
+  "config": {
+    "smooth_intervals": [
+      16,
+      32,
+      64,
+      128
+    ],
+    "layered_fdm_intervals": [
+      31,
+      63,
+      127,
+      255
+    ],
+    "layered_fem_intervals": [
+      32,
+      64,
+      128,
+      256
+    ],
+    "conditioning_intervals": [
+      15,
+      31,
+      63
+    ],
+    "contrasts": [
+      1.0,
+      10.0,
+      100.0
+    ],
+    "cg_rtol": 1e-12,
+    "tolerance_sweep": [
+      1e-06,
+      1e-09,
+      1e-12
+    ],
+    "timing_repeats": 3,
+    "quadrature_order": 5
+  },
+  "source_sha256": {
+    "make_figures.py": "177f5d058aafcc3dc4be028d24bd3c4be30c1802dff95812ec3837463c9e3105",
+    "run_all.py": "2e48bee57f5c92e09c6f528f05023bb5cbcca8ffce08b9470e79e3d9a12ebb67",
+    "src/__init__.py": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "src/discretisation.py": "3a26de2f146cb1d6de121bcdcf6084f44ee6a2c23a93ba12df02f735fd33d58e",
+    "src/solvers.py": "e6823eb4704a67aa3c1945f1c0ce62dc094c18ea8730eb70960d05467237df20",
+    "tests/test_numerics.py": "6a52f8567a9badeed0951459df6320f4d4420098de0c667922c9b401f9f44857"
+  }
+}

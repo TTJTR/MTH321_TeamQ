@@ -1,0 +1,11 @@
+{
+  "smooth_intervals": [16, 32, 64, 128],
+  "layered_fdm_intervals": [31, 63, 127, 255],
+  "layered_fem_intervals": [32, 64, 128, 256],
+  "conditioning_intervals": [15, 31, 63],
+  "contrasts": [1.0, 10.0, 100.0],
+  "cg_rtol": 1e-12,
+  "tolerance_sweep": [1e-6, 1e-9, 1e-12],
+  "timing_repeats": 3,
+  "quadrature_order": 5
+}

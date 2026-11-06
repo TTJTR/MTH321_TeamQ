@@ -1,0 +1,12 @@
+test_arithmetic_comparison_and_parity (test_numerics.Numerics) ... ok
+test_explicit_cg_residual_and_direct_agreement (test_numerics.Numerics) ... ok
+test_fem_linear_patch (test_numerics.Numerics) ... ok
+test_hand_matrix_and_interface_row (test_numerics.Numerics) ... ok
+test_independent_manufactured_forcing (test_numerics.Numerics) ... ok
+test_layered_exactness_and_matrix (test_numerics.Numerics) ... ok
+test_smooth_convergence_and_quadrature (test_numerics.Numerics) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.654s
+
+OK
