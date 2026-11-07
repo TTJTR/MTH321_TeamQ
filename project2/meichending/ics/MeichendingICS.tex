@@ -74,15 +74,21 @@ or numerical claim rather than simply rewording it. The common failure pattern
 is a claim that is true for the face coefficient, or for one dimension, being
 silently promoted to the solution of the two-dimensional problem.
 
-\begin{table}[H]
-\centering\small
-\caption{Claim audits. Column 3 states what would have shown the claim to be
-wrong.}
-\label{tab:ai_audits}
-\begin{tabular}{@{}p{0.95cm}>{\raggedright\arraybackslash}p{7.4cm}>{\raggedright\arraybackslash}p{5.8cm}@{}}
+{\footnotesize
+\begin{longtable}{@{}p{0.95cm}>{\raggedright\arraybackslash}p{7.4cm}>{\raggedright\arraybackslash}p{5.8cm}@{}}
+\caption{Claim audits. Column 3 states what would have shown the claim to be wrong.}\label{tab:ai_audits}\\
 \toprule
 Item & Prompt / claim / assumptions & Risk and possible falsifier \\
 \midrule
+\endfirsthead
+\caption[]{Claim audits (continued).}\\
+\toprule
+Item & Prompt / claim / assumptions & Risk and possible falsifier \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+
 1 &
 ``Arithmetic averaging of the interface conductance produces an
 $\mathcal{O}(1)$ error in the interface flux, so the arithmetic-averaged
@@ -118,20 +124,26 @@ satisfied by a matrix whose interface flux is wrong by $36\%$.
 $J_*=-20/11$ on a benchmark whose exact solution is known. It differs by
 $0.662$ while the two-sided reconstructed jump is $3.85\times10^{-13}$ and the
 symmetry defect is zero. \\
-\bottomrule
-\end{tabular}
-\end{table}
+\end{longtable}}
+
 
 \subsection*{A3. Independent verification and decision}
 
-\begin{table}[H]
-\centering\small
-\caption{What was checked, where the evidence lives, and what changed.}
-\label{tab:ai_verification}
-\begin{tabular}{@{}p{0.95cm}>{\raggedright\arraybackslash}p{6.2cm}>{\raggedright\arraybackslash}p{7.0cm}@{}}
+{\footnotesize
+\begin{longtable}{@{}p{0.95cm}>{\raggedright\arraybackslash}p{6.2cm}>{\raggedright\arraybackslash}p{7.0cm}@{}}
+\caption{What was checked, where the evidence lives, and what changed.}\label{tab:ai_verification}\\
 \toprule
 Item & Independent check and evidence location & Final decision / modification / limitation \\
 \midrule
+\endfirsthead
+\caption[]{Independent verification (continued).}\\
+\toprule
+Item & Independent check and evidence location & Final decision / modification / limitation \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+
 1 &
 Re-derived the truncated-series argument in one dimension, where the discrete
 system reduces to a tridiagonal chain with a closed-form flux; reproduced the
@@ -176,9 +188,8 @@ accuracy} and \S4.3 now report the three numbers side by side instead of
 treating symmetry as evidence of physical accuracy. \textbf{Limitation:} the
 jump diagnostic is only defined where a two-sided reconstruction exists, so it
 is not a substitute for an exact solution. \\
-\bottomrule
-\end{tabular}
-\end{table}
+\end{longtable}}
+
 
 Two further routine checks are recorded for completeness. The smooth benchmark
 is \emph{blind} to the $\theta$-correction of the face coefficient when
@@ -248,15 +259,15 @@ truncation-error and interface analysis, and the discrete-structure results.
 \textbf{The specific things I did this project:}
 \begin{enumerate}[leftmargin=1.4em,itemsep=0.15em]
   \item
-  Wrote \S1.2 and \S2.1--\S2.4 of \path{project2/report/Method.tex}: the
-  continuous problem and its hypotheses, the flux-balance derivation that fixes
+  Wrote \S1.2 and \S2.1--\S2.4 of the report's \path{Method.tex}: the continuous
+  problem and its hypotheses, the flux-balance derivation that fixes
   one shared face coefficient per edge, the index map and block-tridiagonal
   structure of the assembled operator (with the non-zero count $5n^2-4n$), the
   symmetric Dirichlet elimination and the hand-computed $4\times4$ matrix at
   $n=2$ used as the small-case oracle, the layered exact solution, the
   second-order local truncation error with its $\theta$-correction, the
   series-resistance proposition for the interface conductance with the relative
-  error $(1-c)^2/(4c)$, the SPD/$\{$M-matrix$\}$/discrete-maximum-principle
+  error $(1-c)^2/(4c)$, the SPD / $M$-matrix / discrete-maximum-principle
   theorem, and the discrete stability and $\mathcal{O}(h^2)$ convergence theorem
   with its maximum-principle barrier argument.
   \item
