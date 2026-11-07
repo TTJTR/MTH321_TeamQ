@@ -102,7 +102,8 @@ $-\nabla\cdot(a\nabla u)=f$ on the unit square using a conservative five-point
 finite-difference method (FDM). A conforming triangular $\mathcal P_1$
 finite-element method (FEM) provides a matched depth comparison. With positive
 shared face conductances and symmetric Dirichlet elimination, the FDM matrix is
-symmetric positive definite and satisfies a discrete maximum principle. On the
+symmetric positive definite and is an $M$-matrix; its sign pattern yields a
+discrete maximum principle in the case $f\equiv 0$. On the
 smooth manufactured problem $a=1+x$, both methods show approximately second-order
 error in nodal and common reconstructed $L^2$ norms over four mesh levels.
 For a layered coefficient jump from $1$ to $10$, harmonic face averaging recovers
@@ -799,6 +800,11 @@ layered & 100 & 63 & 3844 & $0$ & $48.848$ & ok \\
 % statement) live in ics/MeichendingICS.tex, which is also the body of the
 % standalone document project2/ics/MeichendingICS.tex. \reportbuild makes the
 % cross-references in that file resolve to this report's numbers.
+% ---- References (before the appendices, per the course template) ---
+\bibliographystyle{plain}
+\bibliography{refs}
+
+\clearpage
 \def\reportbuild{}
 \appendix
 \input{ics/MeichendingICS}
@@ -821,6 +827,4 @@ sets described in Sections~3--4. Timing values are local measurements and
 will vary with hardware and software versions.
 \end{sloppypar}
 
-\bibliographystyle{plain}
-\bibliography{refs}
 \end{document}
