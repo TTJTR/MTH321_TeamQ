@@ -1,0 +1,64 @@
+% DRAFT — Jiasheng Xu: check every item below, replace anything that is not
+% actually yours, delete the ones you did not do, then commit this file under
+% your own git account so that the history attributes it to you.
+\clearpage
+\begin{formbox}
+\small
+\textbf{Individual Contribution Statement --- Project 2 (PDE BVP)}\\[0.3em]
+\textbf{Name:} Jiasheng Xu \hfill \textbf{Student ID:} 2251640\\
+\textbf{Role this project:} Independent testing and validation.
+
+\textbf{1. The specific things I did this project:}
+\begin{enumerate}[leftmargin=1.5em,itemsep=1pt,topsep=2pt]
+    \item I wrote the independent test package in \path{test/}
+    (\path{test_validation.py}, \path{validate_smooth.py},
+    \path{validate_interface.py}, \path{compare_upstream.py},
+    \path{recheck_pinn.py}). The suite runs against the production assemblers
+    and solvers but re-derives its own reference quantities, so a wrong shared
+    face coefficient cannot make both sides wrong in the same way.
+    \item I implemented the checks that stand between the team and a spurious
+    claim: independent evaluation of the manufactured source term, the
+    four-mesh rate fit in two norms, the asymmetric Dirichlet-elimination
+    indexing test, positive definiteness and the $M$-matrix sign pattern, the
+    layered interface flux against the exact $J_*=-20/11$, the discrete maximum
+    principle, and the algebraic-versus-discretisation error separation by
+    explicit residuals.
+    \item I ran the suite against the course problem bank in its optional mode
+    (P1, P2, P4, P5 on four meshes, 32 solver runs) and recorded the strict
+    mode that reproduces ten failing subtests on the pinned baseline snapshot
+    for the known defects (coefficient validation, a diagonal-matrix
+    diagnostic, the uniform-material spectral estimate). I kept that non-zero
+    exit in the record instead of suppressing it.
+    \item I wrote \path{test/VALIDATION_RUN_2026-11-06.md}, which fixes the
+    environment (Windows 11, Python 3.13.15, NumPy 2.5.3, SciPy 1.18.1,
+    single-threaded BLAS), the commands, the exit codes and the measured
+    outcomes, and I wrote \S4.1 on the checks that must pass before an error
+    table is interpreted.
+\end{enumerate}
+
+\textbf{2. The hardest conceptual obstacle I encountered:}
+Distinguishing a test that confirms the implementation from a test that can
+falsify the claim. The first version of the interface test recomputed the flux
+with the same averaging routine as the solver, so it passed even when that
+routine was wrong; rewriting it against the exact $J_*$ and against a
+two-sided reconstruction made it able to fail. The same lesson applied to the
+spectral check: a random Rayleigh quotient is a diagnostic, not a proof, so the
+positive-definiteness evidence had to come from a sparse factorisation.
+
+\textbf{3. One piece of AI-generated output my team used, and what I changed:}
+An AI-generated test skeleton asserted positive definiteness by sampling random
+vectors and checking $\bm v^{\mathsf T}A_h\bm v>0$. I rejected that as
+evidence: a random quotient can miss a negative direction entirely, and it
+proves nothing about the matrix. I replaced it with a sparse
+Cholesky/factorisation check and a smallest-eigenvalue estimate, and kept the
+random quotient only as a fast smoke test (Appendix~A, Audit~2).
+
+\textbf{4. Anything I should have asked for help with earlier:}
+I should have asked for the pinned baseline commit and the expected failure list
+before writing the strict mode; without it I could not tell a legitimate
+regression from a known defect, and the first strict run reported failures that
+were already documented.
+
+\textbf{Signature:} \underline{\hspace{4.2cm}} \hfill
+\textbf{Date:} \underline{\hspace{2.2cm}}
+\end{formbox}
