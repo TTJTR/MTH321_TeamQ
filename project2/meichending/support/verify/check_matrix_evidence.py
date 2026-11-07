@@ -7,7 +7,7 @@ Rayleigh quotient is only a diagnostic.  This script produces exactly that
 table from the production assembler, so the numbers in the report are the ones
 the submitted code produces.
 
-Run from project2/algorithm_section/:  python3 ../report/verify/check_matrix_evidence.py
+Run from anywhere:  python3 project2/meichending/support/verify/check_matrix_evidence.py
 """
 
 import os
@@ -18,7 +18,7 @@ from scipy.sparse.linalg import eigsh
 from scipy.linalg import cholesky
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(_HERE, "..", "..", "algorithm_section"))
+sys.path.insert(0, os.path.join(_HERE, "..", "..", "..", "algorithm_section"))
 from src.discretisation import assemble_fdm  # noqa: E402
 
 CASES = [

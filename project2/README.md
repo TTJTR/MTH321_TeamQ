@@ -18,6 +18,8 @@ is averaged arithmetically instead of harmonically.
 | `algorithm_section/` | the reference implementation: `src/discretisation.py` (FDM and FEM assembly), `src/solvers.py` (preconditioned CG, sparse LU), `run_all.py`, tables, figures, raw results |
 | `test/` | independent validation suite (`python -B -m unittest discover -s test -v`) |
 | `I-PINNs/` | interface-PINN exploration, archived; not part of the report's claims |
+| `meichending/` | Meichen Ding's individual package: self-contained build of the report (mathematical sections + Appendix A), the verification scripts, `Method.pdf` |
+| `ics/` | Meichen Ding's ICS and AI transparency log (standalone document, format of `Checklist/ICS_bvp.tex`) |
 
 ## Reproduce
 

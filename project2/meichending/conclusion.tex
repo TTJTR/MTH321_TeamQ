@@ -1,0 +1,29 @@
+\section{Conclusions}
+The conservative FDM correctly represents the divergence-form diffusion
+operator when adjacent rows share each positive face conductance and
+Dirichlet data are eliminated symmetrically. Its discrete energy identity
+establishes positive definiteness, and its M-matrix sign pattern gives a
+maximum principle. The smooth manufactured benchmark, independently
+checked source term, four-level error table, and algebraic tolerance sweep
+support approximately second-order accuracy for $a=1+x$.
+
+The layered test separates algebraic structure from physical accuracy.
+Harmonic averaging reproduces the piecewise-linear exact solution and
+constant flux at the nodes and faces to round-off. Arithmetic averaging
+retains symmetry, local discrete conservation, and the maximum principle,
+yet its nodal error is first order and its maximum interface-flux error
+stays near $0.662$ for the tested two-dimensional boundary data. A single
+flux-jump statistic would have hidden this defect.
+
+The matched FEM comparison gives the same approximately second-order order
+on the smooth problem, with different measured constants and costs. The
+fitted layered FEM is also exact for this particular solution. Contrast
+increases the unscaled FDM condition number and unpreconditioned CG work;
+Jacobi substantially reduces the contrast effect in the tested sequence.
+
+The experiments are limited to a Cartesian square, a smooth affine
+coefficient, and a straight two-material interface. Curved interfaces,
+non-affine smooth coefficients, and general heterogeneous patterns require
+separate verification. The supplied code and raw data permit the reported
+tables and figures to be regenerated. Individual contribution statements
+must be supplied by the team members from their own records.

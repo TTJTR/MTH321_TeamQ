@@ -592,7 +592,7 @@ equations and boundary values. Positive definiteness from
 Theorem~\ref{thm:spd_mmatrix} gives uniqueness.
 \end{proof}
 
-\begin{remark}[Arithmetic averaging and the two-dimensional boundary]\label{rem:arith_2d_boundary}
+\begin{remark}[Arithmetic averaging and the two-dimensional boundary]
 The arithmetic interface conductance has the fixed relative error
 \eqref{eq:arith_flux_error}. In a one-dimensional chain with only endpoint
 Dirichlet data, summing edge resistances gives
@@ -714,7 +714,7 @@ which does not control row sums. This is why the maximum-norm result above
 uses a barrier argument instead.
 \end{remark}
 
-\begin{remark}\label{rem:conv_constant}
+\begin{remark}
 The sharp constant $1/(8a_{\min})$ is attained for constant coefficients in one space dimension, where the discrete solution of $-\Delta_h u=1$ is $\frac12x(1-x)$, whose maximum is $\frac18$. In two dimensions the function $\frac12x(1-x)$, extended constantly in $y$, is a supersolution of $-\Delta u=1$ with non-negative boundary data, so $\max u\le\frac18$ there as well, although the exact maximum is $0.0736$ and the constant is therefore not attained; both statements are consistent with, but not implied by, the variable-coefficient case. Note also that Theorem~\ref{thm:convergence} does not cover the stratified benchmark: there $u_*\notin H^2(\Omega)$ and the relevant statement is the exactness of Theorem~\ref{thm:nodal_exactness} (see Remark~\ref{rem:thm2_scope}).
 \end{remark}
 
@@ -751,41 +751,6 @@ The settings of the comparison are fixed \emph{before} any number is produced, s
 Cost is reported for both methods as assembly wall-clock time, factorisation or solve wall-clock time, the number of non-zeros of the assembled matrix, and the iteration count needed to reach the common tolerance.
 On the stratified benchmark, where the two discretisations use different mesh parities \emph{by design} (Remark~\ref{rem:mesh_parity}), we compare structural properties rather than convergence rates: the symmetry defect $\|A-A^T\|/\|A\|$, the $M$-matrix sign pattern, and whether the interface datum is reproduced exactly at the nodes.
 
-\paragraph{Numerical corroboration of symmetry and positive definiteness.}
-The problem pack asks for the symmetry defect and for an assessment of positive
-definiteness whose numerical support is a sparse factorisation or a
-smallest-eigenvalue estimate, not a random Rayleigh quotient. Table~\ref{tab:matrix_evidence} reports
-both for the assembled interior operator. The symmetry defect
-$\|A_h-A_h^{\mathsf T}\|_{\max}/\|A_h\|_{\max}$ and its Frobenius analogue are
-exactly zero, because every off-diagonal entry is written twice from the same
-shared face coefficient; $\lambda_{\min}$ is an \texttt{eigsh} estimate and is
-compared with the bound $\lambda_{\min}\ge 8a_{\min}$ derived above; and an
-independent dense Cholesky factorisation succeeds on every matrix. The
-derivation of Section~2.4 remains the primary evidence, since it explains why
-these numbers take the values they do; the table only corroborates it.
-
-\begin{table}[H]
-\centering\small
-\caption{Symmetry defect and smallest eigenvalue of the assembled interior
-operator $A_h$ (conservative FDM, harmonic face coefficients). The defect is
-zero by construction rather than by accident; $\lambda_{\min}$ is an
-\texttt{eigsh} estimate compared with the bound $8a_{\min}=8$ of
-Section~2.4, and dense Cholesky succeeds in every case. Reproduced by
-\texttt{verify/check\_matrix\_evidence.py}.}
-\label{tab:matrix_evidence}
-\begin{tabular}{@{}lrrrrrr@{}}
-\toprule
-Case & $c$ & $N$ & unknowns & $\|A-A^{\mathsf T}\|/\|A\|$ & $\lambda_{\min}$ & Cholesky \\
-\midrule
-smooth  & -- & 32 & 961  & $0$ & $28.675$ & ok \\
-smooth  & -- & 64 & 3969 & $0$ & $28.694$ & ok \\
-layered & 10  & 31 & 900  & $0$ & $44.250$ & ok \\
-layered & 10  & 63 & 3844 & $0$ & $44.346$ & ok \\
-layered & 100 & 63 & 3844 & $0$ & $48.848$ & ok \\
-\bottomrule
-\end{tabular}
-\end{table}
-
 \newpage
 \input{algorithm_section}
 \newpage
@@ -793,37 +758,35 @@ layered & 100 & 63 & 3844 & $0$ & $48.848$ & ok \\
 \input{conclusion}
 
 \appendix
-\input{appendix_ai_log}
+\section{AI Transparency Log}
+AI assistance was used to draft mathematical exposition, implementation
+notes, figures and this integrated report. The baseline implementation and
+independent validation records come from repository commit \texttt{08bf8300}.
+The final tables and figures were regenerated from the supplied code after
+correcting coefficient input checks, a harmonic-mean overflow case, an
+empty off-diagonal diagnostic, and the eigenvalue start vector. The
+independent validation scripts recomputed the smooth convergence, interface
+solution and flux diagnostics, matrix spectra, and solver comparisons. The
+present report corrected two claims after auditing those records: the
+arithmetic interface-flux maximum error in the two-dimensional square is
+not the one-dimensional $O(h)$ quantity, and conforming $\mathcal P_1$ FEM
+does not impose pointwise continuity of its raw element fluxes. The
+corrected $c=1$ spectrum was checked against the independent record and
+the constant-coefficient formula. The team should record its own final
+review of the submitted code and PDF here before submission.
 
-\section{Individual Contribution Statements}\label{app:ics}
-Each member states, in the first person, what they actually did, what they
-found difficult, and what they would do differently. The statements below are
-ordered as the report's title page. Each statement is the author's own account
-of their work and is signed by them; the repository history is the evidence of
-authorship, so each author commits their own statement from their own account,
-and a statement prepared centrally for packaging is replaced by the author's
-own commit rather than attributed to the packager. Statements that describe work
-reported in the sections above are cross-referenced to the audits of
-Appendix~\ref{app:ai_log}, where the corresponding AI-assisted claim was
-checked.
-
-\input{ics/TianruiJi}
-\input{ics/MeichenDing}
-\input{ics/JingyanWei}
-\input{ics/HanLiu}
-\input{ics/JiashengXu}
+\section{Individual Contribution Statements}
+The previous Project 1 report lists the five team members on the title page.
+The Project 2 repository history does not identify individual authorship of
+specific mathematical, coding, validation and writing tasks. Each member
+must provide and sign their own Project 2 contribution statement; assigning
+those claims from a shared Git account would be unsupported.
 
 \section{Reproducibility and Data Provenance}
 The supplied source package contains \texttt{run\_all.py}, the FDM/FEM source,
 the tables, figures, and raw results used here. The snapshot is based on
 \url{https://github.com/TTJTR/MTH321_TeamQ/tree/08bf8300e78c748fe5df0f1824d9780b6824446e/project2}.
-The independent validation record is under \texttt{test/} in that snapshot. The
-verification scripts quoted in Appendix~\ref{app:ai_log} are in
-\texttt{report/verify/} and are independent of the production assembler:
-\texttt{check\_interface\_order.py} re-derives the one-dimensional interface
-numbers, \texttt{check\_stability.py} re-derives the discrete-stability
-counterexample and the barrier bound, and \texttt{check\_matrix\_evidence.py}
-regenerates Table~\ref{tab:matrix_evidence} from the submitted assembler.
+The independent validation record is under \texttt{test/} in that snapshot.
 The main results use double precision and the smooth and layered parameter
 sets described in Sections~3--4. Timing values are local measurements and
 will vary with hardware and software versions.
