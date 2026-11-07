@@ -751,6 +751,41 @@ The settings of the comparison are fixed \emph{before} any number is produced, s
 Cost is reported for both methods as assembly wall-clock time, factorisation or solve wall-clock time, the number of non-zeros of the assembled matrix, and the iteration count needed to reach the common tolerance.
 On the stratified benchmark, where the two discretisations use different mesh parities \emph{by design} (Remark~\ref{rem:mesh_parity}), we compare structural properties rather than convergence rates: the symmetry defect $\|A-A^T\|/\|A\|$, the $M$-matrix sign pattern, and whether the interface datum is reproduced exactly at the nodes.
 
+\paragraph{Numerical corroboration of symmetry and positive definiteness.}
+The problem pack asks for the symmetry defect and for an assessment of positive
+definiteness whose numerical support is a sparse factorisation or a
+smallest-eigenvalue estimate, not a random Rayleigh quotient. Table~\ref{tab:matrix_evidence} reports
+both for the assembled interior operator. The symmetry defect
+$\|A_h-A_h^{\mathsf T}\|_{\max}/\|A_h\|_{\max}$ and its Frobenius analogue are
+exactly zero, because every off-diagonal entry is written twice from the same
+shared face coefficient; $\lambda_{\min}$ is an \texttt{eigsh} estimate and is
+compared with the bound $\lambda_{\min}\ge 8a_{\min}$ derived above; and an
+independent dense Cholesky factorisation succeeds on every matrix. The
+derivation of Section~2.4 remains the primary evidence, since it explains why
+these numbers take the values they do; the table only corroborates it.
+
+\begin{table}[H]
+\centering\small
+\caption{Symmetry defect and smallest eigenvalue of the assembled interior
+operator $A_h$ (conservative FDM, harmonic face coefficients). The defect is
+zero by construction rather than by accident; $\lambda_{\min}$ is an
+\texttt{eigsh} estimate compared with the bound $8a_{\min}=8$ of
+Section~2.4, and dense Cholesky succeeds in every case. Reproduced by
+\texttt{verify/check\_matrix\_evidence.py}.}
+\label{tab:matrix_evidence}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+Case & $c$ & $N$ & unknowns & $\|A-A^{\mathsf T}\|/\|A\|$ & $\lambda_{\min}$ & Cholesky \\
+\midrule
+smooth  & -- & 32 & 961  & $0$ & $28.675$ & ok \\
+smooth  & -- & 64 & 3969 & $0$ & $28.694$ & ok \\
+layered & 10  & 31 & 900  & $0$ & $44.250$ & ok \\
+layered & 10  & 63 & 3844 & $0$ & $44.346$ & ok \\
+layered & 100 & 63 & 3844 & $0$ & $48.848$ & ok \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \newpage
 \input{algorithm_section}
 \newpage
@@ -763,9 +798,11 @@ On the stratified benchmark, where the two discretisations use different mesh pa
 \section{Individual Contribution Statements}\label{app:ics}
 Each member states, in the first person, what they actually did, what they
 found difficult, and what they would do differently. The statements below are
-ordered as the report's title page. Each is signed by its author and was
-committed from that author's own account, so that the repository history
-attributes it to the person making the claim. Statements that describe work
+ordered as the report's title page. Each statement is the author's own account
+of their work and is signed by them; the repository history is the evidence of
+authorship, so each author commits their own statement from their own account,
+and a statement prepared centrally for packaging is replaced by the author's
+own commit rather than attributed to the packager. Statements that describe work
 reported in the sections above are cross-referenced to the audits of
 Appendix~\ref{app:ai_log}, where the corresponding AI-assisted claim was
 checked.
@@ -780,11 +817,13 @@ checked.
 The supplied source package contains \texttt{run\_all.py}, the FDM/FEM source,
 the tables, figures, and raw results used here. The snapshot is based on
 \url{https://github.com/TTJTR/MTH321_TeamQ/tree/08bf8300e78c748fe5df0f1824d9780b6824446e/project2}.
-The independent validation record is under \texttt{test/} in that snapshot. The two verification scripts quoted in
-Appendix~\ref{app:ai_log} are in \texttt{report/verify/} and are independent of
-the production assembler: \texttt{check\_interface\_order.py} re-derives the
-one-dimensional interface numbers, and \texttt{check\_stability.py} re-derives
-the discrete-stability counterexample and the barrier bound.
+The independent validation record is under \texttt{test/} in that snapshot. The
+verification scripts quoted in Appendix~\ref{app:ai_log} are in
+\texttt{report/verify/} and are independent of the production assembler:
+\texttt{check\_interface\_order.py} re-derives the one-dimensional interface
+numbers, \texttt{check\_stability.py} re-derives the discrete-stability
+counterexample and the barrier bound, and \texttt{check\_matrix\_evidence.py}
+regenerates Table~\ref{tab:matrix_evidence} from the submitted assembler.
 The main results use double precision and the smooth and layered parameter
 sets described in Sections~3--4. Timing values are local measurements and
 will vary with hardware and software versions.
