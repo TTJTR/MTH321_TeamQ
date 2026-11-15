@@ -3,7 +3,7 @@ The conservative FDM correctly represents the divergence-form diffusion
 operator when adjacent rows share each positive face conductance and
 Dirichlet data are eliminated symmetrically. Its discrete energy identity
 establishes positive definiteness, and its M-matrix sign pattern gives a
-maximum principle. The smooth manufactured benchmark, independently
+maximum principle for zero-source problems. The smooth manufactured benchmark, independently
 checked source term, four-level error table, and algebraic tolerance sweep
 support approximately second-order accuracy for $a=1+x$.
 
@@ -15,11 +15,19 @@ yet its nodal error is first order and its maximum interface-flux error
 stays near $0.662$ for the tested two-dimensional boundary data. A single
 flux-jump statistic would have hidden this defect.
 
-The matched FEM comparison gives the same approximately second-order order
+The matched FEM comparison gives the same approximately second-order accuracy
 on the smooth problem, with different measured constants and costs. The
 fitted layered FEM is also exact for this particular solution. Contrast
 increases the unscaled FDM condition number and unpreconditioned CG work;
 Jacobi substantially reduces the contrast effect in the tested sequence.
+
+The interface PINN extension uses two jointly trained subnetworks and
+achieves a mean sampled relative solution error of $3.12\times10^{-5}$
+and maximum absolute interface-flux error of $1.37\times10^{-3}$ at $c=10$.
+Harmonic FDM and fitted FEM reproduce this particular piecewise-linear
+solution to numerical precision. The neural method is an alternative
+representation, with mean archived training time of $231.3$ seconds on an
+A100; these results establish neither an accuracy nor a speed advantage.
 
 The experiments are limited to a Cartesian square, a smooth affine
 coefficient, and a straight two-material interface. Curved interfaces,

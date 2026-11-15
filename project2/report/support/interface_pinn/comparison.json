@@ -1,0 +1,65 @@
+{
+  "protocol": {
+    "contrast": 10.0,
+    "solution_samples": "62 x 62 common interior nodes, x=i/63, y=j/63",
+    "solution_metric": "norm(pred-exact)/norm(exact), unweighted sampled l2",
+    "flux_samples": "62 common interface points, x=0.5, y=j/63",
+    "flux_metric": "max absolute physical flux error, common +x orientation",
+    "FDM_intervals": 63,
+    "FEM_intervals": 64,
+    "linear_solver": "SciPy sparse LU on CPU",
+    "PINN_seeds": [
+      11,
+      22,
+      33
+    ],
+    "note": "FEM is evaluated by its actual P1 interpolant. FDM is evaluated at its nodes. Different mesh parities are intentional; not an equal-budget benchmark."
+  },
+  "FDM": {
+    "relative_l2": 2.3995904425575004e-15,
+    "flux_max_error": 1.0813572259849025e-13
+  },
+  "FEM": {
+    "relative_l2": 2.190999093162209e-14,
+    "flux_max_error": 4.4564352208453784e-13
+  },
+  "Interface PINN": {
+    "relative_l2": 3.117115393613003e-05,
+    "flux_max_error": 0.001367662457550119,
+    "train_seconds": 231.2789789121598,
+    "runs": [
+      {
+        "seed": 11,
+        "relative_l2": 2.87559036550111e-05,
+        "flux_max_error": 0.0023804477454310025,
+        "train_seconds": 231.17226069327444,
+        "lbfgs_closure_calls": 553
+      },
+      {
+        "seed": 22,
+        "relative_l2": 2.63203826775482e-05,
+        "flux_max_error": 0.0009848185773153606,
+        "train_seconds": 226.44241206813604,
+        "lbfgs_closure_calls": 455
+      },
+      {
+        "seed": 33,
+        "relative_l2": 3.8437175475830784e-05,
+        "flux_max_error": 0.0007377210499039943,
+        "train_seconds": 236.22226397506893,
+        "lbfgs_closure_calls": 570
+      }
+    ]
+  },
+  "training": {
+    "gpu": "NVIDIA A100-PCIE-40GB",
+    "precision": "float64",
+    "adam_steps": 10000,
+    "lbfgs_max_iter": 500,
+    "parameters": 17154,
+    "network": "2 independent MLPs, each 3 hidden layers of width 64, tanh",
+    "interior_points_per_subdomain": 2048,
+    "boundary_points_per_edge": 256,
+    "interface_points": 512
+  }
+}
