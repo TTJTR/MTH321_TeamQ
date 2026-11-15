@@ -50,8 +50,11 @@ course-bank test is skipped unless `MTH321_TEST_BANK` names the instructor's
 `MTH321_STRICT_VALIDATION=1`. They passed after fixing finite-input guards,
 overflow/underflow in harmonic averaging, diagonal-only structure inspection,
 and a largest-eigenvalue start-vector defect. A default run does not enable them.
-The historical bank-enabled run is recorded under `test/`; this check does
-not invent a fresh bank-enabled result if the course file is unavailable.
+The bank-enabled strict run on 2026-11-16 passed all 11 tests with no skips,
+including 32 course-bank solves. Its output and bank SHA-256 are recorded in
+`reviews/evidence/strict_tests_with_bank.txt` and `course_bank_run.json`.
+The instructor-provided bank remains external; set the environment variable
+to its location when reproducing the bank test.
 
 ## Files and evidence
 

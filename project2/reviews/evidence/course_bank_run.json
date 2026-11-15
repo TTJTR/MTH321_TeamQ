@@ -1,0 +1,19 @@
+{
+  "date": "2026-11-16",
+  "course_bank_filename": "test_problem_bank (1).py",
+  "course_bank_sha256": "65a4d603e588be801feec7beace4c7d61ac9a6a1aff99ef667047284ee504845",
+  "environment": "conda dl, CPU, BLAS threads=1",
+  "command": "MTH321_TEST_BANK=<path to course bank> MTH321_STRICT_VALIDATION=1 python -B -m unittest discover -s test -v",
+  "tests_run": 11,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "bank_cases": [
+    "P1",
+    "P2",
+    "P4",
+    "P5"
+  ],
+  "bank_solves": 32,
+  "output": "strict_tests_with_bank.txt"
+}

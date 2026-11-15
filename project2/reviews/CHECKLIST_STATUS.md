@@ -1,4 +1,4 @@
-# Project 2 最新检查清单（2026-11-15）
+# Project 2 最新检查清单（2026-11-16更新）
 
 依据用户提供的 `Project2/checklist/` 中五份 TeX：submission checklist、
 visualization guide、code review checklist、report template、problem definition sheet。
@@ -46,15 +46,16 @@ visualization guide、code review checklist、report template、problem definiti
 - [x] 在本机`dl`环境实际跑通`python -B code/run_all.py`，无需GPU、无需改路径。
 - [x] 默认保留归档计时；`--recompute`可重新求解经典实验；不把checkpoint回放说成重训。
 - [x] `requirements.txt`及README解释依赖、命令、每张图来源与LaTeX构建方式。
-- [x] 生产微测试7/7通过；独立默认测试8通过、3跳过；严格回归10通过、1跳过。
+- [x] 生产微测试7/7通过；独立默认测试8通过、3跳过；严格回归最初10通过、1跳过；11月16日补入课程题库后11/11通过，无跳过。
 - [x] 严格检查先暴露10个失败子项，再修复：非有限系数检查、稳定调和平均、
   单对角结构诊断、最大特征值初向量。原失败日志和通过日志均保留。
 - [x] 仅刷新9行conditioning的特征值/残差列；保留原计时和CG计数，重画关联图。
 - [x] 三个理论检查实际运行，矩阵表的对称缺陷为0、最小特征值及Cholesky均吻合。
 - [x] 稀疏组装、边界正号、网格向量映射、固定随机种子、组装/求解/验证分离有代码证据。
 - [x] `.gitignore`覆盖缓存及LaTeX中间文件；脚本路径由`__file__`定位，不要求固定盘符。
-- [ ] 课程题库测试本次未重跑：未找到老师的`test_problem_bank.py`，严格运行明确跳过1项。
-  历史题库结果单独保留，不当成本次新运行证据。
+- [x] 11月16日使用用户提供的`test_problem_bank (1).py`补跑：P1/P2/P4/P5、
+  FDM/FEM、四网格共32次求解通过；启用严格回归后全部11项测试通过，无跳过。
+  题库文件名及SHA-256记录在`evidence/course_bank_run.json`，课程原文件不复制到仓库。
 - [ ] 独立新机器从零安装尚未实测；这里只认证当前dl环境的执行。
 - 不适用：Neumann/Robin闭合、MEMS可行性与Jacobian审计，本方向四边均为Dirichlet且为线性PDE。
 
@@ -71,7 +72,8 @@ visualization guide、code review checklist、report template、problem definiti
 ## 证据与交付
 
 - `evidence/reproduction.txt`：统一入口及7个微测试。
-- `evidence/independent_tests.txt`：默认独立测试，含跳过原因。
+- `evidence/independent_tests.txt`：先前默认独立测试，含跳过原因。
+- `evidence/strict_tests_with_bank.txt`：11月16日题库及严格回归全部11项通过。
 - `evidence/strict_tests_initial.txt` / `strict_tests.txt`：修复前后严格回归。
 - `evidence/conditioning_refresh.txt`：仅刷新谱估计。
 - `evidence/interface_order.txt`、`stability.txt`、`matrix_evidence.txt`：三项理论检查。
@@ -81,5 +83,5 @@ visualization guide、code review checklist、report template、problem definiti
 - [x] 代码提交压缩包另存本地交付目录`Project2_Code.zip`，含README、源码、
   数据及checkpoint；ZIP完整性及关键入口文件已检查，不把ZIP反复嵌入仓库。
 
-结论：合并与技术修订已完成；签署、课程题库新运行、演示一致性及新机器安装等
+结论：合并、技术修订及课程题库补跑已完成；签署、演示一致性及新机器安装等
 未确认项目保留为空，不宣称课程所有提交项均已完成。
