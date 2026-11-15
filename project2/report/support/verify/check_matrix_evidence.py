@@ -7,7 +7,7 @@ Rayleigh quotient is only a diagnostic.  This script produces exactly that
 table from the production assembler, so the numbers in the report are the ones
 the submitted code produces.
 
-Run from anywhere:  python3 project2/meichending/support/verify/check_matrix_evidence.py
+Run from the report folder:  python3 support/verify/check_matrix_evidence.py
 """
 
 import os
@@ -18,7 +18,25 @@ from scipy.sparse.linalg import eigsh
 from scipy.linalg import cholesky
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(_HERE, "..", "..", "..", "algorithm_section"))
+_REPORT = os.path.dirname(os.path.dirname(_HERE))          # .../report
+
+# The production package sits next to the report folder; a standalone copy of
+# the report carries its own copy of the assembler in report/src. Accept both,
+# so the script runs from a checkout and from the handout archive alike.
+_CANDIDATES = [
+    os.path.join(os.path.dirname(_REPORT), "algorithm_section"),  # project2/algorithm_section
+    _REPORT,                                                     # report/src/discretisation.py
+]
+for _root in _CANDIDATES:
+    if os.path.isdir(os.path.join(_root, "src")):
+        sys.path.insert(0, _root)
+        break
+else:  # pragma: no cover
+    raise SystemExit(
+        "could not find src/discretisation.py next to the report folder or in report/src; "
+        "run this script from a checkout of the repository"
+    )
+
 from src.discretisation import assemble_fdm  # noqa: E402
 
 CASES = [
