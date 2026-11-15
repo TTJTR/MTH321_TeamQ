@@ -1,0 +1,56 @@
+\begin{formbox}
+\textbf{Name:} Tianrui Ji \hfill \textbf{Student ID:} 2361367\\
+\textbf{Role:} Project manager and algorithm implementation.
+
+\textbf{1. My specific contributions to this project:}
+\begin{enumerate}[leftmargin=2em,itemsep=0.25em,topsep=0.15em]
+    \item I coordinated the AI-assisted development and integration of
+    conservative FDM and two-dimensional P1 FEM in
+    \path{project2/algorithm_section/src/discretisation.py}. The work covered
+    shared face coefficients, interface resistance, triangle assembly and
+    Dirichlet elimination. I prepared the algorithm-section text, figures
+    and code for handover to the report-writing member.
+
+    \item I organised the computational materials for convergence, interface
+    accuracy, solver tolerance and cost comparisons. The solver interface in
+    \path{project2/algorithm_section/src/solvers.py} uses SciPy's CG and sparse
+    LU routines. I worked on explaining their roles and the distinction
+    between algebraic, discretisation and physical flux errors. The separate
+    independent validation work is documented by the testing member in
+    \path{project2/test/VALIDATION_RUN_2026-11-06.md}.
+
+    \item I organised the AI-assisted interface-PINN extension under
+    \path{project2/I-PINNs/}, including training configuration, server runs
+    and collection of checkpoints and logs. I requested that the revised
+    presentation compare this method with FDM and FEM, and clarify joint
+    training across the interface. I also coordinated the presentation
+    revisions and prepared to explain the algorithm and extension sections.
+\end{enumerate}
+
+\textbf{2. The hardest conceptual obstacle I encountered:}
+The main difficulty was connecting the implemented equations with the
+different accuracy measures. In particular, a small linear residual does
+not establish PDE accuracy, and agreement between two interface fluxes
+does not establish agreement with the exact physical flux. Preparing the
+presentation helped me separate these checks and explain what each measures.
+
+\textbf{3. One piece of AI-generated output my team used, and what I changed:}
+An initial AI-assisted extension slide mainly compared the interface network
+with an ordinary PINN. I requested a comparison with our FDM and FEM work,
+common evaluation points, and a clearer diagram of joint training. I also
+asked for the archived device, optimisation budget and runtime to be
+checked. The revised material reports the A100 recorded in the environment
+file and avoids a cross-device speed ranking. These supplementary revisions
+are distinct from material already integrated into the main report; see
+the accompanying AI transparency contribution.
+
+\textbf{4. One thing I still do not fully understand:}
+I would like to understand how to choose interface-loss weights
+systematically and obtain an error guarantee near the interface. A small
+training loss or good accuracy at sampled points does not by itself provide
+such a guarantee.
+
+\vfill
+\textbf{Signature:} \underline{\hspace{4.5cm}} \hfill
+\textbf{Date:} \underline{\hspace{2.5cm}}
+\end{formbox}

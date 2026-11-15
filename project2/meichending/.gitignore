@@ -1,0 +1,13 @@
+# LaTeX intermediates; the built PDF is kept
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.blg
+*.bbl
+# Python
+__pycache__/
+*.pyc

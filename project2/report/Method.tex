@@ -14,9 +14,12 @@
 \geometry{a4paper, margin=2.5cm}
 \usepackage{graphicx}
 \usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{xurl}
 \usepackage{listings}
 \usepackage{xcolor}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage{enumitem}
 \usepackage{float}
 \usepackage{caption}
@@ -87,7 +90,7 @@
     \small Han Liu, 2364393 \quad Jiasheng Xu, 2251640 \\
     \small Department of Applied Mathematics
 }
-\date{November 6, 2026}
+\date{November 2026}
 
 \graphicspath{{figures/}}
 \setlength{\emergencystretch}{3em}
@@ -100,7 +103,8 @@ $-\nabla\cdot(a\nabla u)=f$ on the unit square using a conservative five-point
 finite-difference method (FDM). A conforming triangular $\mathcal P_1$
 finite-element method (FEM) provides a matched depth comparison. With positive
 shared face conductances and symmetric Dirichlet elimination, the FDM matrix is
-symmetric positive definite and satisfies a discrete maximum principle. On the
+symmetric positive definite and is an $M$-matrix; its sign pattern yields a
+discrete maximum principle in the case $f\equiv 0$. On the
 smooth manufactured problem $a=1+x$, both methods show approximately second-order
 error in nodal and common reconstructed $L^2$ norms over four mesh levels.
 For a layered coefficient jump from $1$ to $10$, harmonic face averaging recovers
@@ -115,6 +119,7 @@ the main numerical claims and identifies the limits of the diagnostics.
 
 \noindent\textbf{Keywords:} elliptic boundary value problem, variable diffusion, discontinuous coefficients, conservative finite difference method, harmonic averaging, discrete maximum principle, method of manufactured solutions, finite element method
 
+\clearpage
 \tableofcontents
 \newpage
 
@@ -157,7 +162,7 @@ When $a \in C^1(\bar{\Omega})$ and $u \in C^2(\Omega) \cap C^0(\bar{\Omega})$, a
     -\nabla\cdot\bigl(a(x,y)\nabla u\bigr) = -a(x,y)\Delta u - \nabla a(x,y)\cdot\nabla u = f(x,y).
     \label{eq:non_div}
 \end{equation}
-However, when $\Omega$ is partitioned into two disjoint subdomains $\Omega_1$ and $\Omega_2$ separated by a smooth internal interface $\Sigma = \partial\Omega_1 \cap \partial\Omega_2$ (such as the vertical material interface $\Sigma = \{x = 1/2\}$), the coefficient $a(x,y)$ may have a finite jump discontinuity across $\Sigma$. In this regime, $\nabla a$ involves a Dirac delta distribution supported on $\Sigma$, rendering the pointwise differential operator \eqref{eq:non_div} mathematically invalid. 
+However, when $\Omega$ is partitioned into two disjoint subdomains $\Omega_1$ and $\Omega_2$ separated by a smooth internal interface $\Sigma = \partial\Omega_1 \cap \partial\Omega_2$ (such as the vertical material interface $\Sigma = \{x = 1/2\}$), the coefficient $a(x,y)$ may have a finite jump discontinuity across $\Sigma$. In this regime, $\nabla a$ involves a Dirac delta distribution supported on $\Sigma$, rendering the pointwise differential operator \eqref{eq:non_div} mathematically invalid.
 
 To interpret \eqref{eq:bvp} rigorously for piecewise-smooth coefficients, we invoke the integral conservation law $\int_V \nabla\cdot\bm{j}\,dxdy = \int_{\partial V} \bm{j}\cdot\bm{n}\,ds = \int_V f\,dxdy$ over an arbitrary control volume $V \subset \Omega$ straddling $\Sigma$, where $\bm{j}(x,y) := -a(x,y)\nabla u(x,y)$ is the physical diffusive flux. Shrinking $V$ onto the interface $\Sigma$ yields the classical piecewise strong formulation coupled with physical transmission conditions:
 \begin{equation}
@@ -592,7 +597,7 @@ equations and boundary values. Positive definiteness from
 Theorem~\ref{thm:spd_mmatrix} gives uniqueness.
 \end{proof}
 
-\begin{remark}[Arithmetic averaging and the two-dimensional boundary]
+\begin{remark}[Arithmetic averaging and the two-dimensional boundary]\label{rem:arith_2d_boundary}
 The arithmetic interface conductance has the fixed relative error
 \eqref{eq:arith_flux_error}. In a one-dimensional chain with only endpoint
 Dirichlet data, summing edge resistances gives
@@ -714,7 +719,7 @@ which does not control row sums. This is why the maximum-norm result above
 uses a barrier argument instead.
 \end{remark}
 
-\begin{remark}
+\begin{remark}\label{rem:conv_constant}
 The sharp constant $1/(8a_{\min})$ is attained for constant coefficients in one space dimension, where the discrete solution of $-\Delta_h u=1$ is $\frac12x(1-x)$, whose maximum is $\frac18$. In two dimensions the function $\frac12x(1-x)$, extended constantly in $y$, is a supersolution of $-\Delta u=1$ with non-negative boundary data, so $\max u\le\frac18$ there as well, although the exact maximum is $0.0736$ and the constant is therefore not attained; both statements are consistent with, but not implied by, the variable-coefficient case. Note also that Theorem~\ref{thm:convergence} does not cover the stratified benchmark: there $u_*\notin H^2(\Omega)$ and the relevant statement is the exactness of Theorem~\ref{thm:nodal_exactness} (see Remark~\ref{rem:thm2_scope}).
 \end{remark}
 
@@ -751,46 +756,106 @@ The settings of the comparison are fixed \emph{before} any number is produced, s
 Cost is reported for both methods as assembly wall-clock time, factorisation or solve wall-clock time, the number of non-zeros of the assembled matrix, and the iteration count needed to reach the common tolerance.
 On the stratified benchmark, where the two discretisations use different mesh parities \emph{by design} (Remark~\ref{rem:mesh_parity}), we compare structural properties rather than convergence rates: the symmetry defect $\|A-A^T\|/\|A\|$, the $M$-matrix sign pattern, and whether the interface datum is reproduced exactly at the nodes.
 
+\paragraph{Numerical corroboration of symmetry and positive definiteness.}
+The problem pack asks for the symmetry defect and for an assessment of positive
+definiteness whose numerical support is a sparse factorisation or a
+smallest-eigenvalue estimate, not a random Rayleigh quotient. Table~\ref{tab:matrix_evidence} reports
+both for the assembled interior operator. The symmetry defect
+$\|A_h-A_h^{\mathsf T}\|_{\max}/\|A_h\|_{\max}$ and its Frobenius analogue are
+exactly zero, because every off-diagonal entry is written twice from the same
+shared face coefficient; $\lambda_{\min}$ is an \texttt{eigsh} estimate and is
+compared with the bound $\lambda_{\min}\ge 8a_{\min}$ derived above; and an
+independent dense Cholesky factorisation succeeds on every matrix. The
+derivation of Section~2.4 remains the primary evidence, since it explains why
+these numbers take the values they do; the table only corroborates it.
+
+\begin{table}[H]
+\centering\small
+\caption{Symmetry defect and smallest eigenvalue of the assembled interior
+operator $A_h$ (conservative FDM, harmonic face coefficients). The defect is
+zero by construction rather than by accident; $\lambda_{\min}$ is an
+\texttt{eigsh} estimate compared with the bound $8a_{\min}=8$ of
+Section~2.4, and dense Cholesky succeeds in every case. Reproduced by
+\texttt{check\_matrix\_evidence.py}.}
+\label{tab:matrix_evidence}
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+Case & $c$ & $N$ & unknowns & $\|A-A^{\mathsf T}\|/\|A\|$ & $\lambda_{\min}$ & Cholesky \\
+\midrule
+smooth  & -- & 32 & 961  & $0$ & $28.675$ & ok \\
+smooth  & -- & 64 & 3969 & $0$ & $28.694$ & ok \\
+layered & 10  & 31 & 900  & $0$ & $44.250$ & ok \\
+layered & 10  & 63 & 3844 & $0$ & $44.346$ & ok \\
+layered & 100 & 63 & 3844 & $0$ & $48.848$ & ok \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \newpage
 \input{algorithm_section}
 \newpage
 \input{results_section}
 \input{conclusion}
 
-\appendix
-\section{AI Transparency Log}
-AI assistance was used to draft mathematical exposition, implementation
-notes, figures and this integrated report. The baseline implementation and
-independent validation records come from repository commit \texttt{08bf8300}.
-The final tables and figures were regenerated from the supplied code after
-correcting coefficient input checks, a harmonic-mean overflow case, an
-empty off-diagonal diagnostic, and the eigenvalue start vector. The
-independent validation scripts recomputed the smooth convergence, interface
-solution and flux diagnostics, matrix spectra, and solver comparisons. The
-present report corrected two claims after auditing those records: the
-arithmetic interface-flux maximum error in the two-dimensional square is
-not the one-dimensional $O(h)$ quantity, and conforming $\mathcal P_1$ FEM
-does not impose pointwise continuity of its raw element fluxes. The
-corrected $c=1$ spectrum was checked against the independent record and
-the constant-coefficient formula. The team should record its own final
-review of the submitted code and PDF here before submission.
 
-\section{Individual Contribution Statements}
-The previous Project 1 report lists the five team members on the title page.
-The Project 2 repository history does not identify individual authorship of
-specific mathematical, coding, validation and writing tasks. Each member
-must provide and sign their own Project 2 contribution statement; assigning
-those claims from a shared Git account would be unsupported.
-
-\section{Reproducibility and Data Provenance}
-The supplied source package contains \texttt{run\_all.py}, the FDM/FEM source,
-the tables, figures, and raw results used here. The snapshot is based on
-\url{https://github.com/TTJTR/MTH321_TeamQ/tree/08bf8300e78c748fe5df0f1824d9780b6824446e/project2}.
-The independent validation record is under \texttt{test/} in that snapshot.
-The main results use double precision and the smooth and layered parameter
-sets described in Sections~3--4. Timing values are local measurements and
-will vary with hardware and software versions.
-
+% References precede the appendices.
 \bibliographystyle{plain}
 \bibliography{refs}
+\clearpage
+\def\reportbuild{}
+\appendix
+\input{APPENDIX/AI_Theory_MeichenDing}
+\clearpage
+\begingroup\small
+\input{APPENDIX/TianruiJi_AI_Transparency}
+\endgroup
+\clearpage
+\input{APPENDIX/AI_Writing_HanLiu}
+
+\clearpage
+\section{Individual Contribution Statements}
+\label{app:ics}
+\begingroup\fontsize{10}{12}\selectfont
+\input{APPENDIX/ICS_MeichenDing_body}
+\endgroup
+\clearpage
+\begingroup\fontsize{10}{12}\selectfont
+\input{APPENDIX/ICS_TianruiJi_body}
+\endgroup
+\clearpage
+\begingroup\fontsize{10}{12}\selectfont
+\input{APPENDIX/ICS_HanLiu_body}
+\endgroup
+\clearpage
+\begingroup\fontsize{10}{12}\selectfont
+\input{APPENDIX/ICS_JiashengXu_body}
+\endgroup
+
+\clearpage
+\section{Reproducibility and Data Provenance}
+\begin{sloppypar}
+The local integration combines the team main branch at commit
+\texttt{cc39c69} with Meichen Ding's branch at \texttt{248cc8d}.
+The baseline implementation and independent validation record are traceable
+to \texttt{08bf8300}; later report tables contain the corrected spectral and
+interface diagnostics. The production FDM/FEM code and run entry point are
+under \path{project2/algorithm_section/}, and independent validation is under
+\path{project2/test/}. The additional theory checks are under
+\path{project2/meichending/support/verify/}: the interface and stability
+scripts use separate small models, while the matrix-evidence script imports
+the production assembler deliberately.
+
+The algorithm and results sections, six existing figures and experiment
+tables are retained from the team main branch. The additional matrix table,
+theory labels and scoped maximum-principle statement come from Meichen
+Ding's branch. No numerical experiment has been rerun for this document
+integration. Timings remain the original hardware-specific measurements.
+
+The new Interface PINN three-method comparison and training curves discussed
+in supplementary materials have not been inserted into this report; their
+metrics must not be substituted for its existing norms without stating the
+evaluation protocol. Contributor source statements are retained in
+\path{APPENDIX/}; the integrated bodies change presentation and pagination,
+not signature values.
+\end{sloppypar}
 \end{document}

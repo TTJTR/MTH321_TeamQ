@@ -1,0 +1,70 @@
+\begin{formbox}
+\textbf{Individual Contribution Statement --- Project 2 (PDE BVP)}
+
+\textbf{Name:} Meichen Ding (2362344)
+
+\textbf{Role this project:} Mathematical theory lead (consistency, adaptivity
+and convergence): owner of the model formulation, the discrete scheme, its
+truncation-error and interface analysis, and the discrete-structure results.
+
+\textbf{The specific things I did this project:}
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.15em]
+  \item
+  Wrote \S1.2 and \S2.1--\S2.4 of the report's \path{Method.tex}: the continuous
+  problem and its hypotheses, the flux-balance derivation that fixes
+  one shared face coefficient per edge, the index map and block-tridiagonal
+  structure of the assembled operator (with the non-zero count $5n^2-4n$), the
+  symmetric Dirichlet elimination and the hand-computed $4\times4$ matrix at
+  $n=2$ used as the small-case oracle, the layered exact solution, the
+  second-order local truncation error with its $\theta$-correction, the
+  series-resistance proposition for the interface conductance with the relative
+  error $(1-c)^2/(4c)$, the SPD / $M$-matrix / discrete-maximum-principle
+  theorem, and the discrete stability and $\mathcal{O}(h^2)$ convergence theorem
+  with its maximum-principle barrier argument.
+  \item
+  Wrote the independent verification scripts \path{support/verify/}:
+  \texttt{check\_interface\_order.py} (one-dimensional conservative scheme,
+  $a_L=1$, $a_R=10$, $N=31,63,127,255$; harmonic nodes exact to $10^{-14}$ and
+  every face flux equal to $-20/11$, arithmetic nodal error first order with
+  measured orders $1.015/1.008/1.004$ and the closed-form chain flux
+  reproduced), \texttt{check\_stability.py} (the entrywise-ratio counterexample
+  at $a=1+9\sin^2(\pi x)$, ratio $3.10$; $\|A_h^{-1}\|_\infty$ against
+  $1/(8a_{\min})$ for five coefficients) and
+  \texttt{check\_matrix\_evidence.py} (symmetry defect, \texttt{eigsh} smallest
+  eigenvalue and dense Cholesky on the submitted assembler). These produced the
+  numbers in the appendix tables and in \S2.4.
+  \item
+  Ran the AI-assisted claim audits of Part A: the three-layer separation of the
+  arithmetic-averaging errors (audit 1), the falsification of the
+  Loewner-implies-entrywise argument and its replacement by the barrier proof
+  (audit 2), and the separation of ``symmetric and conservative'' from
+  ``physically correct'' (audit 3), including the numerical values that decide
+  each one ($0.662$ versus $3.85\times10^{-13}$; $3.10>1$; $0.0736$ versus
+  $0.125$).
+\end{enumerate}
+
+\textbf{What I would do differently:}
+I would pin down the mesh convention with the code owner before writing any
+convergence sentence. The skeleton uses $h=1/(n+1)$ with $n$ interior points
+while the report uses $h=1/N$ with $N$ intervals, so the same symbol $N$ means
+different things in the skeleton, in the layered tables and in the FEM
+comparison; the interface-parity requirement $N$ odd for the FDM and $N$ even
+for the FEM then has to be stated as design rather than discovered late. I would
+also have demanded the two-dimensional layered numbers before writing the
+one-dimensional flux estimate, because that is exactly where the two-layer
+statement became necessary.
+
+\textbf{Anything I should have asked for help with earlier:}
+I should have asked, in Week 5, for each member to commit their own sections and
+their own ICS from their own account. By the time the appendices were written
+the repository history was a single upload commit, so authorship had to be
+reconstructed from memory and from section ownership instead of being visible in
+\texttt{git log}. I also should have asked for a review of the stability proof
+before it went into a draft: the Loewner-order step survived an internal
+re-reading and was only caught when it was written out as a counterexample
+search.
+
+\vspace{0.8em}
+\textbf{Signature:} \underline{\hspace{5cm}} \hfill
+\textbf{Date:} \underline{\hspace{3cm}}
+\end{formbox}
