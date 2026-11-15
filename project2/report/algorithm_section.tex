@@ -113,6 +113,7 @@ On the smooth representative mesh $N=32$, the tolerance sweep keeps $A$ and $b$ 
 \begin{figure}[H]\centering
 \includegraphics[width=0.95\linewidth]{figures/fig06_solver_validation.pdf}
 \caption{Explicit residual histories and solution agreement with the direct reference. History collection performs additional matrix-vector products and is excluded from the main timing comparison.}
+\label{fig:alg_solver}
 \end{figure}
 
 \begin{table}[H]\centering\small
@@ -124,11 +125,13 @@ On the smooth representative mesh $N=32$, the tolerance sweep keeps $A$ and $b$ 
 \begin{figure}[H]\centering
 \includegraphics[width=0.91\linewidth]{figures/fig03_accuracy_cost.pdf}
 \caption{Refinement checks in two nodal norms and a common integrated norm, with the measured assembly-and-CG cost. Fitted orders use the finest three meshes; the dashed lines show the theoretical quadratic slope. Timings are local CPU measurements.}
+\label{fig:alg_accuracy}
 \end{figure}
 
 \begin{table}[H]\centering\small
 \input{tables/cost}
 \caption{Median stage costs from three repetitions. CG excludes Jacobi setup in this table; LU includes factorisation and one triangular solve. The cost--accuracy plot additionally includes assembly and Jacobi setup.}
+\label{tab:alg_cost}
 \end{table}
 
 \subsection{Interface diagnostics and coefficient contrast}
@@ -147,6 +150,7 @@ In this experiment the arithmetic scheme also gives a very small two-sided recon
 \begin{figure}[H]\centering
 \includegraphics[width=0.90\linewidth]{figures/fig04_interface.pdf}
 \caption{Computed layered FDM fields at $N=63$. The lower-left panel displays the shared interface flux along $y$, with prescribed top and bottom boundary edges excluded. The signed error map uses a zero-centred symmetric colour scale and shows how an interface conductance defect affects the two-dimensional solution. Green denotes harmonic faces and magenta arithmetic faces.}
+\label{fig:alg_interface}
 \end{figure}
 
 For conditioning, the harmonic FDM matrix is tested at $N=15,31,63$ and $c=1,10,100$. The smallest eigenvalue is estimated using shift-invert Lanczos with shift zero; the largest uses the largest-algebraic option. The reported estimate is $\widehat\kappa_2=\widehat\lambda_{\max}/\widehat\lambda_{\min}$. Explicit eigenpair residuals accompany each estimate. CG iteration counts are recorded with and without Jacobi at comparable explicit relative residuals. These data concern the unscaled Dirichlet-eliminated FDM matrix. The analytical contrast-dependent bound remains an upper bound; the experiments measure the behaviour for this coefficient geometry.

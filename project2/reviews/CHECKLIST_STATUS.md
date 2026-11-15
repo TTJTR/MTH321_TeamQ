@@ -85,3 +85,12 @@ visualization guide、code review checklist、report template、problem definiti
 
 结论：合并、技术修订及课程题库补跑已完成；签署、演示一致性及新机器安装等
 未确认项目保留为空，不宣称课程所有提交项均已完成。
+
+
+## 11月16日：证据索引后续合并
+
+- [x] 合入Meichen提交`9dffbd3`的附录D；保留当前报告、图及消融实验。
+- [x] 文件路径统一相对`project2/`，改用自动图表引用，修正成本表、中线通量
+  数据来源、拟合阶口径、单人ownership声明范围及验证独立性的表述。
+- [x] 新增附录文件路径和引用标签检查见`evidence/evidence_index_check.json`。
+- [x] 本地编译并仅检查附录D页面与相关引用；未重跑实验或训练。

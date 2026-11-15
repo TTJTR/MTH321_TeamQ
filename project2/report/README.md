@@ -84,3 +84,14 @@ limitations and contributor AI evidence. The current vector plots and mesh
 illustration are retained. The common-point replay now includes three
 single-network checkpoints as a secondary, non-parameter-matched ablation.
 See `../reviews/CHECKLIST_STATUS.md` for checks and remaining manual items.
+
+
+## Evidence index integration (2026-11-16)
+
+Appendix D integrates Meichen's evidence index from commit 9dffbd3.
+Paths start at `project2/`, figure/table references use automatic labels,
+and cost/midline-flux sources and finest-three fitted orders match the archive.
+It distinguishes the independent small-model checks from the matrix script
+that imports production code, and points to the unified entry, six-checkpoint
+replay and bank-enabled passing validation. Only the new appendix and related
+references were checked; no experiment or training was rerun.
