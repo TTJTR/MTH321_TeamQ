@@ -63,9 +63,11 @@ independent validation is attributed to the testing member's record.
     A100-PCIE-40GB; mean optimisation time at $c=10$ is $231.3$ seconds.
     Only periodic Adam losses and a final L-BFGS loss are saved, not a full
     L-BFGS or error-versus-time trajectory. The revised comparison and plots
-    remain supplementary, not yet integrated into the main report. Their
-    sampling protocol must accompany any integration; sampled relative
-    errors must not be confused with continuous $L^2$ norms.
+    are integrated in Section~\ref{sec:interface_pinn}. The three checkpoints
+    used there and their common-sample replay are under
+    \path{project2/report/support/interface_pinn/}. Sampled relative
+    errors are distinguished from continuous $L^2$ norms; no retraining
+    was performed for the integration.
 \end{itemize}
 
 \paragraph{Responsibility and trusted dependencies.}

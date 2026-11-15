@@ -1,0 +1,98 @@
+% DRAFT for Jingyan Wei (2361411) — Project 2 ICS.
+% Verify every item against what you actually did, edit freely, fill in the
+% signature and date, then commit this file from YOUR OWN GitHub account.
+% Every claim below is drafted from material in the submitted repository
+% (project2/report, section 3.3 and the tables of section 4.4); none of it is
+% invented data, but the attribution is mine, not yours, until you confirm it.
+\documentclass[10pt]{article}
+\usepackage[a4paper,margin=1.8cm]{geometry}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{xurl}
+\usepackage{xcolor}
+\usepackage{mdframed}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.35em}
+\definecolor{formbg}{RGB}{250,250,245}
+\definecolor{formframe}{RGB}{180,170,140}
+\newmdenv[backgroundcolor=formbg,linecolor=formframe,linewidth=0.8pt,
+roundcorner=3pt,innermargin=5pt,outermargin=5pt,innertopmargin=6pt,
+innerbottommargin=6pt]{formbox}
+
+\begin{document}
+
+\begin{center}
+    {\Large\bfseries Individual Contribution Statement}\\[0.2em]
+    {\large Project 2 (Elliptic BVP)}
+\end{center}
+
+\begin{formbox}
+\textbf{Name:} Jingyan Wei \hfill \textbf{Student ID:} 2361411\\
+\textbf{Role this project:} Mathematical theory --- variational formulation
+and the FDM/FEM comparison (Role 2).
+
+\textbf{The specific things I did this project:}
+\begin{enumerate}[leftmargin=2em,itemsep=0.25em,topsep=0.15em]
+    \item I worked out the quadrature behind the P1 stiffness and load
+    integrals in Section~3.3, \path{project2/report/algorithm_section.tex}.
+    Each square is split along its diagonal, so every element integral of
+    $\int_T a\,\nabla\varphi_i\cdot\nabla\varphi_j\,dx$ is evaluated on the
+    reference triangle after a Duffy map, with barycentric coordinates
+    $((1-r)(1-s),r,(1-r)s)$ and Jacobian factor $1-r$. I checked the degree
+    that the $5\times5$ Gauss--Legendre rule must integrate: the reference
+    weights sum to $1/2$, and for an affine coefficient $a$ --- and for the
+    interface-aligned piecewise-constant $a$ --- the stiffness entries come
+    out exact to round-off. A higher-order rule independently checks the
+    smooth load and the continuous $L^2$ error integral on a representative
+    mesh.
+
+    \item I defined how a nodal FDM solution is put into the same norm as the
+    P1 solution, which the depth comparison needs because the two
+    discretisations do not even live in the same function space. Both nodal
+    solutions are reconstructed by P1 interpolation on the common triangles
+    and integrated against the exact solution with a $6\times6$ Duffy rule
+    on the mesh where the comparison is reported. I also recorded the parity
+    bookkeeping of the layered experiment: FDM uses $N=31,63,127,255$ while
+    the interface-fitted FEM uses $N=32,64,128,256$, so the two structural
+    checks are read on their own meshes instead of being forced into one
+    refinement table.
+
+    \item I analysed the conditioning and iteration tables
+    (the condition-number table of Section~4.4). At $N=63$ the
+    measured $\kappa_2(A_h)$ rises from $1.61\times10^3$ to
+    $7.15\times10^3$ to $6.49\times10^4$ as the contrast goes from $1$ to
+    $10$ to $100$, while unpreconditioned CG iterations rise from $216$ to
+    $521$ to $1354$ but Jacobi--CG stays at $216$, $224$, $226$. I checked
+    that the growth with mesh size is consistent with the $O(h^{-2})$ upper
+    bound, and I kept the writing to what the numbers support: they justify
+    the solver choice and the use of Jacobi scaling on this layered geometry,
+    and they do not claim contrast-independent performance for arbitrary
+    heterogeneous media.
+\end{enumerate}
+
+\textbf{What I would do differently:} I would fix the quadrature degree
+that each integral needs by a patch test before writing the integral down,
+rather than checking it afterwards, and I would compute the largest
+eigenvalue by an independent route before a table was built on a single
+estimate --- a spectral estimate that looks unusually clean is a reason to
+check it, not a reason to trust it.
+
+\textbf{Anything I should have asked for help with earlier:} I should have
+asked at the first verification clinic exactly which norm each table
+reports, nodal or reconstructed, because I initially compared two checks
+that were written in different norms and the agreement I saw was not
+meaningful. I also should have asked for the assembler's return convention
+(vertex ordering, boundary set) before reading for it in the code.
+
+\textbf{AI use:} the AI-assisted work that reached the report is logged in
+Part~A of the AI Transparency Log (audits~1--3). The numbers quoted above
+are the ones reproduced by the committed tables, not the ones in a chat
+transcript.
+
+\vfill
+\textbf{Signature:} \underline{\hspace{4.5cm}} \hfill
+\textbf{Date:} \underline{\hspace{2.5cm}}
+\end{formbox}
+
+\end{document}

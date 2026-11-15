@@ -17,6 +17,17 @@ k=(i-1)n+(j-1),\qquad 1\leq i,j\leq n.
 \]
 The $y$ coordinate varies fastest. East/west connections have offsets $\pm n$ and north/south connections have offsets $\pm1$. Separate two-dimensional masks define these connections, preventing a spurious wrap between adjacent grid columns.
 
+\begin{figure}[H]\centering
+\includegraphics[width=0.84\linewidth]{figures/fig07_mesh.pdf}
+\caption{Actual discretisation meshes and the material interface. FDM uses
+$N=15$ so $x=1/2$ bisects a grid edge; fitted P1 FEM uses $N=16$ so it follows
+element edges. Blue denotes FDM and orange denotes FEM throughout the
+method comparisons. Green and magenta are reserved for harmonic and
+arithmetic face rules, respectively. These small meshes illustrate the
+construction; the accuracy experiments use the mesh sizes stated in their tables.}
+\label{fig:actual_mesh}
+\end{figure}
+
 Each physical edge coefficient is computed once. The smooth benchmark uses arithmetic averages of neighbouring nodal coefficients. The layered benchmark uses odd $N$ so the interface bisects an edge, and compares arithmetic against harmonic averages. After division by $h^2$, the same edge weight is inserted into the two transposed off-diagonal positions. The diagonal retains all four outgoing weights. A boundary neighbour contributes $+a_fg/h^2$ to the right-hand side. Only interior unknowns enter the matrix.
 
 \begin{algorithm}[H]
@@ -135,7 +146,7 @@ In this experiment the arithmetic scheme also gives a very small two-sided recon
 
 \begin{figure}[H]\centering
 \includegraphics[width=0.90\linewidth]{figures/fig04_interface.pdf}
-\caption{Computed layered FDM fields at $N=63$. The lower-left panel displays the shared interface flux along $y$, with prescribed top and bottom boundary edges excluded. The error map shows how an interface conductance defect affects the two-dimensional solution.}
+\caption{Computed layered FDM fields at $N=63$. The lower-left panel displays the shared interface flux along $y$, with prescribed top and bottom boundary edges excluded. The signed error map uses a zero-centred symmetric colour scale and shows how an interface conductance defect affects the two-dimensional solution. Green denotes harmonic faces and magenta arithmetic faces.}
 \end{figure}
 
 For conditioning, the harmonic FDM matrix is tested at $N=15,31,63$ and $c=1,10,100$. The smallest eigenvalue is estimated using shift-invert Lanczos with shift zero; the largest uses the largest-algebraic option. The reported estimate is $\widehat\kappa_2=\widehat\lambda_{\max}/\widehat\lambda_{\min}$. Explicit eigenpair residuals accompany each estimate. CG iteration counts are recorded with and without Jacobi at comparable explicit relative residuals. These data concern the unscaled Dirichlet-eliminated FDM matrix. The analytical contrast-dependent bound remains an upper bound; the experiments measure the behaviour for this coefficient geometry.
@@ -146,4 +157,4 @@ For conditioning, the harmonic FDM matrix is tested at $N=15,31,63$ and $c=1,10,
 \end{figure}
 
 \subsection{Reproduction and integration}
-\texttt{python -B run\_all.py} reruns the checks, numerical experiments, tables and six figures from the configuration file. The implementation uses double precision. The supplied PDF is a standalone reading version; \texttt{algorithm\_section.tex} can be included as Section~3 after the supplied Method section. The folder contains the numerical source, tests, raw CSV tables, representative field arrays, figures in PDF/PNG, and software provenance. The existing interface-PINN experiment is available as a separate advanced supplement, with its own training outputs and architecture limitations.
+\texttt{python -B run\_all.py} reruns the checks, numerical experiments, tables and seven figures from the configuration file. The implementation uses double precision. The supplied PDF is a standalone reading version; \texttt{algorithm\_section.tex} can be included as Section~3 after the supplied Method section. The folder contains the numerical source, tests, raw CSV tables, representative field arrays, figures in PDF/PNG, and software provenance. The interface-PINN extension is integrated in Section~\ref{sec:interface_pinn}, with archived training outputs, common-sample comparisons and architecture limitations. Its replay materials are under \path{support/interface_pinn/}.

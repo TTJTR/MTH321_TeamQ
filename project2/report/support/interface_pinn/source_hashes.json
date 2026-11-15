@@ -1,0 +1,16 @@
+{
+  "archive/config.json": "7d53e7e2f6e822acf6b569d5f39bba17944b76d5a1b961b07be0c098068e9800",
+  "archive/environment.json": "f07bb833698f94020ee8f3d097d7f8243225e35be20e1945e036c2b8fa2f54c6",
+  "archive/interface_c10_seed11/checkpoint.pt": "c4a128639756aa3f2b79f0aae877bab6968d0b4e9cf3482a00b87fe50b3d2eee",
+  "archive/interface_c10_seed11/metrics.json": "562ce55373e4f7fb49c2a49bda70e93de69027a0867ae12857265ae04152bb10",
+  "archive/interface_c10_seed11/training.csv": "75c700c22fd1f2438ef47ceef346cc02c0594769ef4667754fb834ea3b901c92",
+  "archive/interface_c10_seed22/checkpoint.pt": "f9e9447ba087f65697da961c7662e9a3788c045004d0b116683bf306b40dab89",
+  "archive/interface_c10_seed22/metrics.json": "6a3058be64fca496a30d989ecd812d560dbf1f4eb8e8c9892b60da47012d352b",
+  "archive/interface_c10_seed22/training.csv": "d4749601d40f2626859b2272b6d39c2ee8d80c11cbe431b8632b3c785f3f5ec9",
+  "archive/interface_c10_seed33/checkpoint.pt": "35a14b39060eab1f9a7e8d1fa15e25f728984d4e6d53b023389625e6caffe650",
+  "archive/interface_c10_seed33/metrics.json": "b4a5cf226a754a0926de25249c6119db11c6ebbe8277f2da0d0afe2d7f033ba7",
+  "archive/interface_c10_seed33/training.csv": "1c5ae258412f18f0b5d7a04d91bfadc7b29b980450ede62effefcc4893833590",
+  "modelsrc/pinn.py": "e22559d068f0043b685cb306b7dbdca6baa8d3eb45bb260e0bf3c5e40932e663",
+  "modelsrc/problem.py": "0e709d0b8efd2f8f0a951a963f06f53fc2c262a21271023ab19edac29002e17e",
+  "modelsrc/__init__.py": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+}

@@ -7,6 +7,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch
+from matplotlib.ticker import NullFormatter
 from src.discretisation import assemble_fdm, assemble_fem, exact
 
 
@@ -15,6 +16,7 @@ RESULTS = ROOT / "results"
 FIGURES = ROOT / "figures"
 TABLES = ROOT / "tables"
 BLUE, ORANGE = "#196b91", "#c7642b"
+HARMONIC, ARITHMETIC = "#159d87", "#b33c67"
 plt.rcParams.update({"font.size": 9, "axes.titlesize": 10, "savefig.dpi": 200})
 
 
@@ -92,6 +94,48 @@ def main():
     axes[2].set(title="Hand check: h² A, N=3", xticks=range(4), yticks=range(4))
     save(fig, "fig02_sparse_assembly")
 
+    accuracy_cost()
+    interface_fields()
+    mesh_diagram()
+
+    conditioning_plot()
+
+    fig, axes = plt.subplots(1, 2, figsize=(9, 3.1), constrained_layout=True)
+    for method, color in [("FDM", BLUE), ("FEM", ORANGE)]:
+        history = json.loads((RESULTS/f"residual_{method}_1e-12.json").read_text())
+        axes[0].semilogy(np.arange(1, len(history)+1), history, color=color, label=method)
+        selected = [r for r in tolerances if r["method"] == method]
+        axes[1].loglog([float(r["rtol"]) for r in selected], [float(r["algebraic_linf"]) for r in selected], "o-", color=color, label=method)
+    axes[0].axhline(1e-12, color="#555555", linestyle="--", label="rtol")
+    axes[0].set(xlabel="CG iteration", ylabel="Explicit relative residual", title="Diagnostic histories, smooth N=32")
+    axes[1].set(xlabel="Requested CG rtol", ylabel="Max difference from sparse LU", title="Algebraic-error tolerance sweep")
+    for ax in axes:
+        ax.grid(alpha=.2, which="both")
+        ax.legend(fontsize=8)
+    save(fig, "fig06_solver_validation")
+    print("Generated 7 figures (PDF/PNG) and 4 LaTeX tables.")
+
+
+
+def conditioning_plot():
+    conditioning = read("conditioning.csv")
+    fig, axes = plt.subplots(1, 2, figsize=(9, 3.1), constrained_layout=True)
+    for contrast, color in [(1, "#aaaaaa"), (10, "#666666"), (100, "#222222")]:
+        selected = [r for r in conditioning if float(r["contrast"]) == contrast]
+        sizes = [int(r["N"]) for r in selected]
+        axes[0].loglog(sizes, [float(r["condition_estimate"]) for r in selected], "o-", color=color, label=f"c={contrast}")
+        axes[1].plot(sizes, [int(r["plain_iterations"]) for r in selected], "o-", color=color, label=f"c={contrast}, CG")
+        axes[1].plot(sizes, [int(r["jacobi_iterations"]) for r in selected], "s--", color=color, label=f"c={contrast}, Jacobi-CG")
+    axes[0].set(xlabel="Intervals N", ylabel="Estimated kappa2(A)", title="Unscaled harmonic FDM matrix")
+    axes[1].set(xlabel="Intervals N", ylabel="Iterations to rtol=1e-12", title="Conditioning and solver work")
+    for ax in axes:
+        ax.grid(alpha=.2, which="both")
+        ax.legend(fontsize=7)
+    save(fig, "fig05_conditioning")
+
+
+def accuracy_cost():
+    smooth = read("smooth.csv")
     fig, axes = plt.subplots(2, 2, figsize=(9, 6), constrained_layout=True)
     for method, color in [("FDM", BLUE), ("FEM", ORANGE)]:
         selected = [r for r in smooth if r["method"] == method]
@@ -112,13 +156,17 @@ def main():
         h = np.array([float(r["h"]) for r in selected])
         ax.loglog(h, float(selected[0][metric])*(h/h[0])**2, "--", color="#666666", alpha=.65, label="h² reference")
         ax.legend(fontsize=8)
-    axes[1,1].set(xlabel="Assembly + Jacobi setup + CG (s)", ylabel="Common P1-integrated L2", title="Measured cost versus accuracy")
+        ax.set_xticks(h, [f"1/{round(1/v)}" for v in h])
+        ax.xaxis.set_minor_formatter(NullFormatter())
+    axes[1,1].set(xlabel="Assembly + Jacobi setup + CG (s)", ylabel="Common P1-integrated L2", title="Measured cost versus accuracy\nJacobi-CG rtol=1e-12; atol=0")
     axes[1,1].grid(alpha=.2, which="both")
     axes[1,1].legend()
     save(fig, "fig03_accuracy_cost")
 
+
+def interface_fields():
     fig, axes = plt.subplots(2, 2, figsize=(9, 5.8), constrained_layout=True)
-    for rule, color in [("arithmetic", ORANGE), ("harmonic", BLUE)]:
+    for rule, color in [("arithmetic", ARITHMETIC), ("harmonic", HARMONIC)]:
         with np.load(RESULTS/f"layered_{rule}_N63.npz") as data:
             u, x, y, qx = [data[k] for k in ["u", "x", "y", "qx"]]
             axes[0,0].plot(x[:, 31], u[:, 31], ".-", color=color, markersize=2, label=rule)
@@ -126,7 +174,7 @@ def main():
             axes[1,0].plot(y[0,1:-1], qx[31, 1:-1], color=color, label=rule)
             if rule == "arithmetic":
                 error = u-exact(x, y, "layered", 10)
-                im = axes[1,1].pcolormesh(x, y, error, shading="auto", cmap="RdBu_r", rasterized=True)
+                im = axes[1,1].pcolormesh(x, y, error, shading="auto", cmap="RdBu_r", vmin=-float(np.max(np.abs(error))), vmax=float(np.max(np.abs(error))), rasterized=True)
                 fig.colorbar(im, ax=axes[1,1], label="Signed nodal error")
     axis = np.linspace(0, 1, 300)
     axes[0,0].plot(axis, exact(axis, 0, "layered", 10), "--", color="#333333", label="exact")
@@ -141,36 +189,36 @@ def main():
         ax.grid(alpha=.2)
     save(fig, "fig04_interface")
 
-    conditioning = read("conditioning.csv")
-    fig, axes = plt.subplots(1, 2, figsize=(9, 3.1), constrained_layout=True)
-    for contrast, color in [(1, "#547c42"), (10, BLUE), (100, ORANGE)]:
-        selected = [r for r in conditioning if float(r["contrast"]) == contrast]
-        sizes = [int(r["N"]) for r in selected]
-        axes[0].loglog(sizes, [float(r["condition_estimate"]) for r in selected], "o-", color=color, label=f"c={contrast}")
-        axes[1].plot(sizes, [int(r["plain_iterations"]) for r in selected], "o-", color=color, label=f"c={contrast}, CG")
-        axes[1].plot(sizes, [int(r["jacobi_iterations"]) for r in selected], "s--", color=color, label=f"c={contrast}, Jacobi-CG")
-    axes[0].set(xlabel="Intervals N", ylabel="Estimated kappa2(A)", title="Unscaled harmonic FDM matrix")
-    axes[1].set(xlabel="Intervals N", ylabel="Iterations to rtol=1e-12", title="Conditioning and solver work")
-    for ax in axes:
-        ax.grid(alpha=.2, which="both")
-        ax.legend(fontsize=7)
-    save(fig, "fig05_conditioning")
 
-    fig, axes = plt.subplots(1, 2, figsize=(9, 3.1), constrained_layout=True)
-    for method, color in [("FDM", BLUE), ("FEM", ORANGE)]:
-        history = json.loads((RESULTS/f"residual_{method}_1e-12.json").read_text())
-        axes[0].semilogy(np.arange(1, len(history)+1), history, color=color, label=method)
-        selected = [r for r in tolerances if r["method"] == method]
-        axes[1].loglog([float(r["rtol"]) for r in selected], [float(r["algebraic_linf"]) for r in selected], "o-", color=color, label=method)
-    axes[0].axhline(1e-12, color="#555555", linestyle="--", label="rtol")
-    axes[0].set(xlabel="CG iteration", ylabel="Explicit relative residual", title="Diagnostic histories, smooth N=32")
-    axes[1].set(xlabel="Requested CG rtol", ylabel="Max difference from sparse LU", title="Algebraic-error tolerance sweep")
-    for ax in axes:
-        ax.grid(alpha=.2, which="both")
-        ax.legend(fontsize=8)
-    save(fig, "fig06_solver_validation")
-    print("Generated 6 figures (PDF/PNG) and 4 LaTeX tables.")
-
+def mesh_diagram():
+    import matplotlib.tri as mtri
+    fig, axes = plt.subplots(1, 2, figsize=(8, 3.2), constrained_layout=True)
+    for ax, n, method, color in [(axes[0], 15, "FDM", BLUE), (axes[1], 16, "Fitted P1 FEM", ORANGE)]:
+        axis = np.linspace(0, 1, n+1)
+        x, y = np.meshgrid(axis, axis, indexing="ij")
+        if method == "FDM":
+            for a in axis:
+                ax.plot([a,a],[0,1],color=color,lw=.4,alpha=.4)
+                ax.plot([0,1],[a,a],color=color,lw=.4,alpha=.4)
+            ax.scatter(x[1:-1,1:-1],y[1:-1,1:-1],s=4,color=color,label="Interior unknowns")
+        else:
+            tri=[]
+            for i in range(n):
+                for j in range(n):
+                    k=i*(n+1)+j
+                    tri.extend([[k,k+n+1,k+n+2],[k,k+n+2,k+1]])
+            ax.triplot(mtri.Triangulation(x.ravel(),y.ravel(),tri),color=color,lw=.45,label="P1 triangles")
+        ax.axvline(.5,color="black",ls="--",lw=1.2,label="Interface x=1/2")
+        ax.set(xlim=(0,1),ylim=(0,1),xlabel="x",ylabel="y",title=f"{method}, N={n}",aspect="equal")
+        ax.legend(fontsize=7,loc="upper center",bbox_to_anchor=(.5,-.18))
+    save(fig,"fig07_mesh")
 
 if __name__ == "__main__":
-    main()
+    import sys
+    if "--review" in sys.argv:
+        accuracy_cost()
+        interface_fields()
+        mesh_diagram()
+        conditioning_plot()
+    else:
+        main()

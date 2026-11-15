@@ -29,6 +29,8 @@
 \usepackage{algpseudocode}
 \usepackage{mdframed}
 \usepackage{stmaryrd}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
 
 
 % --- colors ---
@@ -115,6 +117,9 @@ under refinement, even though the arithmetic matrix remains symmetric and its
 shared flux is locally conservative. A matched FDM--FEM comparison records errors,
 residuals, sparse costs, and solver iterations. Independent validation confirms
 the main numerical claims and identifies the limits of the diagnostics.
+An interface PINN extension is also evaluated on the layered benchmark,
+with archived training records and a common-sample comparison against FDM
+and FEM; it does not improve accuracy on this piecewise-linear test.
 \end{abstract}
 
 \noindent\textbf{Keywords:} elliptic boundary value problem, variable diffusion, discontinuous coefficients, conservative finite difference method, harmonic averaging, discrete maximum principle, method of manufactured solutions, finite element method
@@ -240,7 +245,7 @@ In Section~2.4, we prove that our conservative finite difference scheme preserve
 \end{remark}
 
 \subsection{Overview of the Report}
-The remainder of this report is structured as follows. In Section 2, we derive the conservative five-point finite difference scheme from local control-volume flux balances, establish the second-order truncation error for smooth coefficients, derive the resistor-in-series harmonic averaging formula for discontinuous interfaces, and rigorously prove the symmetry, positive definiteness, and M-matrix properties of the assembled algebraic system. Section 3 details our sparse matrix implementation, algorithmic vectorisation in \texttt{scipy.sparse}, and solver selection criteria. Section 4 presents our comprehensive verification campaign---including the smooth Method of Manufactured Solutions (MMS) benchmark, algebraic-versus-discretisation error separation, the stratified discontinuous interface benchmark, conditioning sensitivity to coefficient contrast, and a matched-setting depth comparison against $\mathcal{P}_1$ finite elements. Finally, Section 5 summarises our main findings and discusses structural limitations.
+The remainder of this report is structured as follows. In Section 2, we derive the conservative five-point finite difference scheme from local control-volume flux balances, establish the second-order truncation error for smooth coefficients, derive the resistor-in-series harmonic averaging formula for discontinuous interfaces, and rigorously prove the symmetry, positive definiteness, and M-matrix properties of the assembled algebraic system. Section 3 details our sparse matrix implementation, algorithmic vectorisation in \texttt{scipy.sparse}, and solver selection criteria. Section 4 presents our comprehensive verification campaign---including the smooth Method of Manufactured Solutions (MMS) benchmark, algebraic-versus-discretisation error separation, the stratified discontinuous interface benchmark, conditioning sensitivity to coefficient contrast, and a matched-setting depth comparison against $\mathcal{P}_1$ finite elements. Section~\ref{sec:interface_pinn} adds an interface PINN baseline, its archived training history and a common-sample comparison with the classical methods. Finally, Section 6 summarises our findings and limitations.
 
 
 
@@ -795,6 +800,9 @@ layered & 100 & 63 & 3844 & $0$ & $48.848$ & ok \\
 \input{algorithm_section}
 \newpage
 \input{results_section}
+\clearpage
+\input{interface_pinn_section}
+\clearpage
 \input{conclusion}
 
 
@@ -832,6 +840,10 @@ layered & 100 & 63 & 3844 & $0$ & $48.848$ & ok \\
 \endgroup
 
 \clearpage
+\begingroup\fontsize{10}{12}\selectfont
+\input{APPENDIX/ICS_JingyanWei_body}
+\endgroup
+\clearpage
 \section{Reproducibility and Data Provenance}
 \begin{sloppypar}
 The local integration combines the team main branch at commit
@@ -845,16 +857,16 @@ under \path{project2/algorithm_section/}, and independent validation is under
 scripts use separate small models, while the matrix-evidence script imports
 the production assembler deliberately.
 
-The algorithm and results sections, six existing figures and experiment
-tables are retained from the team main branch. The additional matrix table,
+The classical numerical results and experiment tables are retained from
+the team main branch. Visualisation revisions add an actual mesh diagram,
+consistent method colours, a symmetric signed-error colour scale and
+an explicit solver tolerance on the cost plot. The additional matrix table,
 theory labels and scoped maximum-principle statement come from Meichen
-Ding's branch. No numerical experiment has been rerun for this document
-integration. Timings remain the original hardware-specific measurements.
-
-The new Interface PINN three-method comparison and training curves discussed
-in supplementary materials have not been inserted into this report; their
-metrics must not be substituted for its existing norms without stating the
-evaluation protocol. Contributor source statements are retained in
+Ding's branch. Their original numerical results and hardware-specific
+timings are retained. Section~\ref{sec:interface_pinn} additionally replays
+three archived neural checkpoints and solves the classical reference
+systems at common evaluation points. No neural training was rerun. The new
+sampled relative metric is explicitly distinguished from the earlier norms. Contributor source statements are retained in
 \path{APPENDIX/}; the integrated bodies change presentation and pagination,
 not signature values.
 \end{sloppypar}

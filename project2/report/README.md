@@ -1,7 +1,7 @@
-# Project 2 integrated report — local review
+# Project 2 integrated report
 
 This local version combines main at `cc39c69` and
-`meichen/appendices-ics` at `248cc8d`. It has not been pushed to GitHub.
+`meichen/appendices-ics` at `248cc8d`. The integration preserves both submitted branches.
 
 ## Build
 
@@ -23,14 +23,52 @@ evidence table come from Meichen Ding's submitted package.
 
 - AI records: `AI_Theory_MeichenDing.tex`, `TianruiJi_AI_Transparency.tex`
   and `AI_Writing_HanLiu.tex` under `APPENDIX/`.
-- Individual statements: the four `ICS_*_body.tex` files under `APPENDIX/`,
+- Individual statements: the five `ICS_*_body.tex` files under `APPENDIX/`,
   extracted from submitted statements and formatted one per page.
 - Original contributor files remain available. The integrated writing log
   omits three empty audit slots and corrects stale Project 1 terminology.
   The Han Liu body escapes the ampersand in the role description for LaTeX.
-- No signature is generated. Jingyan Wei's statement is still outstanding.
-- The new Interface PINN comparison and training plots are supplementary
-  material and are not added to the report body by this merge.
+- Jingyan Wei's supplied statement is included; all five ICS source files
+  are now present. The supplied Jingyan source is marked DRAFT in comments;
+  integration does not confirm attribution or supply signatures.
+- Section 5 includes the Interface PINN architecture, training records and
+  common-point FDM/FEM comparison. Evidence and replay commands are under
+  `support/interface_pinn/`.
 
 The preview is therefore a merged review copy, not a claim that all final
-submission items are complete. No numerical experiment was rerun.
+submission items are complete. The new section replays three archived
+checkpoints and solves classical reference systems; no neural training was rerun.
+
+
+## Interface PINN replay and visualisation fixes
+
+Run from `project2/report`:
+
+```text
+python -B support/interface_pinn/reevaluate.py
+python -B support/interface_pinn/make_figures.py
+```
+
+The replay ran successfully in the local `dl` environment (PyTorch 2.7.1 CPU).
+It evaluated all three archived c=10 checkpoints and solved the classical
+references: mean sampled relative PINN error 3.1171e-5, mean maximum absolute
+flux error 1.3677e-3; FDM and fitted FEM errors below 1e-12 on this benchmark.
+Configuration, all three checkpoints, matching model source, raw logs,
+comparison.json and plotting code are included under `support/interface_pinn/`.
+This replay uses a different protocol from `project2/test/recheck_pinn.py`;
+the two scripts must not be substituted without changing the reported norms.
+
+To regenerate only the revised classical visualisations from saved data:
+
+```text
+cd ../algorithm_section
+python -B make_figures.py --review
+```
+
+Copy the generated fig03, fig04, fig05 and fig07 PDF/PNG files into the
+report's `figures/` directory before building the report. No training or
+full numerical experiment is required. Blue is FDM, orange is FEM, purple
+is Interface PINN; green/magenta distinguish harmonic/arithmetic faces.
+Training seeds and coefficient contrasts use grey shades. The signed-error
+colour scale is symmetric about zero. The cost panel states Jacobi-CG
+rtol=1e-12, atol=0. Figure 07 shows the actual grid and triangular mesh.
