@@ -1,0 +1,23 @@
+{
+  "scope": [
+    "Figure 5 caption, report page 23",
+    "Project 1 environment context and project2 environment documentation"
+  ],
+  "report_pages": 50,
+  "plot_and_data_unchanged": true,
+  "numerical_runs_or_training": false,
+  "packages_installed_or_upgraded": false,
+  "fixed_course_environment_confirmed_by_user": true,
+  "project1_sources": [
+    "Project1/requirements.txt",
+    "Project1/data/summary.json"
+  ],
+  "environment": "existing conda dl",
+  "python": "3.10.18",
+  "numpy": "2.2.6",
+  "scipy": "1.15.3",
+  "matplotlib": "3.10.3",
+  "threadpoolctl": "3.6.0",
+  "pinn_replay_extension": "torch 2.7.1+cpu",
+  "archived_gpu_training_unchanged": "torch 2.8.0+cu128, A100-PCIE-40GB"
+}

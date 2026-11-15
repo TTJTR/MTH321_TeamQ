@@ -95,3 +95,9 @@ It distinguishes the independent small-model checks from the matrix script
 that imports production code, and points to the unified entry, six-checkpoint
 replay and bank-enabled passing validation. Only the new appendix and related
 references were checked; no experiment or training was rerun.
+
+
+The course base environment is fixed and reused from the team's established
+setup. See `../ENVIRONMENT.md` for Project 1 context and the separate PyTorch
+extension. The Figure 5 caption now distinguishes fitted grey lines from
+the separately labelled h-squared reference; the plot and data are unchanged.

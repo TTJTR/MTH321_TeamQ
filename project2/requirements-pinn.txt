@@ -1,0 +1,2 @@
+# Optional CPU checkpoint replay extension; keep the established course baseline.
+torch==2.7.1

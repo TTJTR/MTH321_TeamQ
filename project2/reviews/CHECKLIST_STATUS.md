@@ -56,7 +56,9 @@ visualization guide、code review checklist、report template、problem definiti
 - [x] 11月16日使用用户提供的`test_problem_bank (1).py`补跑：P1/P2/P4/P5、
   FDM/FEM、四网格共32次求解通过；启用严格回归后全部11项测试通过，无跳过。
   题库文件名及SHA-256记录在`evidence/course_bank_run.json`，课程原文件不复制到仓库。
-- [ ] 独立新机器从零安装尚未实测；这里只认证当前dl环境的执行。
+- [x] 按用户确认沿用既定课程基础环境，不要求另建或升级基础环境；Project1的
+  核心依赖已核对。PINN的PyTorch扩展及各次实际版本单列于`ENVIRONMENT.md`。
+  本项不再把新机器从零安装列为待办，也不虚构进行过该测试。
 - 不适用：Neumann/Robin闭合、MEMS可行性与Jacobian审计，本方向四边均为Dirichlet且为线性PDE。
 
 ## 图 / Visualization guide
@@ -83,7 +85,7 @@ visualization guide、code review checklist、report template、problem definiti
 - [x] 代码提交压缩包另存本地交付目录`Project2_Code.zip`，含README、源码、
   数据及checkpoint；ZIP完整性及关键入口文件已检查，不把ZIP反复嵌入仓库。
 
-结论：合并、技术修订及课程题库补跑已完成；签署、演示一致性及新机器安装等
+结论：合并、技术修订及课程题库补跑已完成；签署、演示一致性等
 未确认项目保留为空，不宣称课程所有提交项均已完成。
 
 
@@ -94,3 +96,11 @@ visualization guide、code review checklist、report template、problem definiti
   数据来源、拟合阶口径、单人ownership声明范围及验证独立性的表述。
 - [x] 新增附录文件路径和引用标签检查见`evidence/evidence_index_check.json`。
 - [x] 本地编译并仅检查附录D页面与相关引用；未重跑实验或训练。
+
+
+## Figure 5 图注与固定环境说明
+
+- [x] Figure 5 图注区分灰色FDM/FEM拟合线和单独标记的h²参考线；只改图注，不改图或数据。
+- [x] 同步报告源和独立算法源中的同一图注；仅复核Figure 5所在页。
+- [x] 核对Project1依赖及历史环境记录，沿用既定课程环境，PINN扩展单独记录。
+- [x] 不安装、升级依赖，不重跑实验、训练或整套测试。

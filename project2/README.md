@@ -7,10 +7,10 @@ of the published shared-parameter I-PINNs architecture.
 
 ## One-command reproduction
 
-From this `project2` directory, after installing dependencies:
+From this `project2` directory, reuse the established course environment:
 
 ```text
-python -m pip install -r requirements.txt
+conda activate dl
 python -B code/run_all.py
 ```
 
@@ -32,6 +32,12 @@ results and timings with measurements from the current machine. It does not
 retrain PINNs. `--build-report` requires pdfLaTeX/BibTeX on PATH and produces
 `report/Method.pdf`. It can be combined with `--recompute`. LaTeX needs the
 packages listed in `report/Method.tex`, including TikZ and stmaryrd.
+
+The classical base environment is the established course environment, as in
+Project 1. Do not recreate or upgrade it for this project. PINN adds PyTorch;
+its optional tested CPU replay extension is in `requirements-pinn.txt`.
+`ENVIRONMENT.md` distinguishes the fixed base, actual run records and archived
+GPU training. The combined requirements file records compatibility bounds.
 
 ## Independent checks
 
