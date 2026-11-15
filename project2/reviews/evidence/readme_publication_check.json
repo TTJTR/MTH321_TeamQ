@@ -1,0 +1,10 @@
+{
+  "scope": "README links, formal PDF identity and report export filename",
+  "relative_links_checked": 46,
+  "all_links_exist": true,
+  "formal_pdf_identical_to_Method_pdf": true,
+  "pdf_sha256": "aa080e71e5161f0f5cef00bb347f2c79d99ee60dd314e68f6475441fdea5752c",
+  "export_script_syntax_valid": true,
+  "report_recompiled": false,
+  "numerical_runs_or_training": false
+}

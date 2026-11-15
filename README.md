@@ -1,29 +1,33 @@
-# MTH321
+# MTH321 — Team Q
 
-Numerical analysis coursework. The current Project 1 delivery is
-[report_v2](Project1/report_v2/README.md): Sections 2–4 and Appendix C.
-The earlier [report_v1](Project1/report_v1/README.md) is preserved.
-Sections 1 and 5 remain for team integration.
+Numerical analysis coursework, reports and reproducible experiments.
 
-## Project 1: run and verify
+| Project | Report | Documentation |
+|---|---|---|
+| Project 2: variable diffusion and material interfaces | [Team Q report](project2/report/MTH321_Project2_TeamQ_Report.pdf) | [Project 2 README](project2/README.md) |
+| Project 1: polar-factor gradient flow | [Current report source and files](Project1/report_v3/README.md) | [Project 1 README](Project1/README.md) |
 
-Run from the cloned repository:
+## Project 2 quick start
 
-~~~powershell
-cd Project1
-python -m pip install -r requirements.txt
+Use the team's established course environment. From the repository root:
+
+```text
+conda activate dl
+cd project2
 python -B code/run_all.py
-python -B -m unittest discover -s test -v
-~~~
+```
 
-English and Chinese source, file descriptions, figure descriptions and
-reproduction settings: [English README](Project1/README_EN.md) /
-[中文 README](Project1/README_ZH.md).
+This runs production checks, regenerates the classical figures from archived
+data, replays six neural checkpoints on CPU and regenerates all nine external
+report figures. It does not retrain the networks. Use `--recompute` to rerun
+classical experiments and `--build-report` to also build the report with
+pdfLaTeX/BibTeX. See the [full commands](project2/README.md),
+[environment notes](project2/ENVIRONMENT.md) and
+[checklist](project2/reviews/CHECKLIST_STATUS.md).
 
-Source is in code/ and code_zh/, tests in test/, current numerical evidence
-in data/, and working plots in figures/. Submitted reports contain their own
-figures and datasets. Early drafts and dated reviews are archived under notes/.
+## Project 1
 
-版本与恢复：[report version index](Project1/notes/REPORT_VERSIONS.md).
-Git tags report-v1 and report-v2 identify the corresponding whole-project states.
-Later formal deliveries can use report_v3 or report_final.
+The current integrated Project 1 delivery is `Project1/report_v3/`.
+Earlier report versions are preserved as historical snapshots. Follow the
+[Project 1 instructions](Project1/README.md) for its run commands and
+[version index](Project1/notes/REPORT_VERSIONS.md) for provenance.

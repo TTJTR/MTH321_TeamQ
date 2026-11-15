@@ -48,6 +48,7 @@ def main():
         run(command, report)
         run(command, report)
         shutil.copy2(build/'Method.pdf', report/'Method.pdf')
+        shutil.copy2(build/'Method.pdf', report/'MTH321_Project2_TeamQ_Report.pdf')
     print('All nine external figures regenerated and synced; TikZ architecture is in the TeX source.')
     print('No neural retraining. Classical timings '+('re-measured.' if args.recompute else 'preserved from archive.'))
 

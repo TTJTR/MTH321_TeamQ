@@ -1,90 +1,147 @@
-# Project 2 — Direction 3, Team Q
+# Project 2 — Variable diffusion, Team Q
 
-The report solves -div(a grad u)=f on the unit square with Dirichlet data on
-all four outer edges. Conservative FDM is compared with fitted triangular
-P1 FEM. Interface PINN is an additional baseline, not an exact reproduction
-of the published shared-parameter I-PINNs architecture.
+Solve `-div(a grad u) = f` on the unit square with prescribed Dirichlet data
+on all four outer edges. Conservative five-point FDM is the core method;
+conforming triangular P1 FEM provides the matched depth comparison. An
+Interface PINN baseline is an additional extension. It uses two independent
+subnetworks and is not an exact reproduction of the published I-PINNs model.
+
+## Report and source
+
+- [Report PDF — MTH321_Project2_TeamQ_Report.pdf](report/MTH321_Project2_TeamQ_Report.pdf)
+- [LaTeX entry — Method.tex](report/Method.tex)
+- [Report source/build guide](report/README.md)
+- [Course checklist and remaining manual items](reviews/CHECKLIST_STATUS.md)
+
+The report has 50 pages, including references, AI records, five labelled ICS
+and the evidence index. Keep the complete `report/` directory to compile it.
+`report/Method.pdf` is retained as a compatibility build copy; the formally
+named PDF above is the reader-facing report. Both contain the same document.
+
+## Environment
+
+Reuse the established course environment; do not rebuild or upgrade the
+fixed NumPy/SciPy/Matplotlib base. [ENVIRONMENT.md](ENVIRONMENT.md) records
+Project 1 context and the actual versions used here. The existing local `dl`
+environment already contains the dependencies used in the recorded runs.
+
+PINN adds PyTorch: CPU replay was tested with 2.7.1+cpu. The optional
+[PINN requirement](requirements-pinn.txt) records that extension. Archived
+training used PyTorch 2.8.0+cu128 on an A100-PCIE-40GB; replaying checkpoints
+is distinct from training. `pypdf` is used for artifact checks only.
+[requirements.txt](requirements.txt) lists compatibility bounds for the
+combined workflow, rather than an instruction to upgrade the course base.
 
 ## One-command reproduction
 
-From this `project2` directory, reuse the established course environment:
+From the repository root:
 
 ```text
 conda activate dl
+cd project2
 python -B code/run_all.py
 ```
 
-This command runs the seven production micro-tests, regenerates the seven
-classical figures from archived data, replays six neural checkpoints on CPU,
-regenerates both neural figures and synchronizes every external figure into
-`report/figures/`. No neural training is performed. Archived CPU timings are
-preserved by default. The architecture figure is native TikZ, rebuilt with
-the LaTeX report. PDF figure exports use vector graphics; PNG previews use
-300 dpi. Filenames identify their role and contain no timestamps.
+The default command:
+
+1. Runs the seven production micro-tests.
+2. Regenerates seven classical figures from saved data.
+3. Replays three interface and three single-network checkpoints on CPU,
+   solving FDM/FEM references at common sample points.
+4. Regenerates the two neural figures and synchronizes all nine external
+   figures into `report/figures/`.
+
+It preserves archived timing measurements and does not retrain networks.
+The architecture diagram is native TikZ and is rebuilt with the report.
+
+| Command, from `project2/` | Effect |
+|---|---|
+| `python -B code/run_all.py` | Replay evidence and regenerate all external figures |
+| `python -B code/run_all.py --recompute` | Also re-solve classical experiments; overwrite their CSVs and timings |
+| `python -B code/run_all.py --build-report` | Also build the report; requires pdfLaTeX/BibTeX on PATH |
+| `python -B code/run_all.py --recompute --build-report` | Combine both options |
+
+The build publishes `report/MTH321_Project2_TeamQ_Report.pdf` and the
+compatibility `report/Method.pdf`. Neither option retrains PINNs. New
+hardware timings must be reviewed before replacing reported table snapshots.
+
+## Targeted commands
+
+Run from `project2/`:
 
 ```text
-python -B code/run_all.py --recompute
-python -B code/run_all.py --build-report
-```
-
-`--recompute` also reruns the classical experiments and overwrites their CSV
-results and timings with measurements from the current machine. It does not
-retrain PINNs. `--build-report` requires pdfLaTeX/BibTeX on PATH and produces
-`report/Method.pdf`. It can be combined with `--recompute`. LaTeX needs the
-packages listed in `report/Method.tex`, including TikZ and stmaryrd.
-
-The classical base environment is the established course environment, as in
-Project 1. Do not recreate or upgrade it for this project. PINN adds PyTorch;
-its optional tested CPU replay extension is in `requirements-pinn.txt`.
-`ENVIRONMENT.md` distinguishes the fixed base, actual run records and archived
-GPU training. The combined requirements file records compatibility bounds.
-
-## Independent checks
-
-```text
-python -B -m unittest discover -s test -v
+python -B report/support/interface_pinn/reevaluate.py
+python -B report/support/interface_pinn/make_figures.py
 python -B report/support/verify/check_interface_order.py
 python -B report/support/verify/check_stability.py
 python -B report/support/verify/check_matrix_evidence.py
 python -B code/check_artifacts.py
 ```
 
-The matrix-evidence script deliberately imports the production assembler;
-the interface and stability scripts use separate small models. The analytic
-course-bank test is skipped unless `MTH321_TEST_BANK` names the instructor's
-`test_problem_bank.py`. Two additional strict defect-regression tests require
-`MTH321_STRICT_VALIDATION=1`. They passed after fixing finite-input guards,
-overflow/underflow in harmonic averaging, diagonal-only structure inspection,
-and a largest-eigenvalue start-vector defect. A default run does not enable them.
-The bank-enabled strict run on 2026-11-16 passed all 11 tests with no skips,
-including 32 course-bank solves. Its output and bank SHA-256 are recorded in
-`reviews/evidence/strict_tests_with_bank.txt` and `course_bank_run.json`.
-The instructor-provided bank remains external; set the environment variable
-to its location when reproducing the bank test.
+The interface-order and stability checks use independent small models; the
+matrix-evidence check deliberately imports the production assembler.
+For classical plots only, run `python -B make_figures.py` inside
+`algorithm_section/`. The `--review` option redraws the accuracy/cost,
+interface, conditioning and mesh plots. The unified entry also copies
+classical figures into the report automatically.
 
-## Files and evidence
+## Validation
 
-- `report/Method.tex`: report entry, with local section files, bibliography,
-  vector figures, AI log and five labelled ICS bodies in `APPENDIX/`.
-- `algorithm_section/`: production assembler, solvers, seven micro-tests,
-  configuration, numerical tables and raw results.
-- `test/`: independent validation suite and its historical run records.
-- `report/support/verify/`: canonical theory-check scripts used in the report.
-- `report/support/interface_pinn/`: six archived checkpoints, model code,
-  training logs, hashes and common-point solution/flux replay.
-- `report/support/ai_log/`: contributor-supplied audit extracts and hash.
-- `reviews/CHECKLIST_STATUS.md`: current course-checklist status and limits.
-- `reviews/evidence/`: outputs from this integration's targeted checks.
-- `I-PINNs/`, `meichending/`: earlier archived experiment/contributor packages;
-  `report/` is the canonical integrated report.
+Run the independent default suite from `project2/`:
 
-The single-network ablation has 8,577 parameters versus 17,154 for the
-interface model; it is not parameter matched. The main FDM/FEM depth study
-uses matching smooth-problem settings and a common integrated error norm.
-Replaying checkpoints does not establish training reproducibility from scratch.
-Signatures and contribution confirmations belong to the individual members.
+```text
+python -B -m unittest discover -s test -v
+```
 
+To include the course bank and strict regressions in PowerShell, point the
+variable at your instructor-provided file, then run the same suite:
 
-The conditioning CSV eigenvalue columns were refreshed after the spectrum fix;
-CG counts and previously measured timings are preserved. Initial failing strict
-regressions and the passing rerun are both retained in `reviews/evidence/`.
+```powershell
+$env:MTH321_TEST_BANK = 'path/to/test_problem_bank.py'
+$env:MTH321_STRICT_VALIDATION = '1'
+python -B -m unittest discover -s test -v
+```
+
+The filename may contain spaces or `(1)`; the quoted path is passed unchanged.
+The bank remains external. Without its path the bank test is skipped;
+without the strict flag two regression tests are skipped.
+
+The bank-enabled strict run on 2026-11-16 passed **11/11 tests, no skips**,
+including 32 solves for P1/P2/P4/P5, FDM/FEM and four meshes.
+[Output](reviews/evidence/strict_tests_with_bank.txt) and
+[bank hash/run record](reviews/evidence/course_bank_run.json) are retained.
+Production code has not changed since that passing run; later work adjusted
+report text, documentation and the report export filename.
+
+## File navigation
+
+| Directory | Contents |
+|---|---|
+| [code/](code/) | Unified reproduction entry and artifact checker |
+| [algorithm_section/](algorithm_section/) | Production assembly/solvers, configuration, micro-tests, CSVs, tables and plots |
+| [test/](test/) | Independent validation code and numerical records |
+| [report/](report/) | Current report PDF, LaTeX, references, figures and appendices |
+| [report/support/interface_pinn/](report/support/interface_pinn/) | Six checkpoints, matching model source, logs, hashes and common-point replay |
+| [report/support/verify/](report/support/verify/) | Canonical theory-check scripts |
+| [report/support/ai_log/](report/support/ai_log/) | Contributor audit extracts and integrity record |
+| [reviews/](reviews/) | Checklist, code review and scoped verification evidence |
+| [I-PINNs/](I-PINNs/), [meichending/](meichending/) | Earlier experiment/contributor archives; `report/` is the current integrated report |
+
+## Interpretation and submission status
+
+The smooth FDM/FEM comparison matches data, mesh scale, unknown count,
+solver tolerance and the integrated error norm. Layered FDM/FEM use different
+mesh parities by design. The Interface PINN comparison uses an explicitly
+named sampled relative norm; it must not be substituted for an integrated
+continuous L2 error. The single-network ablation has 8,577 parameters versus
+17,154 for the interface model and is not parameter matched.
+
+Figure PDFs use vector graphics; PNG previews are saved at 300 dpi. Figure
+filenames contain no timestamps. Figure 5 distinguishes finest-three-mesh
+fitted lines from the labelled h-squared reference. The conditioning CSV's
+spectral columns were corrected; original CG counts and timings are retained.
+
+The report, code and evidence are present. Member signatures/draft
+confirmations, presentation timing and final slides/report consistency remain
+individual/team tasks, as recorded in the checklist. No fresh environment or
+neural retraining is required to replay the submitted evidence.
