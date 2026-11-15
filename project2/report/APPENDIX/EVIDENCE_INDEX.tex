@@ -1,0 +1,191 @@
+\section{Evidence Index for the Assessment Criteria}
+\label{app:evidence}
+
+Every claim in this report is carried by an artefact: a theorem, a generated
+table, a figure, or a script whose output is quoted in the text. This appendix
+collects those ties in one place so that a reader can check any claim without
+searching the source tree, and so that the mapping from the assessment criteria
+to what the team actually produced is visible in the submitted document itself.
+
+Three conventions are used throughout. A reference of the form \S$n.m$ means a
+section of this report. ``\texttt{run\_all.py}'' means
+\path{algorithm_section/run_all.py}; it recomputes every table and figure of
+\S\ref{sec:algorithm_impl} and \S\ref{sec:results} from scratch on a CPU.
+``\texttt{verify/$s$}'' means \path{support/verify/$s$} inside this report
+folder; these three scripts are independent of the production package and
+re-derive the numbers they print.
+
+\subsection*{D1. Criteria mapped to evidence}
+
+The letters below are the criteria of the course assessment scheme; the column
+that matters for a reader is the third one, which names the artefact in this
+report that carries each claim.
+
+{\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{2.55cm}>{\raggedright\arraybackslash}p{3.85cm}>{\raggedright\arraybackslash}p{4.75cm}>{\raggedright\arraybackslash}p{3.55cm}@{}}
+\caption{Mapping of the assessment criteria to the evidence in this report. Column 2 names
+the claim, column 3 the artefact that supports it, column 4 how to regenerate it.}\label{tab:evidence_index}\\
+\toprule
+Criterion & Claim it assesses & Evidence in this report & Regeneration \\
+\midrule
+\endfirsthead
+\caption[]{Mapping of the assessment criteria to evidence (continued).}\\
+\toprule
+Criterion & Claim it assesses & Evidence in this report & Regeneration \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+A. Mathematical soundness
+  & The formulation, the conservative stencil and the discrete structure are
+    derived, not asserted.
+  & \S1.2 model, weak form and Lax--Milgram well-posedness (Theorem~\ref{thm:well_posed});
+    \S2.1 the flux balance (eq.~\ref{eq:discrete_balance}) leading to the
+    stencil (eq.~\ref{eq:conservative_fdm}); \S2.2 second-order truncation error
+    (Theorem~\ref{thm:truncation_smooth}); \S2.4 SPD/$M$-matrix/DMP
+    (Theorem~\ref{thm:spd_mmatrix}) and the stability--convergence theorem
+    (Theorem~\ref{thm:convergence}).
+  & analytic; no code needed \\[2pt]
+A. Mathematical soundness
+  & Symmetry and positive definiteness are measured, not assumed.
+  & Table~\ref{tab:matrix_evidence}: $\|A-A^\top\|/\|A\|=0$ in both norms; the
+    five smallest eigenvalues lie in $[28.7,48.9]$, above $8a_{\min}=8$; dense
+    Cholesky succeeds in all five cases.
+  & \texttt{check\_matrix\_}\allowbreak\texttt{evidence} (see D3) \\[2pt]
+A. Mathematical soundness
+  & The claimed order is observed, in two named norms, on four meshes.
+  & Table~\ref{tab:alg_smooth}: fitted orders $2.00034$ (FDM) and $1.99964$
+    (FEM) in $L^\infty$, $1.99996$ and $1.99898$ in the common integrated
+    $L^2$.
+  & \texttt{run\_all.py} $\to$ \path{results/} \\[2pt]
+B. Depth and novelty
+  & The two discretisations are compared under matched settings, with a cost
+    measure.
+  & \S4.2 and Table~\ref{tab:alg_smooth} (equal unknowns $=(N-1)^2$, same
+    solver tolerance); Table~\ref{tab:alg_smooth} cost columns: assembly
+    $2.738\times10^{-3}$~s (FDM) versus $1.026\times10^{-1}$~s (FEM) at
+    $N=128$, with $n_{\mathrm{nz}}=80137$ in both.
+  & \texttt{run\_all.py} \\[2pt]
+B. Depth and novelty
+  & An original extension beyond the prescribed comparison exists and is
+    reported honestly.
+  & \S\ref{sec:interface_pinn}: interface-decomposed PINN against harmonic FDM
+    and fitted FEM, Table~\ref{tab:pinn_accuracy} ($E_{\mathrm{rel,samp}}=3.12\times10^{-5}$,
+    maximum interface-flux error $1.37\times10^{-3}$), and the explicit
+    statement that this is not a full reproduction of the published I-PINNs
+    architecture.
+  & the PINN replay script (D3) \\[2pt]
+C. Implementation
+  & The submitted code produces the submitted numbers, and can be run.
+  & \S\ref{sec:algorithm_impl} documents the data layout and the assembly;
+    Figure~\ref{fig:alg_spy} shows the actual matrix pattern against the
+    hand-check matrix; the residual histories and the tolerance sweep
+    (Tables~\ref{tab:alg_tol} and \ref{tab:alg_smooth}) are produced by the
+    same functions the report's \S2 describes.
+  & \texttt{python -B run\_all.py} \\[2pt]
+D. Experiments and visualisation
+  & The experiments answer the question asked, not a nearby one.
+  & \S4.3 and Table~\ref{tab:interface_refinement}: the layered benchmark is
+    reported with the exact solution, the shared-face flux, the two-sided
+    reconstructed jump ($J_q$) and the error against the exact flux $J_*$,
+    instead of a single jump statistic; Figure 5 of \S\ref{sec:results} plots
+    the solution and the numerical normal flux across $x=1/2$.
+  & \texttt{run\_all.py} \\[2pt]
+D. Experiments and visualisation
+  & The claimed maximum-principle property is tested, not just proved.
+  & \S4.3 reports that both arithmetic and harmonic solutions stay in $[0,1]$,
+    which is what the sign structure of Theorem~\ref{thm:spd_mmatrix} predicts;
+    the bound is stated as a matrix property and is not used as accuracy
+    evidence.
+  & \texttt{run\_all.py} $\to$ \path{results/} \\[2pt]
+D. Experiments and visualisation
+  & Conditioning and iterative cost are measured under refinement \emph{and}
+    contrast, at comparable residual tolerances.
+  & Table~\ref{tab:conditioning_corrected}: $\kappa_2$ rises
+    $1.61\times10^{3}\to7.15\times10^{3}\to6.49\times10^{4}$ at $N=63$ for
+    $c=1,10,100$; CG iterations $216\to521\to1354$; Jacobi-CG $216/224/226$.
+    All at relative residual $10^{-12}$.
+  & \texttt{run\_all.py} $\to$ \path{tables/conditioning_corrected.tex} \\[2pt]
+E. Writing and AI transparency
+  & The algebraic error is separated from the discretisation error, and the
+    tolerance used is stated.
+  & \S4.1 and Table~\ref{tab:alg_tol}: at $N=32$ the CG solution agrees with
+    sparse LU to $5.33\times10^{-15}$ (FDM) and $1.01\times10^{-14}$ (FEM) at
+    $\mathrm{rtol}=10^{-12}$, far below the discretisation error
+    $8.08\times10^{-4}$; $\delta_{\mathrm{alg}}/E_\infty<10^{-3}$ on all four
+    meshes.
+  & \texttt{run\_all.py} \\[2pt]
+E. Writing and AI transparency
+  & AI assistance is disclosed, audited and attributable.
+  & Appendix~\ref{app:ai_log}: tool table, three claim audits with the falsifier
+    that decided each one, the independent check and its evidence location, and
+    the ownership declaration; the audit extract and its SHA-256 live in
+    \path{support/ai_log/}. Appendix~\ref{app:ai_tianrui_ji} records the
+    algorithm and writing contributions.
+  & \texttt{shasum -a 256} on the extract (D3) \\[2pt]
+F. Individual contribution
+  & Each member's contribution is specific, checkable and consistent with the
+    repository history.
+  & Appendix~\ref{app:ics}: five statements naming the sections, files and
+    functions each member owns; the ownership table in
+    \path{APPENDIX/AI_Theory_Meichending.tex} ties each name to an artefact and
+    to the library interface they rely on.
+  & \texttt{git log --author} (repository) \\
+\end{longtable}
+}
+
+\subsection*{D2. Headline numbers and where they come from}
+
+{\footnotesize
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{5.55cm}>{\raggedright\arraybackslash}p{3.05cm}>{\raggedright\arraybackslash}p{2.35cm}>{\raggedright\arraybackslash}p{3.75cm}@{}}
+\caption{The numbers quoted in the abstract, \S\ref{sec:results} and
+\S\ref{sec:interface_pinn}, with the artefact that produces each one.}\label{tab:evidence_numbers}\\
+\toprule
+Quantity & Value & Stated in & Produced by \\
+\midrule
+\endfirsthead
+\caption[]{Headline numbers and their provenance (continued).}\\
+\toprule
+Quantity & Value & Stated in & Produced by \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Symmetry defect $\|A-A^\top\|/\|A\|$ & $0$ (max and Frobenius) & Table~\ref{tab:matrix_evidence} & \texttt{verify/} script \\
+Smallest eigenvalue $\lambda_{\min}$, smooth & $28.675$ / $28.694$ ($N=32,64$) & Table~\ref{tab:matrix_evidence} & \texttt{eigsh}, \texttt{which='SA'} \\
+Fitted order, $L^\infty$, smooth & $2.00034$ (FDM), $1.99964$ (FEM) & \S4.2 & \path{results/smooth.csv} \\
+Forcing defect of the manufactured source & $7.11\times10^{-15}$ & \S4.1 & complex-step difference \\
+Affine-patch check of the Dirichlet elimination & $4.89\times10^{-15}$ & \S4.1 & dense reference solve \\
+Harmonic FDM, layered $c=10$, $N=63$ & $E_\infty=7.33\times10^{-15}$, $E_q=1.08\times10^{-13}$ & Table~\ref{tab:interface_refinement} & \path{results/layered_*.csv} \\
+Arithmetic FDM, layered $c=10$, $N=63$ & $E_\infty=9.60\times10^{-3}$, $E_q=0.662$, $J_q=3.85\times10^{-13}$ & Table~\ref{tab:interface_refinement} & \path{results/layered_*.csv} \\
+Arithmetic nodal orders, $N=31\to255$ & $0.991$, $0.995$, $0.998$ & \S4.3 & \path{results/layered_*.csv} \\
+Midline interface-flux error, arithmetic & $4.70\times10^{-2}\to5.64\times10^{-3}$ & \S4.3 & \path{verify/check_interface_order.py} \\
+Entrywise ratio of the two inverses & $3.1024>1$ (counterexample holds) & Remark 2.12 & \path{verify/check_stability.py} \\
+$\|A^{-1}\|_\infty$ against $1/(8a_{\min})$ & $0.0861$ versus $0.125$ & Remark 2.12 & \path{verify/check_stability.py} \\
+CG\,--\,LU discrepancy at $\mathrm{rtol}=10^{-12}$ & $5.33\times10^{-15}$ (FDM), $1.01\times10^{-14}$ (FEM) & Table~\ref{tab:alg_tol} & \path{tables/tolerance.tex} \\
+Cost at $N=128$ (assembly / CG / LU) & $2.74/15.3/30.6$~ms (FDM), $103/34.7/30.8$~ms (FEM) & Table~\ref{tab:alg_smooth} & \path{tables/cost.tex} \\
+Condition number at $c=1,10,100$, $N=63$ & $1.61\times10^{3}$, $7.15\times10^{3}$, $6.49\times10^{4}$ & Table~\ref{tab:conditioning_corrected} & \path{tables/conditioning_corrected.tex} \\
+Interface PINN parameters & $17{,}154$ & Table~\ref{tab:pinn_setup} & archived config \\
+Interface PINN accuracy, $c=10$ & $E_{\mathrm{rel,samp}}=3.12\times10^{-5}$; flux error $1.37\times10^{-3}$ & Table~\ref{tab:pinn_accuracy} & \path{support/interface_pinn/} \\
+Interface PINN training time & $231.3\pm4.9$~s (three seeds) & Table~\ref{tab:pinn_endpoints} & archived logs \\
+\end{longtable}
+}
+
+\subsection*{D3. Reproduction commands}
+
+\begin{verbatim}
+cd algorithm_section && python -B run_all.py   # tables and figures of SS3-SS4
+cd report
+python3 support/verify/check_interface_order.py
+python3 support/verify/check_stability.py
+python3 support/verify/check_matrix_evidence.py
+shasum -a 256 support/ai_log/transcript_excerpts.md
+\end{verbatim}
+
+The first command writes \path{results/*.csv}, \path{tables/*.tex} and the six
+figures of \S\ref{sec:algorithm_impl}; the three verification scripts print the
+numbers quoted in tables A.3 and A.4 of Appendix~\ref{app:ai_log} and in
+Remarks 2.12--2.13; the last line checks the audit extract. Any
+value in this appendix that does not appear in one of those outputs is a value
+this report should not be quoting, and the team treats such a discrepancy as a
+defect to be fixed before submission.
