@@ -17,7 +17,7 @@ FIGURES = ROOT / "figures"
 TABLES = ROOT / "tables"
 BLUE, ORANGE = "#196b91", "#c7642b"
 HARMONIC, ARITHMETIC = "#159d87", "#b33c67"
-plt.rcParams.update({"font.size": 9, "axes.titlesize": 10, "savefig.dpi": 200})
+plt.rcParams.update({"font.size": 9, "axes.titlesize": 10, "savefig.dpi": 300})
 
 
 def read(name):
@@ -87,7 +87,8 @@ def main():
         ax.spy(matrix, markersize=1.2, color=BLUE)
         ax.set(title=f"{method}, N=8, nnz={matrix.nnz}", xlabel="Column index", ylabel="Row index")
     matrix, _, _ = assemble_fdm(3, "constant")
-    image = axes[2].imshow(matrix.toarray()/9, cmap="RdBu_r", vmin=-4, vmax=4)
+    image = axes[2].pcolormesh(np.arange(5)-.5, np.arange(5)-.5, matrix.toarray()/9, cmap="RdBu_r", vmin=-4, vmax=4)
+    axes[2].invert_yaxis()
     for i in range(4):
         for j in range(4):
             axes[2].text(j, i, f"{matrix[i,j]/9:g}", ha="center", va="center")
@@ -105,7 +106,7 @@ def main():
         history = json.loads((RESULTS/f"residual_{method}_1e-12.json").read_text())
         axes[0].semilogy(np.arange(1, len(history)+1), history, color=color, label=method)
         selected = [r for r in tolerances if r["method"] == method]
-        axes[1].loglog([float(r["rtol"]) for r in selected], [float(r["algebraic_linf"]) for r in selected], "o-", color=color, label=method)
+        axes[1].loglog([float(r["rtol"]) for r in selected], [float(r["algebraic_linf"]) for r in selected], "o-" if method == "FDM" else "s--", color=color, label=method)
     axes[0].axhline(1e-12, color="#555555", linestyle="--", label="rtol")
     axes[0].set(xlabel="CG iteration", ylabel="Explicit relative residual", title="Diagnostic histories, smooth N=32")
     axes[1].set(xlabel="Requested CG rtol", ylabel="Max difference from sparse LU", title="Algebraic-error tolerance sweep")
@@ -145,12 +146,14 @@ def accuracy_cost():
                                   (axes[1,0], "l2_common", "Common P1-integrated L2")]:
             values = np.array([float(r[metric]) for r in selected])
             slope = np.polyfit(np.log(h[-3:]), np.log(values[-3:]), 1)[0]
-            ax.loglog(h, values, "o", color=color, label=f"{method}, fitted p={slope:.3f}")
+            ax.loglog(h, values, "o" if method == "FDM" else "s", color=color, label=f"{method}, fitted p={slope:.3f}")
+            fit=np.polyfit(np.log(h[-3:]), np.log(values[-3:]), 1)
+            ax.loglog(h, np.exp(fit[1])*h**fit[0], "--" if method=="FDM" else ":", color="#444444" if method=="FDM" else "#888888", lw=.8, label=f"{method} fit (finest 3)")
             ax.set(xlabel="h", ylabel="Error", title=title)
             ax.grid(alpha=.2, which="both")
             ax.legend(fontsize=8)
         axes[1,1].loglog([float(r["total_cg_seconds"]) for r in selected],
-                        [float(r["l2_common"]) for r in selected], "o-", color=color, label=method)
+                        [float(r["l2_common"]) for r in selected], "o-" if method == "FDM" else "s--", color=color, label=method)
     for ax, metric in [(axes[0,0], "l2_nodal"), (axes[0,1], "linf_nodal"), (axes[1,0], "l2_common")]:
         selected = [r for r in smooth if r["method"] == "FDM"]
         h = np.array([float(r["h"]) for r in selected])
@@ -169,13 +172,14 @@ def interface_fields():
     for rule, color in [("arithmetic", ARITHMETIC), ("harmonic", HARMONIC)]:
         with np.load(RESULTS/f"layered_{rule}_N63.npz") as data:
             u, x, y, qx = [data[k] for k in ["u", "x", "y", "qx"]]
-            axes[0,0].plot(x[:, 31], u[:, 31], ".-", color=color, markersize=2, label=rule)
-            axes[0,1].plot((x[:-1,31]+x[1:,31])/2, qx[:, 31], ".-", color=color, markersize=2, label=rule)
-            axes[1,0].plot(y[0,1:-1], qx[31, 1:-1], color=color, label=rule)
+            axes[0,0].plot(x[:, 31], u[:, 31], ".-" if rule == "harmonic" else "x--", color=color, markersize=2, label=rule)
+            axes[0,1].plot((x[:-1,31]+x[1:,31])/2, qx[:, 31], ".-" if rule == "harmonic" else "x--", color=color, markersize=2, label=rule)
+            axes[1,0].plot(y[0,1:-1], qx[31, 1:-1], color=color, linestyle="-" if rule=="harmonic" else "--", label=rule)
             if rule == "arithmetic":
                 error = u-exact(x, y, "layered", 10)
-                im = axes[1,1].pcolormesh(x, y, error, shading="auto", cmap="RdBu_r", vmin=-float(np.max(np.abs(error))), vmax=float(np.max(np.abs(error))), rasterized=True)
-                fig.colorbar(im, ax=axes[1,1], label="Signed nodal error")
+                im = axes[1,1].pcolormesh(x, y, error, shading="auto", cmap="RdBu_r", vmin=-float(np.max(np.abs(error))), vmax=float(np.max(np.abs(error))))
+                cb = fig.colorbar(im, ax=axes[1,1], label="Signed nodal error")
+                cb.solids.set_rasterized(False)
     axis = np.linspace(0, 1, 300)
     axes[0,0].plot(axis, exact(axis, 0, "layered", 10), "--", color="#333333", label="exact")
     axes[0,0].set(title="Solution at nearest mid-height, N=63", xlabel="x", ylabel="u")

@@ -135,7 +135,7 @@ and FEM; it does not improve accuracy on this piecewise-linear test.
 \subsection{Problem Background}
 Second-order elliptic partial differential equations (PDEs) in divergence form constitute the foundational mathematical framework for modelling steady-state diffusive transport across heterogeneous media \cite{hiptmair2025, quarteroni2017}. In engineering and physical sciences, the governing law arises from combining a universal conservation principle (such as conservation of thermal energy, mass, or electric charge) with a constitutive flux-gradient relation, notably Fourier's law of heat conduction $\bm{j} = -a(x,y)\nabla u$, Fick's law of diffusion, or Darcy's law for single-phase fluid flow in porous formations \cite{hackbusch2017, hiptmair2025}.
 
-In realistic applications---such as thermal management of multi-layered semiconductor packaging, groundwater hydrology through stratified sedimentary rock, or electrostatic field simulation in composite dielectrics---the material diffusivity or conductivity $a(x,y)$ varies spatially and frequently exhibits sharp jump discontinuities across internal material interfaces \cite{quarteroni2017}. Solving these problems numerically presents a fundamental challenge: standard pointwise discretisations of the expanded non-divergence operator $-a\Delta u - \nabla a \cdot \nabla u$ break down at material interfaces where $\nabla a$ is classically undefined. Failing to honour the divergence structure leads to a loss of local flux conservation, destroys the symmetry of the discrete operator, and produces spurious $\mathcal{O}(1)$ errors in the interfacial transport rate. Consequently, designing and verifying conservative numerical schemes that rigorously preserve physical flux continuity and discrete structural invariants (symmetry, positive definiteness, and monotonicity) is essential for reliable scientific computing.
+In realistic applications---such as thermal management of multi-layered semiconductor packaging, groundwater hydrology through stratified sedimentary rock, or electrostatic field simulation in composite dielectrics---the material diffusivity or conductivity $a(x,y)$ varies spatially and frequently exhibits sharp jump discontinuities across internal material interfaces \cite{quarteroni2017}. Solving these problems numerically presents a fundamental challenge: standard pointwise discretisations of the expanded non-divergence operator $-a\Delta u - \nabla a \cdot \nabla u$ break down at material interfaces where $\nabla a$ is classically undefined. Failing to honour the divergence structure leads to a loss of local flux conservation, destroys the symmetry of the discrete operator, and produces errors in the interfacial transport rate that need not vanish under mesh refinement. Consequently, designing and verifying conservative numerical schemes that rigorously preserve physical flux continuity and discrete structural invariants (symmetry, positive definiteness, and monotonicity) is essential for reliable scientific computing.
 
 \subsection{Mathematical Model}
 We consider the two-dimensional stationary diffusion equation posed on the open unit square domain $\Omega = (0,1)^2 \subset \mathbb{R}^2$ with boundary $\partial\Omega = \Gamma_D$ subject to prescribed Dirichlet boundary conditions:
@@ -750,7 +750,7 @@ Let $V_h^0 := \{ v_h \in C^0(\bar{\Omega}) : v_h|_T \in \mathbb{P}_1(T)\ \forall
     b_k^{\text{FEM}} = \int_\Omega f \varphi_k\,dxdy - \sum_{m \in \Gamma_h} g_m \mathcal{B}(\varphi_m, \varphi_k).
     \label{eq:fem_system}
 \end{equation}
-Because the element gradients $\nabla\varphi_k|_T$ are constant on each triangle $T$, the stiffness matrix $A_h^{\text{FEM}}$ inherits exact symmetry and positive definiteness directly from the inner product $\mathcal{B}(\cdot,\cdot)$, and its Galerkin equations enforce the weak balance on the chosen finite-element space. The elementwise flux may still jump; the aligned layered benchmark happens to have an exact solution in this space. By Céa's Lemma and the Aubin--Nitsche duality trick \cite{hiptmair2025}, when $u \in H^2(\Omega)$, $\mathcal{P}_1$-FEM achieves optimal convergence rates $\|u - u_h\|_{H^1(\Omega)} = \mathcal{O}(h)$ and $\|u - u_h\|_{L^2(\Omega)} = \mathcal{O}(h^2)$, matching the asymptotic order of our conservative FDM.
+Because the element gradients $\nabla\varphi_k|_T$ are constant on each triangle $T$, the stiffness matrix $A_h^{\text{FEM}}$ inherits symmetry from the symmetry of $\mathcal{B}(\cdot,\cdot)$ and positive definiteness from its coercivity, and its Galerkin equations enforce the weak balance on the chosen finite-element space. The elementwise flux may still jump; the aligned layered benchmark happens to have an exact solution in this space. By Céa's Lemma and the Aubin--Nitsche duality trick \cite{hiptmair2025}, when $u \in H^2(\Omega)$, $\mathcal{P}_1$-FEM achieves optimal convergence rates $\|u - u_h\|_{H^1(\Omega)} = \mathcal{O}(h)$ and $\|u - u_h\|_{L^2(\Omega)} = \mathcal{O}(h^2)$, matching the asymptotic order of our conservative FDM.
 
 \paragraph{Matched-settings protocol for the $\star\star$ comparison.}
 The settings of the comparison are fixed \emph{before} any number is produced, so that the comparison cannot be read as tuning one method against the other. On the smooth benchmark the two methods are compared at
@@ -853,7 +853,7 @@ to \texttt{08bf8300}; later report tables contain the corrected spectral and
 interface diagnostics. The production FDM/FEM code and run entry point are
 under \path{project2/algorithm_section/}, and independent validation is under
 \path{project2/test/}. The additional theory checks are under
-\path{project2/meichending/support/verify/}: the interface and stability
+\path{project2/report/support/verify/}: the interface and stability
 scripts use separate small models, while the matrix-evidence script imports
 the production assembler deliberately.
 
@@ -864,7 +864,7 @@ an explicit solver tolerance on the cost plot. The additional matrix table,
 theory labels and scoped maximum-principle statement come from Meichen
 Ding's branch. Their original numerical results and hardware-specific
 timings are retained. Section~\ref{sec:interface_pinn} additionally replays
-three archived neural checkpoints and solves the classical reference
+six archived neural checkpoints (three per architecture) and solves the classical reference
 systems at common evaluation points. No neural training was rerun. The new
 sampled relative metric is explicitly distinguished from the earlier norms. Contributor source statements are retained in
 \path{APPENDIX/}; the integrated bodies change presentation and pagination,

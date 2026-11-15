@@ -1,0 +1,13 @@
+    case     c    N unknowns  defect_max  defect_fro   lambda_min   8a_min   chol
+  smooth     1   32      961    0.00e+00    0.00e+00 2.867532e+01      8.0     ok
+  smooth     1   64     3969    0.00e+00    0.00e+00 2.869420e+01      8.0     ok
+ layered    10   31      900    0.00e+00    0.00e+00 4.424994e+01      8.0     ok
+ layered    10   63     3844    0.00e+00    0.00e+00 4.434565e+01      8.0     ok
+ layered   100   63     3844    0.00e+00    0.00e+00 4.884818e+01      8.0     ok
+
+Reading: the defect is exactly zero because every off-diagonal entry is
+written twice with the same shared face coefficient; a non-zero defect
+would indicate that a face was assembled from two different averages.
+lambda_min is an eigsh estimate (which='SA', tol 1e-10) and is compared
+with the bound lambda_min >= 8 a_min of Section 2.4; a.d. Cholesky on the
+dense matrix corroborates positive definiteness independently.

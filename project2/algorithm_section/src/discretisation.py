@@ -41,8 +41,8 @@ def grid(intervals):
 
 
 def assemble_fdm(intervals, case="smooth", contrast=10.0, average="arithmetic"):
-    if case not in {"smooth", "layered", "constant"} or contrast <= 0:
-        raise ValueError("Unsupported case or nonpositive contrast")
+    if case not in {"smooth", "layered", "constant"} or not np.isfinite(contrast) or contrast <= 0:
+        raise ValueError("Unsupported case or nonfinite/nonpositive contrast")
     if average not in {"arithmetic", "harmonic"}:
         raise ValueError("Unsupported face average")
     if case == "layered" and intervals % 2 == 0:
@@ -52,8 +52,12 @@ def assemble_fdm(intervals, case="smooth", contrast=10.0, average="arithmetic"):
     a = coefficient(x, case, contrast)
     boundary = exact(x, y, case, contrast)
     if average == "harmonic":
-        ax = 2 * a[:-1, :] * a[1:, :] / (a[:-1, :] + a[1:, :])
-        ay = 2 * a[:, :-1] * a[:, 1:] / (a[:, :-1] + a[:, 1:])
+        # Algebraically identical to 2ab/(a+b), avoiding product overflow/underflow.
+        def harmonic(left, right):
+            lo, hi = np.minimum(left, right), np.maximum(left, right)
+            return lo * (2 / (1 + lo / hi))
+        ax = harmonic(a[:-1, :], a[1:, :])
+        ay = harmonic(a[:, :-1], a[:, 1:])
     else:
         ax = (a[:-1, :] + a[1:, :]) / 2
         ay = (a[:, :-1] + a[:, 1:]) / 2
@@ -122,8 +126,8 @@ def geometry(points, triangles):
 
 
 def assemble_fem(intervals, case="smooth", contrast=10.0, quadrature_order=5):
-    if case not in {"smooth", "layered", "constant"} or contrast <= 0:
-        raise ValueError("Unsupported case or nonpositive contrast")
+    if case not in {"smooth", "layered", "constant"} or not np.isfinite(contrast) or contrast <= 0:
+        raise ValueError("Unsupported case or nonfinite/nonpositive contrast")
     if case == "layered" and intervals % 2:
         raise ValueError("Layered FEM requires even N for interface alignment")
     points, triangles, interior = mesh(intervals)

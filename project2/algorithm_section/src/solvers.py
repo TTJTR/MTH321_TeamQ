@@ -74,11 +74,13 @@ def structure(matrix):
     off.eliminate_zeros()
     return dict(symmetry_relative=float(np.linalg.norm(skew.data)/np.linalg.norm(matrix.data)),
                 min_diagonal=float(matrix.diagonal().min()),
-                max_offdiagonal=float(off.data.max()), dof=matrix.shape[0], nnz=matrix.nnz)
+                max_offdiagonal=float(off.data.max()) if off.nnz else 0.0, dof=matrix.shape[0], nnz=matrix.nnz)
 
 
 def spectrum(matrix):
-    initial = np.linspace(1, 2, matrix.shape[0])
+    # An affine start can be orthogonal to the extremal checkerboard mode.
+    # A fixed random start preserves reproducibility without that symmetry.
+    initial = np.random.default_rng(321).normal(size=matrix.shape[0])
     low, vl = eigsh(matrix, k=1, sigma=0, which="LM", tol=1e-10, v0=initial)
     high, vh = eigsh(matrix, k=1, which="LA", tol=1e-10, v0=initial)
     residual_low = np.linalg.norm(matrix@vl[:, 0]-low[0]*vl[:, 0]) / abs(low[0])

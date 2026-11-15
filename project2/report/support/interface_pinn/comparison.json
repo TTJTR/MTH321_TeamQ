@@ -29,6 +29,7 @@
     "train_seconds": 231.2789789121598,
     "runs": [
       {
+        "method": "interface",
         "seed": 11,
         "relative_l2": 2.87559036550111e-05,
         "flux_max_error": 0.0023804477454310025,
@@ -36,6 +37,7 @@
         "lbfgs_closure_calls": 553
       },
       {
+        "method": "interface",
         "seed": 22,
         "relative_l2": 2.63203826775482e-05,
         "flux_max_error": 0.0009848185773153606,
@@ -43,11 +45,43 @@
         "lbfgs_closure_calls": 455
       },
       {
+        "method": "interface",
         "seed": 33,
         "relative_l2": 3.8437175475830784e-05,
         "flux_max_error": 0.0007377210499039943,
         "train_seconds": 236.22226397506893,
         "lbfgs_closure_calls": 570
+      }
+    ]
+  },
+  "Single PINN": {
+    "relative_l2": 0.3096482459190473,
+    "flux_max_error": 2.8094928326672353,
+    "train_seconds": 234.3917939957852,
+    "runs": [
+      {
+        "method": "single",
+        "seed": 11,
+        "relative_l2": 0.31038017819377717,
+        "flux_max_error": 3.137336484647009,
+        "train_seconds": 230.36784113850445,
+        "lbfgs_closure_calls": 510
+      },
+      {
+        "method": "single",
+        "seed": 22,
+        "relative_l2": 0.30689655497542023,
+        "flux_max_error": 2.397861397624108,
+        "train_seconds": 234.213300826028,
+        "lbfgs_closure_calls": 507
+      },
+      {
+        "method": "single",
+        "seed": 33,
+        "relative_l2": 0.3116680045879447,
+        "flux_max_error": 2.893280615730589,
+        "train_seconds": 238.59424002282321,
+        "lbfgs_closure_calls": 507
       }
     ]
   },

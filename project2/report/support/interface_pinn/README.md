@@ -32,3 +32,20 @@ The implementation has two independent tanh subnetworks, unlike the
 shared-parameter architecture in the cited I-PINNs paper. The comparison
 uses different mesh parities by design and is not at equal DOF or compute.
 Classical exactness is specific to this piecewise-linear benchmark.
+
+
+## Single-network ablation
+
+The three `single_c10_seed*` runs and `single_config.json` /
+`single_environment.json` were copied from the same local experiment archive's
+`runs/server_single/` folder. The replay evaluates both methods using the same
+sampled solution and one-sided flux metrics. The single model has 8,577
+parameters; the two-network model has 17,154. This is not parameter matched.
+Mean sampled solution errors are 0.309648 and 3.11712e-5; mean max flux errors
+are 2.80949 and 0.00136766. No new training is claimed.
+
+PDF figures contain vector paths and text; PNG previews are saved at 300 dpi.
+From `project2`, `python -B code/run_all.py` regenerates all external report
+figures, including fig08 and fig09, and synchronizes the classical figures.
+The default preserves archived timing values; `--recompute` reruns classical
+experiments. The report architecture is a native TikZ figure.

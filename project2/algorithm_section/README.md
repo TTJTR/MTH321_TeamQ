@@ -8,7 +8,7 @@
 - `algorithm_section.tex` 为可合并的正文，内容从 Section 3 开始。
 - `Algorithm.tex` 为独立编译入口。
 - `refs.bib` 包含提供的参考文献及新增的两条课程资料引用。
-- `figures/` 包含 6 张图，每张有 PDF 和 PNG。
+- `figures/` 包含 7 张图，每张有 PDF 和 PNG。
 - `tables/` 包含从实际 CSV 自动生成的 4 张 LaTeX 表。
 - `integration_notes_zh.md` 说明与 Method 的衔接、需修改的表述及引用方式。
 
@@ -68,3 +68,12 @@ pdflatex -interaction=nonstopmode -halt-on-error Algorithm.tex
 ## AI 与团队审核
 
 代码、验证、图表和文字使用 AI 辅助完成。团队需亲自运行并复核，再将实际审核人、改动和复现数值填写到课程 AI Transparency Log 与个人 ICS。`integration_notes_zh.md` 中列出可供核验的具体检查。个人签名和贡献归属由实际参与成员填写。
+
+
+## 当前统一交付入口
+
+从 `project2/` 运行 `python -B code/run_all.py` 可重建全部报告外部图，
+包括PINN回放与图08/09，并自动同步报告图片。本目录 `run_all.py` 仅负责
+经典方法，会重算计时。`Algorithm.pdf` 是早期独立阅读归档；当前正式合并
+预览以 `../report/Method.pdf` 为准。严格回归修复与清单结果见
+`../reviews/CHECKLIST_STATUS.md`。

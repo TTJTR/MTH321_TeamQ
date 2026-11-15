@@ -72,3 +72,15 @@ is Interface PINN; green/magenta distinguish harmonic/arithmetic faces.
 Training seeds and coefficient contrasts use grey shades. The signed-error
 colour scale is symmetric about zero. The cost panel states Jacobi-CG
 rtol=1e-12, atol=0. Figure 07 shows the actual grid and triangular mesh.
+
+
+## Unified entry and November 15 branch integration
+
+From `project2`, run `python -B code/run_all.py` to regenerate every external
+report figure and sync it here. `--build-report` also rebuilds the native
+TikZ architecture and PDF. The new Meichen source/review branch supplies
+canonical theory checks under `support/verify/`, a corrected flux value,
+limitations and contributor AI evidence. The current vector plots and mesh
+illustration are retained. The common-point replay now includes three
+single-network checkpoints as a secondary, non-parameter-matched ablation.
+See `../reviews/CHECKLIST_STATUS.md` for checks and remaining manual items.

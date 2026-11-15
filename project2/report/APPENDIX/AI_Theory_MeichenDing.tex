@@ -24,18 +24,22 @@
 \section{AI Transparency Log}
 \label{app:ai_log}
 
-\noindent\textit{Contributor record: Meichen Ding. The following theory audits and
-tool descriptions are retained from her submitted branch. Algorithm and writing
-contributions are recorded separately below; no signature is added during integration.}
+\noindent\textit{Contributor: Meichen Ding (theory audits and tool records). The
+algorithm and writing records follow in the next two contributions; each member
+signs their own declaration in table~\ref{tab:ai_ownership}.}
 
 
 This appendix records the distance between raw generative-AI output and the
 claims that survived into this report; it is a record of auditing, not a count
 of prompts. Every claim listed in A2 was re-derived, re-run against the team's
 own code, or falsified before it was allowed into the text, and each of the
-three audits changed a claim that an earlier draft had already stated. The
-conversation transcripts are retained by the team and can be supplied on
-request; they are not appended here.
+three audits changed a claim that an earlier draft had already stated. The extract that supports each audit --- the question, the returned
+claim, what was wrong with it and the check that settled it --- is stored in
+\path{support/ai_log/} together with its integrity hash, so a reader can confirm
+that what is described here is what the team worked from. Long session logs are
+retained by the contributor and are available on request. The hash of
+\path{support/ai_log/transcript_excerpts.md} is
+{\footnotesize\texttt{77f13be9ba0b9481c4c982e77a9f136a36e1f1e2d1c82415edb6f8d045c619ff}}.
 
 \subsection*{A1. AI tools used}
 
@@ -63,6 +67,11 @@ ChatGPT (OpenAI) and Gemini (Google)
   & current builds, Oct--Nov 2026
   & \LaTeX{} error diagnosis, document structure, phrasing and completeness
     checks. \\
+Codex (OpenAI), command-line agent
+  & current build, Nov 2026
+  & Drafting and running the independent validation scripts and the checkpoint
+    replay under \path{test/}; the results are reported in \S\ref{sec:results}
+    and audited in A3. \\
 \midrule
 All of the above, routine use
   & ---
@@ -193,6 +202,19 @@ accuracy} and \S4.3 now report the three numbers side by side instead of
 treating symmetry as evidence of physical accuracy. \textbf{Limitation:} the
 jump diagnostic is only defined where a two-sided reconstruction exists, so it
 is not a substitute for an exact solution. \\
+4 &
+The four matrix claims of \reftext{Table~\ref{tab:matrix_evidence}}{the
+matrix-evidence table} --- symmetry defect, smallest eigenvalue, positive
+definiteness --- are produced by the submitted assembler, not by a
+re-implementation of it. &
+Re-ran \path{project2/algorithm_section/src/discretisation.py} on five coefficient cases through
+\path{support/verify/check_matrix_evidence.py}: the symmetry defect is exactly
+zero, \texttt{eigsh} returns $\lambda_{\min}\ge 28.7$, and a dense Cholesky
+succeeds on every case. \textbf{Decision:} the problem pack makes the
+\emph{derivation} with positive shared face coefficients the primary evidence of
+positive definiteness, so the numbers are reported as corroboration only.
+\textbf{Limitation:} a symmetric operator can still carry the wrong interface
+resistance, so this row says nothing about accuracy (see audit 3). \\
 \end{longtable}}
 
 
@@ -223,8 +245,9 @@ diagnostic on team-owned work.
 
 \begin{table}[H]
 \centering\small
-\caption{Ownership declaration. The supplied copy contains only Meichen Ding's
-row. Signature fields remain unfilled; each member completes their own declaration.}
+\caption{Ownership declaration. This copy carries Meichen Ding's row; the other
+four members complete their own row and signature in their own contribution. No
+declaration is drafted or signed on another member's behalf.}
 \label{tab:ai_ownership}
 \begin{tabular}{@{}>{\raggedright\arraybackslash}p{2.7cm}p{1.7cm}>{\raggedright\arraybackslash}p{4.9cm}>{\raggedright\arraybackslash}p{4.6cm}@{}}
 \toprule

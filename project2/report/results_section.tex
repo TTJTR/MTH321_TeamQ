@@ -19,6 +19,21 @@ independently assembled dense reference. These checks probe the source sign,
 index ordering, and Dirichlet right-hand side rather than merely reproducing
 the same code path.
 
+The campaign therefore rests on four independent classes of evidence, and each
+table below says which one supports it. (i) \emph{Analytic bank problems}: the
+course test-problem bank (P1, P2, P4 and P5) is run through both assemblers on
+four meshes, thirty-two solves in total, and the nine bank tests pass when the
+bank is enabled (\path{test/test_validation.py}). (ii) \emph{Manufactured
+solutions}: the smooth benchmark of \S4.2, whose forcing is confirmed above by an
+independent complex-step derivative rather than by the code that consumes it.
+(iii) \emph{Independent oracles}: a second discretisation (conforming
+$\mathcal P_1$ FEM) and a second solver (sparse LU against Jacobi--CG), in
+\S3.2 and \S4.2. (iv) \emph{Self-consistency}: the algebraic residual, the
+symmetry defect and the reconstructed two-sided flux jump of
+\S4.2--\S4.3. The algebraic-versus-discretisation split of \S4.2 uses a
+different mechanism again --- a tolerance sweep at fixed mesh --- and is
+reported separately for that reason.
+
 For the smooth $N=32$ FDM and FEM systems, the tolerance sweep in
 Table~\ref{tab:alg_tol} uses the same assembled matrix and right-hand side at
 each solver tolerance. Tightening the requested CG relative residual from
@@ -92,7 +107,7 @@ Harmonic FDM reproduces the nodal exact solution to a maximum error below
 $2.2\times10^{-13}$ at all listed meshes. On $N=63$ the interface flux error
 is $1.08\times10^{-13}$. The fitted FEM at $N=64$ likewise has a nodal
 maximum error of $3.31\times10^{-14}$ and interface flux error
-$5.17\times10^{-13}$. The P1 result is exact in this benchmark because the
+$4.46\times10^{-13}$. The P1 result is exact in this benchmark because the
 piecewise-linear exact solution belongs to the fitted finite-element space;
 general P1 solutions need not have pointwise continuous element flux.
 
@@ -144,3 +159,26 @@ the solver choice and show the practical value of preconditioning for this
 layered geometry; they do not claim contrast-independent performance for
 arbitrary heterogeneous media.
 
+\subsection{Limitations and Robustness}
+\label{sec:limitations}
+
+Four limits are worth stating explicitly. First, the geometry is a Cartesian
+square with an axis-aligned interface on a single mesh family: curved
+interfaces and non-matching meshes are not tested; the straight FDM
+interface does bisect grid edges, while the FEM interface follows element
+edges. Curved interfaces and non-matching meshes would require a separate
+conservative interface construction. Second, the coefficient is affine in the smooth test and
+piecewise constant in the layered test; neither exercises a coefficient that
+varies along the interface, so the $\theta$-correction of the face conductance
+is not visible in the second-order table (the smooth benchmark is blind to it,
+as recorded in Appendix~\ref{app:ai_log}). Third, the layered benchmark has an
+$H^1$ but not an $H^2$ exact solution, so the second-order truncation analysis
+of \S2.2 does not apply to it: the harmonic and fitted-FEM results concern exactness, while the
+arithmetic-FDM refinement table measures an empirical first-order defect. Fourth, the
+interface-flux maximum of about $0.66$ for arithmetic averaging is a boundary
+effect of the prescribed horizontal Dirichlet data on this square; it is
+reported as an observation on this benchmark, not as an estimate that transfers
+to other boundary data. The methodological lesson is that a single flux-jump
+statistic would have hidden this defect, which is why
+Section~\ref{sec:results} reports the jump and the error against the exact flux
+side by side.

@@ -1,0 +1,106 @@
+{
+  "passed": true,
+  "figures": [
+    {
+      "file": "report\\figures\\fig01_algorithm.pdf",
+      "pages": 1,
+      "raster_images": 0,
+      "preview_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "passed": true,
+      "sha256": "bb6325cdc5a92b46f60014ecf39fb0fb3fd899c6ac410d153789789e8ef61c54"
+    },
+    {
+      "file": "report\\figures\\fig02_sparse_assembly.pdf",
+      "pages": 1,
+      "raster_images": 0,
+      "preview_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "passed": true,
+      "sha256": "e0fa7dac158bc626fd9eb648cacecfee8e3495e634d1fbe9525c1705e0d5bdfd"
+    },
+    {
+      "file": "report\\figures\\fig03_accuracy_cost.pdf",
+      "pages": 1,
+      "raster_images": 0,
+      "preview_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "passed": true,
+      "sha256": "6a29af1e08c6bc78aef531c6649c1d5a458f95c280c35553378385c4e79b9b9e"
+    },
+    {
+      "file": "report\\figures\\fig04_interface.pdf",
+      "pages": 1,
+      "raster_images": 0,
+      "preview_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "passed": true,
+      "sha256": "5eae0a9242430cbe4c82b483db1cead78d281673f848fc4d4b79f108b60c3542"
+    },
+    {
+      "file": "report\\figures\\fig05_conditioning.pdf",
+      "pages": 1,
+      "raster_images": 0,
+      "preview_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "passed": true,
+      "sha256": "d85cee907a38fd1c1d1ec6723049830afd1342725202dd297fe066304c746966"
+    },
+    {
+      "file": "report\\figures\\fig06_solver_validation.pdf",
+      "pages": 1,
+      "raster_images": 0,
+      "preview_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "passed": true,
+      "sha256": "ab3a628f089f2c434d4ecbcddd922662c9a98b194165abae527d8a4fd160d291"
+    },
+    {
+      "file": "report\\figures\\fig07_mesh.pdf",
+      "pages": 1,
+      "raster_images": 0,
+      "preview_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "passed": true,
+      "sha256": "8906ec623af11ea8a8290a3afb218ed9fc1122aebf3e1018e59884e72e2b146e"
+    },
+    {
+      "file": "report\\figures\\fig08_pinn_training.pdf",
+      "pages": 1,
+      "raster_images": 0,
+      "preview_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "passed": true,
+      "sha256": "c5b2a3a6a98c771f5ac3b345cafcc17060f35db0d1d6e8ee50fd5932061e6954"
+    },
+    {
+      "file": "report\\figures\\fig09_pinn_accuracy.pdf",
+      "pages": 1,
+      "raster_images": 0,
+      "preview_dpi": [
+        299.9994,
+        299.9994
+      ],
+      "passed": true,
+      "sha256": "1dae09a59697c514de869675fca0ca357ac32ab4de171e7ff34b7ba04915c235"
+    }
+  ],
+  "failures": [],
+  "note": "Vector PDF DPI is resolution-independent; the 300 dpi check applies to PNG previews."
+}

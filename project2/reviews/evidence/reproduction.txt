@@ -1,0 +1,119 @@
+Running: G:\Anaconda3\envs\dl\python.exe -B -m unittest discover -s tests -v
+test_arithmetic_comparison_and_parity (test_numerics.Numerics) ... ok
+test_explicit_cg_residual_and_direct_agreement (test_numerics.Numerics) ... ok
+test_fem_linear_patch (test_numerics.Numerics) ... ok
+test_hand_matrix_and_interface_row (test_numerics.Numerics) ... ok
+test_independent_manufactured_forcing (test_numerics.Numerics) ... ok
+test_layered_exactness_and_matrix (test_numerics.Numerics) ... ok
+test_smooth_convergence_and_quadrature (test_numerics.Numerics) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.534s
+
+OK
+Running: G:\Anaconda3\envs\dl\python.exe -B make_figures.py
+Generated 7 figures (PDF/PNG) and 4 LaTeX tables.
+Running: G:\Anaconda3\envs\dl\python.exe -B support/interface_pinn/reevaluate.py
+{
+  "protocol": {
+    "contrast": 10.0,
+    "solution_samples": "62 x 62 common interior nodes, x=i/63, y=j/63",
+    "solution_metric": "norm(pred-exact)/norm(exact), unweighted sampled l2",
+    "flux_samples": "62 common interface points, x=0.5, y=j/63",
+    "flux_metric": "max absolute physical flux error, common +x orientation",
+    "FDM_intervals": 63,
+    "FEM_intervals": 64,
+    "linear_solver": "SciPy sparse LU on CPU",
+    "PINN_seeds": [
+      11,
+      22,
+      33
+    ],
+    "note": "FEM is evaluated by its actual P1 interpolant. FDM is evaluated at its nodes. Different mesh parities are intentional; not an equal-budget benchmark."
+  },
+  "FDM": {
+    "relative_l2": 2.3995904425575004e-15,
+    "flux_max_error": 1.0813572259849025e-13
+  },
+  "FEM": {
+    "relative_l2": 2.190999093162209e-14,
+    "flux_max_error": 4.4564352208453784e-13
+  },
+  "Interface PINN": {
+    "relative_l2": 3.117115393613003e-05,
+    "flux_max_error": 0.001367662457550119,
+    "train_seconds": 231.2789789121598,
+    "runs": [
+      {
+        "method": "interface",
+        "seed": 11,
+        "relative_l2": 2.87559036550111e-05,
+        "flux_max_error": 0.0023804477454310025,
+        "train_seconds": 231.17226069327444,
+        "lbfgs_closure_calls": 553
+      },
+      {
+        "method": "interface",
+        "seed": 22,
+        "relative_l2": 2.63203826775482e-05,
+        "flux_max_error": 0.0009848185773153606,
+        "train_seconds": 226.44241206813604,
+        "lbfgs_closure_calls": 455
+      },
+      {
+        "method": "interface",
+        "seed": 33,
+        "relative_l2": 3.8437175475830784e-05,
+        "flux_max_error": 0.0007377210499039943,
+        "train_seconds": 236.22226397506893,
+        "lbfgs_closure_calls": 570
+      }
+    ]
+  },
+  "Single PINN": {
+    "relative_l2": 0.3096482459190473,
+    "flux_max_error": 2.8094928326672353,
+    "train_seconds": 234.3917939957852,
+    "runs": [
+      {
+        "method": "single",
+        "seed": 11,
+        "relative_l2": 0.31038017819377717,
+        "flux_max_error": 3.137336484647009,
+        "train_seconds": 230.36784113850445,
+        "lbfgs_closure_calls": 510
+      },
+      {
+        "method": "single",
+        "seed": 22,
+        "relative_l2": 0.30689655497542023,
+        "flux_max_error": 2.397861397624108,
+        "train_seconds": 234.213300826028,
+        "lbfgs_closure_calls": 507
+      },
+      {
+        "method": "single",
+        "seed": 33,
+        "relative_l2": 0.3116680045879447,
+        "flux_max_error": 2.893280615730589,
+        "train_seconds": 238.59424002282321,
+        "lbfgs_closure_calls": 507
+      }
+    ]
+  },
+  "training": {
+    "gpu": "NVIDIA A100-PCIE-40GB",
+    "precision": "float64",
+    "adam_steps": 10000,
+    "lbfgs_max_iter": 500,
+    "parameters": 17154,
+    "network": "2 independent MLPs, each 3 hidden layers of width 64, tanh",
+    "interior_points_per_subdomain": 2048,
+    "boundary_points_per_edge": 256,
+    "interface_points": 512
+  }
+}
+Running: G:\Anaconda3\envs\dl\python.exe -B support/interface_pinn/make_figures.py
+Saved report-sized training and accuracy figures.
+All nine external figures regenerated and synced; TikZ architecture is in the TeX source.
+No neural retraining. Classical timings preserved from archive.

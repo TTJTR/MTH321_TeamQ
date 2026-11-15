@@ -36,8 +36,8 @@ ql=-(ue[32,jy]-ue[31,jy])*M
 qr=-c*(ue[33,jy+1]-ue[32,jy+1])*M
 out['FEM']={'relative_l2':rel(interp),'flux_max_error':float(max(abs(ql+20/11).max(),abs(qr+20/11).max()))}
 rows=[]
-for seed in [11,22,33]:
- folder=Path(__file__).resolve().parent/f'archive/interface_c10_seed{seed}'
+for method,seed in [(m,s) for m in ["interface","single"] for s in [11,22,33]]:
+ folder=Path(__file__).resolve().parent/f'archive/{method}_c10_seed{seed}'
  checkpoint=torch.load(folder/'checkpoint.pt',map_location='cpu',weights_only=False)
  model=Solver(checkpoint['config']).double().eval();model.load_state_dict(checkpoint['model'])
  with torch.no_grad():u=model(torch.tensor(z,dtype=torch.float64)).numpy().ravel()
@@ -48,9 +48,11 @@ for seed in [11,22,33]:
   deriv=torch.autograd.grad(value,zi,torch.ones_like(value),retain_graph=True)[0][:,0]
   flux.append((-a*deriv).detach().numpy())
  met=json.loads((folder/'metrics.json').read_text())
- rows.append({'seed':seed,'relative_l2':rel(u),'flux_max_error':float(max(abs(flux[0]+20/11).max(),abs(flux[1]+20/11).max())),'train_seconds':met['train_seconds'],'lbfgs_closure_calls':met['lbfgs_closure_calls']})
-out['Interface PINN']={k:float(np.mean([r[k] for r in rows])) for k in ['relative_l2','flux_max_error','train_seconds']}
-out['Interface PINN']['runs']=rows
+ rows.append({'method':method,'seed':seed,'relative_l2':rel(u),'flux_max_error':float(max(abs(flux[0]+20/11).max(),abs(flux[1]+20/11).max())),'train_seconds':met['train_seconds'],'lbfgs_closure_calls':met['lbfgs_closure_calls']})
+for method,label in [('interface','Interface PINN'),('single','Single PINN')]:
+ runs=[r for r in rows if r['method']==method]
+ out[label]={k:float(np.mean([r[k] for r in runs])) for k in ['relative_l2','flux_max_error','train_seconds']}
+ out[label]['runs']=runs
 out['training']={'gpu':'NVIDIA A100-PCIE-40GB','precision':'float64','adam_steps':10000,'lbfgs_max_iter':500,'parameters':17154,'network':'2 independent MLPs, each 3 hidden layers of width 64, tanh','interior_points_per_subdomain':2048,'boundary_points_per_edge':256,'interface_points':512}
 (Path(__file__).resolve().parent/'comparison.json').write_text(json.dumps(out,indent=2),encoding='utf-8')
 print(json.dumps(out,indent=2))

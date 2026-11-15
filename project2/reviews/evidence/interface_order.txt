@@ -1,0 +1,26 @@
+a_L = 1.0, a_R = 10.0, contrast c = 10
+exact flux J* = -1.818181818182
+arithmetic face-conductance relative error (1-c)^2/(4c) = 2.025000
+
+--- harm ---
+    N  max nodal err   order   max |F-J*|        rel      chain F        rel
+   31     1.4433e-15           1.0481e-13  5.764e-14    -1.858311  2.207e-02
+   63     8.1046e-15  -2.489   3.8791e-13  2.134e-13    -1.837709  1.074e-02
+  127     1.7319e-14  -1.096   7.2098e-13  3.965e-13    -1.827816  5.299e-03
+  255     2.5979e-14  -0.585   1.7437e-12  9.590e-13    -1.822967  2.632e-03
+
+--- arith ---
+    N  max nodal err   order   max |F-J*|        rel      chain F        rel
+   31     1.9417e-02           4.0129e-02  2.207e-02    -1.858311  2.207e-02
+   63     9.6085e-03   1.015   1.9527e-02  1.074e-02    -1.837709  1.074e-02
+  127     4.7793e-03   1.008   9.6345e-03  5.299e-03    -1.827816  5.299e-03
+  255     2.3834e-03   1.004   4.7856e-03  2.632e-03    -1.822967  2.632e-03
+
+Reading: 'harm' is exact to round-off at every level (nodal error and
+flux error are both machine zero); 'arith' has nodal order 1 and a
+flux error that halves under refinement, matching the closed-form
+chain value in the last two columns.  The fixed relative error of
+the interface CONDUCTANCE above is O(1) and independent of h, which
+is a different quantity: it is the reason a single blanket claim of
+'O(1) flux error' was replaced by the two-layer statement of the
+report (Remark rem:arith_2d_boundary, Section 4.3).

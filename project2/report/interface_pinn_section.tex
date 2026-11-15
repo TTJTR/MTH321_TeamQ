@@ -156,10 +156,37 @@ not an accuracy advantage on this benchmark. Its GPU training time also
 cannot be directly ranked against the earlier CPU timings for a different
 smooth problem and mesh.
 
+\paragraph{Single-network ablation.}
+As a secondary check, we replay three archived single-network PINN runs
+at the same common points, using seeds 11, 22 and 33 and the same configured
+Adam/L-BFGS budgets. The width and depth of each network and the collocation
+counts and penalty weights are unchanged. Table~\ref{tab:pinn_ablation}
+compares the mean seed-specific errors. A single smooth tanh network has
+one derivative at the interface and cannot represent an exact derivative
+jump while keeping a nonzero continuous physical flux when $a_L\ne a_R$.
+Two subnetworks can represent different one-sided derivatives.
+
+\begin{table}[H]\centering\small
+\caption{Archived architectural ablation, $c=10$, same common-sample norms
+as Table~\ref{tab:pinn_accuracy}. The interface model has twice as many
+parameters, so this is not a parameter-matched isolation of decomposition.}
+\label{tab:pinn_ablation}
+\begin{tabular}{@{}lrrr@{}}\toprule
+Representation & Parameters & $E_{\mathrm{rel,samp}}$ & Max. flux error\\\midrule
+Single PINN & 8,577 & $3.10\times10^{-1}$ & $2.81$\\
+Interface PINN & 17,154 & $3.12\times10^{-5}$ & $1.37\times10^{-3}$\\\bottomrule
+\end{tabular}
+\end{table}
+
+These runs support the interface representation on this benchmark, but do
+not establish general superiority or isolate the effect of parameter count.
+Both architectures use soft boundary and flux constraints. This ablation
+supplements the main FDM/FEM comparison and does not replace it.
+
 \subsection{Reproduction and limitations}
 Checkpoints, logs, configuration, device metadata and matching model code
 are retained under \path{support/interface_pinn/}.
-The script \path{support/interface_pinn/reevaluate.py} replays all three
+The script \path{support/interface_pinn/reevaluate.py} replays all six
 checkpoints and solves the classical references on CPU without retraining;
 plotting code and source hashes accompany it. Paths in this section are
 relative to \path{project2/report/} in the repository. No error-versus-step or

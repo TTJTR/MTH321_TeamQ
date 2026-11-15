@@ -1,0 +1,7 @@
+counterexample  a(x) = 1 + 9 sin^2(pi x),  n = 63, a_min = 1
+  max_kl  (A_h^-1)_kl / (a_min^-1 (A_h^(1))^-1)_kl = 3.1024
+  entrywise inequality 0 <= A_h^-1 <= a_min^-1 (A_h^(1))^-1 : FAILS
+
+sharp constant 1/(8 a_min) vs measured ||A_h^-1||_inf
+  a = 1 + x   (1D)  n =  63 :  ||A^-1||_inf = 0.0861   bound = 0.1250   ratio = 0.688
+  a = 1 + x   (2D)  n =  14 :  ||A^-1||_inf = 0.0502   bound = 0.1250   ratio = 0.401
