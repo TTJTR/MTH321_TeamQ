@@ -1,0 +1,76 @@
+% Contribution fragment for the team's AI Transparency Log.
+% Requires enumitem and xurl (or url/hyperref) in the parent document.
+% Insert inside the team AI appendix, not as a second standalone report.
+\subsection*{Algorithm and Interface-PINN Contribution --- Tianrui Ji}
+\label{app:ai_tianrui_ji}
+
+\paragraph{Tools and scope.}
+ChatGPT/Codex assisted with code, experiment scripts, LaTeX text, figures and
+presentation revisions. I organised and integrated these materials and
+requested changes. The assistance extended beyond prose polishing;
+independent validation is attributed to the testing member's record.
+
+\paragraph{Audit TJ1: Discretisation, solver accuracy and interface checks.}
+\begin{itemize}[leftmargin=1.5em,itemsep=2pt]
+    \item \textbf{Task/query:} Develop the algorithm section for the
+    variable-diffusion problem, including conservative FDM, two-dimensional
+    P1 FEM, sparse solvers and reproducible comparisons.
+    \item \textbf{AI-assisted output:} Assembly and solver code, numerical
+    tables and figures, and draft interpretations of convergence and
+    interface diagnostics.
+    \item \textbf{Risk and possible falsifier:} Incorrect boundary signs or
+    face coefficients can survive symmetry and residual checks. Substituting
+    exact nodal data into selected rows and comparing numerical and analytic
+    fluxes can expose these errors.
+    \item \textbf{Verification and evidence:} The assembly is explicit in
+    \path{project2/algorithm_section/src/discretisation.py}, particularly
+    \texttt{assemble\_fdm} and \texttt{assemble\_fem}; the solver interface
+    is in \path{project2/algorithm_section/src/solvers.py}. The testing
+    member's independent evidence is recorded in
+    \path{project2/test/VALIDATION_RUN_2026-11-06.md} and
+    \path{project2/test/results/}. It checks manufactured solutions, linear
+    solves, matrix spectra and interface diagnostics.
+    \item \textbf{Decision and limitation:} Algebraic, discretisation and
+    physical flux errors are reported separately. At $c=10$, arithmetic
+    averaging reduces nodal error under refinement but retains maximum
+    interface-flux error near $0.662$. The report uses the independently
+    corrected condition numbers. Conclusions remain benchmark-specific.
+\end{itemize}
+
+\paragraph{Audit TJ2: Interface-PINN comparison and training provenance.}
+\begin{itemize}[leftmargin=1.5em,itemsep=2pt]
+    \item \textbf{Task/query:} Present the interface network as an
+    alternative solver for the same layered problem, compare it with FDM
+    and FEM, and disclose the architecture and training cost.
+    \item \textbf{AI-assisted output:} Two-network code, experiment records
+    and initial slides comparing mainly with a single-network PINN. Later
+    drafts added three-method evaluation and training plots.
+    \item \textbf{Risk and possible falsifier:} Norms and sampling must match.
+    Independent tanh networks differ from published shared-parameter
+    I-PINNs, and low loss does not establish physical accuracy. Check device
+    claims against the environment record and errors against exact data.
+    \item \textbf{Verification and evidence:} Configuration and device
+    records are in
+    \path{project2/I-PINNs/runs/server_interface/config.json} and
+    \path{project2/I-PINNs/runs/server_interface/environment.json}.
+    Each run directory contains \texttt{training.csv},
+    \texttt{metrics.json} and \texttt{checkpoint.pt}; for example,
+    \path{project2/I-PINNs/runs/server_interface/interface_c10_seed11/}.
+    The independent checkpoint and metric checks are documented in the
+    validation record cited above.
+    \item \textbf{Decision and limitation:} I requested three-method
+    comparison and clarification of joint training. Records identify an
+    A100-PCIE-40GB; mean optimisation time at $c=10$ is $231.3$ seconds.
+    Only periodic Adam losses and a final L-BFGS loss are saved, not a full
+    L-BFGS or error-versus-time trajectory. The revised comparison and plots
+    remain supplementary, not yet integrated into the main report. Their
+    sampling protocol must accompany any integration; sampled relative
+    errors must not be confused with continuous $L^2$ norms.
+\end{itemize}
+
+\paragraph{Responsibility and trusted dependencies.}
+Team-owned code specifies PDE data, assembly, boundary treatment and
+experiment protocols. SciPy supplies sparse linear algebra; PyTorch supplies
+automatic differentiation and optimisers. My contribution and learning
+limits are stated in \path{TianruiJiICS.tex}. This fragment does not sign a
+declaration for other members.
