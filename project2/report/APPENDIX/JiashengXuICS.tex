@@ -1,0 +1,78 @@
+\documentclass[10pt]{article}
+\usepackage[a4paper,margin=1.8cm]{geometry}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{xurl}
+\usepackage{xcolor}
+\usepackage{mdframed}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.35em}
+\definecolor{formbg}{RGB}{250,250,245}
+\definecolor{formframe}{RGB}{180,170,140}
+\newmdenv[backgroundcolor=formbg,linecolor=formframe,linewidth=0.8pt,
+roundcorner=3pt,innermargin=5pt,outermargin=5pt,innertopmargin=6pt,
+innerbottommargin=6pt]{formbox}
+
+\begin{document}
+
+\begin{center}
+    {\Large\bfseries Individual Contribution Statement}\\[0.2em]
+    {\large Project 2 (Elliptic BVP)}
+\end{center}
+
+\begin{formbox}
+\textbf{Name:} Jiasheng Xu \hfill \textbf{Student ID:} 2251640\\
+\textbf{Role:} Testing and Validation (Role 5).
+
+\textbf{1. My specific contributions to this project:}
+\begin{enumerate}[leftmargin=2em,itemsep=0.25em,topsep=0.15em]
+    \item I added the independent test suite in
+    \path{project2/test/test_validation.py} for the team's variable-diffusion
+    finite-difference and P1 finite-element solvers. I tested asymmetric,
+    nonzero Dirichlet data and node ordering, and ran course-bank cases
+    P1, P2, P4 and P5 through both assemblers on four meshes, for 32 solves.
+    The suite passed nine tests with the bank enabled. The original
+    \path{run_all.py} entry point passed all seven of its tests.
+
+    \item I used the same P1-reconstructed \(L^2\) norm for both methods.
+    Fitting the finest three of four meshes gave orders of \(2.000\) for
+    FDM and \(1.999\) for FEM. At \(N=32\), tightening the conjugate gradient
+    tolerance to \(10^{-12}\) brought both solutions within
+    \(1.1\times10^{-14}\) of sparse LU in the nodal maximum norm. The
+    discretisation errors were about \(8\times10^{-4}\).
+
+    \item I recorded the commands, measured errors and reproducible failures
+    in \path{project2/test/VALIDATION_RUN_2026-11-06.md}
+    (commit \texttt{08bf830}). A closed-form spectral check showed that the
+    condition-number routine returned \(89.045\) for the uniform-material
+    case at \(N=15\), where the analytic value is \(90.523\) to three
+    decimal places. The team's results section uses the corrected estimates.
+\end{enumerate}
+
+\textbf{2. The hardest conceptual obstacle I encountered:} The main challenge
+was finding a diagnostic that could detect incorrect interface resistance.
+At \(c=10\) and \(N=63\), arithmetic face averaging produced a reconstructed
+two-sided flux jump of about \(4\times10^{-13}\). The maximum shared-face flux error against the
+analytic flux was \(0.662\). I included both measurements in the validation
+so the small jump could be interpreted alongside the physical flux error.
+
+\textbf{3. One piece of AI-generated output my team used, and what I changed:}
+I used Codex to draft and run the independent validation scripts. I asked
+for the course-bank cases to be solved with both assemblers, for the linear
+residual to be recomputed, and for the interface flux to be checked against
+the exact solution. I also requested the Project 1 test-directory layout
+so that the revised checks could be rerun with \texttt{unittest} and traced
+to the measured logs.
+
+\textbf{4. One thing I still do not fully understand:} I would like to
+derive a bound for the maximum interface-flux error near the points where
+the material interface meets the Dirichlet boundary, and understand how that
+bound depends on mesh size and material contrast.
+
+\vfill
+\textbf{Signature:} \underline{\hspace{4.5cm}} \hfill
+\textbf{Date:} \underline{\hspace{2.5cm}}
+\end{formbox}
+
+\end{document}
