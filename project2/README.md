@@ -12,6 +12,7 @@ subnetworks and is not an exact reproduction of the published I-PINNs model.
 - [LaTeX entry — Method.tex](report/Method.tex)
 - [Report source/build guide](report/README.md)
 - [Course checklist and remaining manual items](reviews/CHECKLIST_STATUS.md)
+- [Assessed code review — Meichen Ding (2362344)](reviews/CODE_REVIEW_2026-11-15.md)
 
 The report has 50 pages, including references, AI records, five labelled ICS
 and the evidence index. Keep the complete `report/` directory to compile it.
@@ -145,3 +146,15 @@ The report, code and evidence are present. Member signatures/draft
 confirmations, presentation timing and final slides/report consistency remain
 individual/team tasks, as recorded in the checklist. No fresh environment or
 neural retraining is required to replay the submitted evidence.
+
+
+## Assessed code review
+
+[Meichen Ding's code review](reviews/CODE_REVIEW_2026-11-15.md) is part of
+the submission materials, not an optional development note. It follows the
+course code-review checklist sections A–H, including findings and suggested
+fixes. Reviewer: **Meichen Ding (2362344)**; original date: **2026-11-15**.
+The original signed-name attribution and review text are preserved unchanged.
+It is included in the code ZIP under `project2/reviews/`; include it when
+uploading the assessed course materials. Subsequent fixes and checks are
+tracked separately in [the current checklist](reviews/CHECKLIST_STATUS.md).

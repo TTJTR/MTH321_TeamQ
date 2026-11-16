@@ -104,3 +104,10 @@ visualization guide、code review checklist、report template、problem definiti
 - [x] 同步报告源和独立算法源中的同一图注；仅复核Figure 5所在页。
 - [x] 核对Project1依赖及历史环境记录，沿用既定课程环境，PINN扩展单独记录。
 - [x] 不安装、升级依赖，不重跑实验、训练或整套测试。
+
+
+## 评分项：Code review交付
+
+- [x] Meichen Ding（2362344）撰写的`CODE_REVIEW_2026-11-15.md`已纳入仓库和代码ZIP。
+- [x] README提供独立明确入口，标注为计分提交材料；原署名、日期及正文保持不变。
+- [x] 后续修复记录与作者原始评审分开保存，不代作者声称复核过后续修改。

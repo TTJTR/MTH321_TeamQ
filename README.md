@@ -24,6 +24,8 @@ classical experiments and `--build-report` to also build the report with
 pdfLaTeX/BibTeX. See the [full commands](project2/README.md),
 [environment notes](project2/ENVIRONMENT.md) and
 [checklist](project2/reviews/CHECKLIST_STATUS.md).
+The assessed [code review by Meichen Ding](project2/reviews/CODE_REVIEW_2026-11-15.md)
+is included in the Project 2 submission materials.
 
 ## Project 1
 
